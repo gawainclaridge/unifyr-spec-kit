@@ -81,9 +81,18 @@ Execution steps:
    - Performance (latency, throughput targets)
    - Scalability (horizontal/vertical, limits)
    - Reliability & availability (uptime, recovery expectations)
-   - Observability (logging, metrics, tracing signals)
    - Security & privacy (authN/Z, data protection, threat assumptions)
    - Compliance / regulatory constraints (if any)
+
+   Observability & Telemetry (MUST ASK while Partial/Missing — see step 4a):
+   - Product analytics events (user-visible actions, naming convention)
+   - Structured log fields (required fields, PII redaction)
+   - Metrics (counters, histograms for ops visibility)
+   - Traces (span names, propagation)
+   - Audit trail (immutable state-change records, if applicable)
+   - Dashboards (existing dashboard target, or new dashboard need)
+   - NOTE: SLOs and alert thresholds are deliberately excluded — they are owned
+     by the regression process, not feature specs.
 
    Integration & External Dependencies:
    - External services/APIs and failure modes
@@ -119,12 +128,46 @@ Execution steps:
     - Maximum of 10 total questions across the whole session.
     - Each question must be answerable with EITHER:
        - A short multiple‑choice selection (2–5 distinct, mutually exclusive options), OR
-       - A one-word / short‑phrase answer (explicitly constrain: "Answer in <=5 words").
+       - A one-word / short‑phrase answer (explicitly constrain: "Answer in <=5 words"), OR
+       - An **example-led reaction** (see step 4a) — present feature-specific examples in a table and ask the team which apply / what to add / what to remove.
     - Only include questions whose answers materially impact architecture, data modeling, task decomposition, test design, UX behavior, operational readiness, or compliance validation.
     - Ensure category coverage balance: attempt to cover the highest impact unresolved categories first; avoid asking two low-impact questions when a single high-impact area (e.g., security posture) is unresolved.
     - Exclude questions already answered, trivial stylistic preferences, or plan-level execution details (unless blocking correctness).
     - Favor clarifications that reduce downstream rework risk or prevent misaligned acceptance tests.
     - If more than 5 categories remain unresolved, select the top 5 by (Impact * Uncertainty) heuristic.
+
+4a. **Must-ask categories** (override the impact-ranking above): some categories are easy for the team to overlook and MUST be asked while their spec section is still placeholder text or genuinely Partial/Missing. They reserve a slot in the queue ahead of impact-ranked questions. Clarify is run iteratively, so a must-ask question that doesn't fit in this session will surface in the next run until the section is populated.
+
+    Current must-ask categories:
+
+    - **Observability & Telemetry** — check the spec's `## Observability & Telemetry` section. If the buckets still contain `[Populated during /speckit.clarify]` or are empty, ask the example-led observability question below.
+
+    **Example-led question format** (for unfamiliar topics like observability where the team is new to the domain): rather than asking blank-slate questions ("name your telemetry events"), generate concrete examples derived from THIS feature's domain and ask the team to react. Treat "we don't need this bucket" as a valid, encouraged answer when justified.
+
+    Observability question template — generate buckets specific to the feature being specified, not generic boilerplate:
+
+    ```markdown
+    ## Question [N]: Observability & Telemetry
+
+    **Why we're asking**: This is easy to overlook and expensive to retrofit. The goal here is to surface what we'd want to *see in production* for this feature. Skip any bucket that genuinely doesn't apply — just say so with a one-line reason.
+
+    Below are likely telemetry items for this feature. Which apply? What's missing? What should be removed?
+
+    | Bucket | Proposed (specific to this feature) |
+    |--------|-------------------------------------|
+    | Product analytics events | e.g. `<Object> <Verbed>` with properties [...] (derived from primary user actions in spec) |
+    | Structured log fields | e.g. `tenant_id`, `user_id`, `feature=<feature_name>` on every log line |
+    | Metrics | e.g. counter `<feature>_<action>_total{...}`, histogram `<feature>_<operation>_ms` |
+    | Traces | e.g. span `<feature>.<primary_operation>`, parent inherited from inbound HTTP trace |
+    | Audit trail | e.g. <state-change> persisted with actor + before/after + reason — or "N/A: <reason>" |
+    | Dashboards | e.g. new row on `<existing-dashboard-name>`, or "no new dashboard, joins existing X" |
+
+    **NOTE**: SLOs and alert thresholds are intentionally excluded — those are owned by the regression process.
+
+    **How to answer**: A free-form reply works. You can say things like "events look right, drop the audit trail bucket, add a metric for X", or paste an edited version of the table.
+    ```
+
+    When integrating the answer (per step 6), replace the placeholders in the spec's `## Observability & Telemetry` subsections with the agreed items. If a bucket is dropped, leave it as `N/A: <reason from team>` rather than removing the heading.
 
 5. Sequential questioning loop (interactive):
     - Present EXACTLY ONE question at a time.
@@ -173,6 +216,7 @@ Execution steps:
        - User interaction / actor distinction → Update User Stories or Actors subsection (if present) with clarified role, constraint, or scenario.
        - Data shape / entities → Update Data Model (add fields, types, relationships) preserving ordering; note added constraints succinctly.
        - Non-functional constraint → Add/modify measurable criteria in Non-Functional / Quality Attributes section (convert vague adjective to metric or explicit target).
+       - Observability & telemetry answer → Update the matching subsections under `## Observability & Telemetry`: Product Analytics Events, Structured Log Fields, Metrics, Traces, Audit Trail, Dashboards. Replace the `[Populated during /speckit.clarify]` placeholders with the agreed items. For dropped buckets, write `- N/A: <reason from team>` rather than removing the subsection. Also append the Q→A bullet under `## Clarifications` per the standard pattern.
        - Edge case / negative flow → Add a new bullet under Edge Cases / Error Handling (or create such subsection if template provides placeholder for it).
        - Terminology conflict → Normalize term across spec; retain original only if necessary by adding `(formerly referred to as "X")` once.
     - If the clarification invalidates an earlier ambiguous statement, replace that statement instead of duplicating; leave no obsolete contradictory text.

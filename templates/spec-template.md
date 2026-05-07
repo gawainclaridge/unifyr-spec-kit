@@ -167,6 +167,58 @@
 - **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"]
 - **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
 
+## Observability & Telemetry *(mandatory — populated during /speckit.clarify)*
+
+<!--
+  How will we see this feature in production?
+
+  Leave the buckets below as placeholders during /speckit.specify. The /speckit.clarify
+  step will propose feature-specific examples for the team to react to and refine.
+
+  SLOs and alert thresholds are NOT captured here — those live in the regression
+  process, not the spec.
+
+  Buckets to populate (omit any that genuinely don't apply, with a one-line reason):
+
+  - Product analytics events: user-visible actions worth tracking (e.g. "Leaderboard Viewed"
+    with properties like position, points_behind_leader). Naming follows the existing
+    `Object Verbed` convention.
+  - Structured log fields: required fields on every log line for this feature
+    (e.g. tenant_id, user_id, feature=<name>). Note PII redaction rules.
+  - Metrics: counters and histograms exposed for ops visibility
+    (e.g. counter `<feature>_action_total{...}`, histogram `<feature>_duration_ms`).
+  - Traces: span names and propagation expectations
+    (e.g. span `<feature>.<operation>`, parent inherited from inbound HTTP trace).
+  - Audit trail: state changes that must be persisted immutably with actor + before/after
+    (typically for security/compliance-leaning features; often N/A).
+  - Dashboards: which existing dashboard this feature joins, or whether a new row/board
+    is needed.
+-->
+
+### Product Analytics Events
+
+- [Populated during /speckit.clarify]
+
+### Structured Log Fields
+
+- [Populated during /speckit.clarify]
+
+### Metrics
+
+- [Populated during /speckit.clarify]
+
+### Traces
+
+- [Populated during /speckit.clarify]
+
+### Audit Trail
+
+- [Populated during /speckit.clarify — write "N/A: <reason>" if not applicable]
+
+### Dashboards
+
+- [Populated during /speckit.clarify]
+
 ## Changelog
 
 <!--
