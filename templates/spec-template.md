@@ -167,57 +167,29 @@
 - **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"]
 - **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
 
-## Observability & Telemetry *(mandatory — populated during /speckit.clarify)*
+## Observability & Telemetry *(optional — added by /speckit.clarify when there is feature-specific telemetry to pin down)*
 
 <!--
-  How will we see this feature in production?
+  HOW THIS SECTION WORKS
 
-  Leave the buckets below as placeholders during /speckit.specify. The /speckit.clarify
-  step will propose feature-specific examples for the team to react to and refine.
+  - Project-wide observability conventions (event naming style, required structured
+    log fields, PII redaction policy, dashboard standards) live in the constitution,
+    NOT here. /speckit.constitution captures them once for the initiative.
+  - This section captures only what is *new for this feature*: specific events to
+    emit, feature-specific fields, an audit trail need, a dashboard row, etc.
+  - /speckit.clarify will propose feature-specific items derived from the spec for
+    the team to react to. If there is nothing feature-specific worth capturing
+    (e.g. internal refactor, copy change), this section is omitted entirely with
+    a one-line note in the Clarifications section.
+  - SLOs and alert thresholds are NOT captured here — those are owned by the
+    regression process.
 
-  SLOs and alert thresholds are NOT captured here — those live in the regression
-  process, not the spec.
-
-  Buckets to populate (omit any that genuinely don't apply, with a one-line reason):
-
-  - Product analytics events: user-visible actions worth tracking (e.g. "Leaderboard Viewed"
-    with properties like position, points_behind_leader). Naming follows the existing
-    `Object Verbed` convention.
-  - Structured log fields: required fields on every log line for this feature
-    (e.g. tenant_id, user_id, feature=<name>). Note PII redaction rules.
-  - Metrics: counters and histograms exposed for ops visibility
-    (e.g. counter `<feature>_action_total{...}`, histogram `<feature>_duration_ms`).
-  - Traces: span names and propagation expectations
-    (e.g. span `<feature>.<operation>`, parent inherited from inbound HTTP trace).
-  - Audit trail: state changes that must be persisted immutably with actor + before/after
-    (typically for security/compliance-leaning features; often N/A).
-  - Dashboards: which existing dashboard this feature joins, or whether a new row/board
-    is needed.
+  Subsections are added by /speckit.clarify on demand from this set:
+  Product Analytics Events / Structured Log Fields / Metrics / Traces /
+  Audit Trail / Dashboards. Only include the subsections that apply.
 -->
 
-### Product Analytics Events
-
-- [Populated during /speckit.clarify]
-
-### Structured Log Fields
-
-- [Populated during /speckit.clarify]
-
-### Metrics
-
-- [Populated during /speckit.clarify]
-
-### Traces
-
-- [Populated during /speckit.clarify]
-
-### Audit Trail
-
-- [Populated during /speckit.clarify — write "N/A: <reason>" if not applicable]
-
-### Dashboards
-
-- [Populated during /speckit.clarify]
+[This section is empty until /speckit.clarify populates it with feature-specific telemetry, or confirms none is needed.]
 
 ## Changelog
 
