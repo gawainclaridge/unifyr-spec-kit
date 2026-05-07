@@ -167,6 +167,30 @@
 - **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"]
 - **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
 
+## Observability & Telemetry *(optional — added by /speckit.clarify when there is feature-specific telemetry to pin down)*
+
+<!--
+  HOW THIS SECTION WORKS
+
+  - Project-wide observability conventions (event naming style, required structured
+    log fields, PII redaction policy, dashboard standards) live in the constitution,
+    NOT here. /speckit.constitution captures them once for the initiative.
+  - This section captures only what is *new for this feature*: specific events to
+    emit, feature-specific fields, an audit trail need, a dashboard row, etc.
+  - /speckit.clarify will propose feature-specific items derived from the spec for
+    the team to react to. If there is nothing feature-specific worth capturing
+    (e.g. internal refactor, copy change), this section is omitted entirely with
+    a one-line note in the Clarifications section.
+  - SLOs and alert thresholds are NOT captured here — those are owned by the
+    regression process.
+
+  Subsections are added by /speckit.clarify on demand from this set:
+  Product Analytics Events / Structured Log Fields / Metrics / Traces /
+  Audit Trail / Dashboards. Only include the subsections that apply.
+-->
+
+[This section is empty until /speckit.clarify populates it with feature-specific telemetry, or confirms none is needed.]
+
 ## Changelog
 
 <!--

@@ -81,9 +81,21 @@ Execution steps:
    - Performance (latency, throughput targets)
    - Scalability (horizontal/vertical, limits)
    - Reliability & availability (uptime, recovery expectations)
-   - Observability (logging, metrics, tracing signals)
    - Security & privacy (authN/Z, data protection, threat assumptions)
    - Compliance / regulatory constraints (if any)
+
+   Observability & Telemetry (MUST CONSIDER — see step 4a):
+   - Product analytics events (user-visible actions worth tracking)
+   - Structured log fields specific to this feature (beyond constitution-level required fields)
+   - Metrics (counters, histograms for ops visibility)
+   - Traces (span names, propagation)
+   - Audit trail (immutable state-change records, if applicable)
+   - Dashboards (existing dashboard target, or new dashboard need)
+   - NOTE: Project-wide observability conventions (naming, required fields, PII rules)
+     live in the constitution — do not re-derive them here. Only capture what is
+     *new for this feature*.
+   - NOTE: SLOs and alert thresholds are deliberately excluded — owned by the
+     regression process, not feature specs.
 
    Integration & External Dependencies:
    - External services/APIs and failure modes
@@ -119,12 +131,50 @@ Execution steps:
     - Maximum of 10 total questions across the whole session.
     - Each question must be answerable with EITHER:
        - A short multiple‑choice selection (2–5 distinct, mutually exclusive options), OR
-       - A one-word / short‑phrase answer (explicitly constrain: "Answer in <=5 words").
+       - A one-word / short‑phrase answer (explicitly constrain: "Answer in <=5 words"), OR
+       - An **example-led reaction** (see step 4a) — present feature-specific examples in a table and ask the team which apply / what to add / what to remove.
     - Only include questions whose answers materially impact architecture, data modeling, task decomposition, test design, UX behavior, operational readiness, or compliance validation.
     - Ensure category coverage balance: attempt to cover the highest impact unresolved categories first; avoid asking two low-impact questions when a single high-impact area (e.g., security posture) is unresolved.
     - Exclude questions already answered, trivial stylistic preferences, or plan-level execution details (unless blocking correctness).
     - Favor clarifications that reduce downstream rework risk or prevent misaligned acceptance tests.
     - If more than 5 categories remain unresolved, select the top 5 by (Impact * Uncertainty) heuristic.
+
+4a. **Must-consider categories** (reserve a slot in the queue ahead of impact-ranked questions): some categories are easy for the team to overlook. Clarify must *consider* them every run — but the team can validly answer "nothing feature-specific to capture" and clarify moves on. Clarify is run iteratively, so a must-consider question that doesn't fit in this session will surface in the next run until either the section is populated or the team explicitly waives it.
+
+    Current must-consider categories:
+
+    - **Observability & Telemetry** — check the spec's `## Observability & Telemetry` section. If it still shows the "[This section is empty until /speckit.clarify populates it...]" placeholder AND the spec describes any user-facing actions, state changes, or operational concerns, ask the example-led observability question below. Skip the question (and record the skip in Clarifications) if the feature is genuinely telemetry-irrelevant (e.g. dependency bump, internal refactor with no behavior change, doc-only change).
+
+    **Example-led question format** (for unfamiliar topics like observability where the team is new to the domain): rather than asking blank-slate questions ("name your telemetry events"), generate concrete examples derived from THIS feature's domain and ask the team to react. Treat "we don't need this bucket" — or "we don't need this section at all" — as valid, encouraged answers when justified.
+
+    Before generating the table, **load the constitution** (`/memory/constitution.md`) and read its observability principle (often PRINCIPLE_4 or PRINCIPLE_5) to learn the project-wide conventions (event naming style, required log fields, PII rules). Apply those conventions when generating examples; do NOT re-propose conventions already in the constitution.
+
+    Observability question template — generate buckets specific to the feature being specified, not generic boilerplate. Only include buckets where a feature-specific item is plausible; omit buckets that are unlikely to apply for this feature type:
+
+    ```markdown
+    ## Question [N]: Observability & Telemetry
+
+    **Why we're asking**: This is easy to overlook and expensive to retrofit. The goal is to capture what is *new for this feature* — not project-wide conventions (those live in the constitution).
+
+    Below are likely feature-specific telemetry items. Which apply? What's missing? What should be removed? You can also answer **"none — this feature doesn't need a telemetry section"** if appropriate.
+
+    | Bucket | Proposed (specific to this feature) |
+    |--------|-------------------------------------|
+    | Product analytics events | e.g. `<Object> <Verbed>` with properties [...] (derived from primary user actions in spec) |
+    | Feature-specific log fields | e.g. `<custom_field>` beyond the constitution's required fields |
+    | Metrics | e.g. counter `<feature>_<action>_total{...}`, histogram `<feature>_<operation>_ms` |
+    | Traces | e.g. span `<feature>.<primary_operation>` |
+    | Audit trail | e.g. <state-change> persisted with actor + before/after + reason — or omit |
+    | Dashboards | e.g. new row on `<existing-dashboard-name>`, or "joins existing X" |
+
+    **NOTE**: SLOs and alert thresholds are intentionally excluded — those are owned by the regression process. Project-wide conventions are intentionally excluded — those live in the constitution.
+
+    **How to answer**: A free-form reply works. Examples: "events look right, drop the audit trail and dashboards rows, add a metric for X", or "none — internal refactor, no telemetry needed", or paste an edited version of the table.
+    ```
+
+    When integrating the answer (per step 6):
+    - If the team picked specific items: replace the spec's empty placeholder with appropriate `### <Bucket>` subsections, listing the agreed items as bullets. Omit buckets the team dropped — do not write `N/A` placeholders.
+    - If the team answered "none / not applicable": replace the placeholder line with a single sentence under the section heading, e.g. `_No feature-specific telemetry — <one-line reason from team>._`. Do not delete the section.
 
 5. Sequential questioning loop (interactive):
     - Present EXACTLY ONE question at a time.
@@ -173,6 +223,7 @@ Execution steps:
        - User interaction / actor distinction → Update User Stories or Actors subsection (if present) with clarified role, constraint, or scenario.
        - Data shape / entities → Update Data Model (add fields, types, relationships) preserving ordering; note added constraints succinctly.
        - Non-functional constraint → Add/modify measurable criteria in Non-Functional / Quality Attributes section (convert vague adjective to metric or explicit target).
+       - Observability & telemetry answer → Replace the placeholder line in `## Observability & Telemetry` based on the team's response: (a) if specific items were picked, add `### <Bucket>` subsections only for the buckets in scope (Product Analytics Events / Feature-Specific Log Fields / Metrics / Traces / Audit Trail / Dashboards) and list the items as bullets; (b) if the team waived the section, replace the placeholder with a single italicized sentence: `_No feature-specific telemetry — <one-line reason>._`. In either case, append the Q→A bullet under `## Clarifications` per the standard pattern.
        - Edge case / negative flow → Add a new bullet under Edge Cases / Error Handling (or create such subsection if template provides placeholder for it).
        - Terminology conflict → Normalize term across spec; retain original only if necessary by adding `(formerly referred to as "X")` once.
     - If the clarification invalidates an earlier ambiguous statement, replace that statement instead of duplicating; leave no obsolete contradictory text.

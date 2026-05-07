@@ -29,9 +29,26 @@
 <!-- Example: Prefer real databases over mocks; Contract tests mandatory before implementation; Focus areas: library contracts, inter-service communication, shared schemas -->
 
 ### [PRINCIPLE_5_NAME]
-<!-- Example: V. Simplicity Constraints / VI. Versioning Strategy / VII. Observability -->
+<!-- Example: V. Simplicity Constraints / VI. Versioning Strategy / VII. Observability & Telemetry Conventions -->
 [PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Maximum 3 projects for initial implementation; Or: MAJOR.MINOR.BUILD with semantic-release; Or: Structured logging required with OpenTelemetry tracing -->
+<!--
+  Example (Simplicity): Maximum 3 projects for initial implementation
+  Example (Versioning): MAJOR.MINOR.BUILD with semantic-release
+  Example (Observability & Telemetry — capture project-wide conventions here so feature
+  specs only carry feature-specific instances):
+    - Logging: structured JSON via <library>; every log line includes tenant_id, user_id,
+      request_id, feature=<feature_name>; ERROR pages oncall, WARN does not.
+    - PII: <list of fields> redacted at the logger before emission; never logged in plain text.
+    - Tracing: OpenTelemetry, span name pattern `<feature>.<operation>`, parent inherited
+      from inbound HTTP trace.
+    - Metrics: Prometheus-style; counters as `<feature>_<action>_total`, histograms as
+      `<feature>_<operation>_ms`.
+    - Product analytics: Segment → Amplitude; event names follow `Object Verbed` convention.
+    - Dashboards: new features extend existing per-team Grafana board unless their domain
+      warrants a new one.
+    - SLOs and alert thresholds: managed in the regression process, not in feature specs.
+-->
+
 
 ## [SECTION_2_NAME]
 <!-- Example: Technical Constraints, Security Architecture, Migration Strategy, etc. -->
