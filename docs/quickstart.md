@@ -29,17 +29,17 @@ Unifyr Spec Kit follows a structured 5-stage workflow aligned with team collabor
 
 ```bash
 # Create a new project directory
-uvx --from git+https://github.com/gawainclaridge/spec-kit.git@unifyr-spec-kit specify init <PROJECT_NAME>
+uvx --from git+https://github.com/gawainclaridge/unifyr-spec-kit.git specify init <PROJECT_NAME>
 
 # OR initialize in the current directory
-uvx --from git+https://github.com/gawainclaridge/spec-kit.git@unifyr-spec-kit specify init .
+uvx --from git+https://github.com/gawainclaridge/unifyr-spec-kit.git specify init .
 ```
 
 Pick script type explicitly (optional):
 
 ```bash
-uvx --from git+https://github.com/gawainclaridge/spec-kit.git@unifyr-spec-kit specify init <PROJECT_NAME> --script ps  # Force PowerShell
-uvx --from git+https://github.com/gawainclaridge/spec-kit.git@unifyr-spec-kit specify init <PROJECT_NAME> --script sh  # Force POSIX shell
+uvx --from git+https://github.com/gawainclaridge/unifyr-spec-kit.git specify init <PROJECT_NAME> --script ps  # Force PowerShell
+uvx --from git+https://github.com/gawainclaridge/unifyr-spec-kit.git specify init <PROJECT_NAME> --script sh  # Force POSIX shell
 ```
 
 ### Step 1b: Set Up Your Agent File (Recommended)
@@ -300,4 +300,4 @@ Use `/speckit.taskstoissues --jira PROJ` to create actual tickets and update pla
 
 - Read the [complete methodology](../spec-driven.md) for in-depth guidance
 - Check out [more examples](../templates) in the repository
-- Explore the [source code on GitHub](https://github.com/gawainclaridge/spec-kit)
+- Explore the [source code on GitHub](https://github.com/gawainclaridge/unifyr-spec-kit)
