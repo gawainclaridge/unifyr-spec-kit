@@ -79,6 +79,7 @@ This is **Stage 5 (Tasks)** - Implementation phase:
    - **Code quality**: Apply any constitution principles about code style, documentation, observability
    - **Architecture enforcement**: Follow the constitution's modularity and dependency direction decisions as you create files
    - If the constitution is silent on testing, default to: write tests alongside implementation (not deferred to a polish phase)
+   - **Execution verification is MANDATORY and independent of test-authoring timing**: Whatever the testing philosophy (test-first, test-alongside, or test-after), every unit of work MUST be verified against ground truth before it is marked complete — compile/build the affected code and run the relevant tests, linters, and static analysis. "Test-After" governs only WHEN new tests are authored; it never waives in-loop verification. Never mark a task `[X]` based on self-assessment (e.g., ticking a checklist item) when an executable check is available — a passing build/test run is the only acceptable evidence of completion.
 
 5. **Project Setup Verification**:
    - **REQUIRED**: Create/verify ignore files based on actual project setup:
@@ -135,7 +136,7 @@ This is **Stage 5 (Tasks)** - Implementation phase:
    - **Respect dependencies**: Run sequential tasks in order, parallel tasks [P] can run together
    - **Follow constitution's testing philosophy** (see step 4b): If TDD — execute test tasks before implementation. If test-alongside — write tests with each component. If test-after — complete implementation then test. If constitution is silent, write tests alongside.
    - **File-based coordination**: Tasks affecting the same files must run sequentially
-   - **Validation checkpoints**: Verify each phase completion before proceeding
+   - **Validation checkpoints (verify-and-iterate)**: At every task and phase boundary, run the project's verification commands and confirm they pass GREEN before proceeding (see the self-correction loop in step 9). Do not start a dependent task on a red build.
 
 8. Implementation execution rules:
    - **Setup first**: Initialize project structure, dependencies, configuration
@@ -146,7 +147,8 @@ This is **Stage 5 (Tasks)** - Implementation phase:
 
 9. Progress tracking and error handling:
    - Report progress after each completed task
-   - Halt execution if any non-parallel task fails
+   - **Verify-and-iterate (self-correction loop)**: After implementing each task — and at every phase boundary — run the project's verification commands: build/compile, the relevant test suite, and linters/static analysis. Discover the exact commands from plan.md's Technical Context, the constitution's quality gates, and the repo's build tooling (e.g., the build file, package scripts, CI config). If verification fails: read the actual error output, diagnose and fix the root cause, then re-run. Repeat up to a small bounded number of attempts (default: 3). Never mark a task `[X]` while its verification is red, and never start a dependent task on a red build.
+   - If a non-parallel task is still failing after the bounded self-correction attempts: halt, and report the failing command, its output, your diagnosis, and suggested next steps.
    - For parallel tasks [P], continue with successful tasks, report failed ones
    - Provide clear error messages with context for debugging
    - Suggest next steps if implementation cannot proceed
@@ -155,7 +157,7 @@ This is **Stage 5 (Tasks)** - Implementation phase:
 10. Completion validation:
     - Verify all required tasks are completed
     - Check that implemented features match the original specification
-    - Validate that tests pass and coverage meets constitution requirements (if coverage thresholds defined)
+    - **Run the full relevant verification suite (build, tests, linters/static analysis) and confirm it passes GREEN — this is required, not conditional.** Validate coverage against the constitution's threshold if one is defined. Do NOT report success on the basis of self-assessment, completed checklist items, or "should pass" reasoning — only an actual passing run counts as evidence of completion.
     - Confirm the implementation follows the technical plan and adheres to constitution principles
     - Report final status with summary of completed work and constitution compliance
 
