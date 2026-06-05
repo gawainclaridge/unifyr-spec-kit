@@ -19,13 +19,13 @@ This is **Stage 5 (Tasks)** - Implementation phase:
 - **Team**: Engineering only
 - **Prerequisites**:
   - tasks.md MUST exist (constitution was finalized in Stage 3, plan in Stage 4)
-  - constitution.md provides the testing philosophy, architectural decisions, and implementation principles that guide HOW tasks are executed
+  - the constitution provides architectural decisions, implementation principles, and test type/coverage emphasis that guide HOW tasks are executed. Test *timing* is fixed: strict TDD (red-green-refactor) is mandatory regardless of what the constitution, plan, or tasks say.
   - Recommended: Issue tickets created via `/speckit.taskstoissues`
 - **Output**: Implemented feature code
 
 ## Outline
 
-1. Run `{SCRIPT}` from repo root and parse FEATURE_DIR and AVAILABLE_DOCS list. All paths must be absolute. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
+1. Run `{SCRIPT}` from repo root and parse FEATURE_DIR, CONSTITUTION, and AVAILABLE_DOCS list. All paths must be absolute. `CONSTITUTION` is this work's constitution path (beside project.md when in a project, else in the feature dir). For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
 
 2. **Verify prerequisites**:
    - **Tasks required**: Verify tasks.md exists in FEATURE_DIR
@@ -65,21 +65,22 @@ This is **Stage 5 (Tasks)** - Implementation phase:
 4. Load and analyze the implementation context:
    - **REQUIRED**: Read tasks.md for the complete task list and execution plan
    - **REQUIRED**: Read plan.md for tech stack, architecture, and file structure
-   - **REQUIRED**: Read `/memory/constitution.md` for testing philosophy, architectural decisions, and implementation principles
+   - **REQUIRED**: Read the constitution at `CONSTITUTION` (from step 1) for architectural decisions, implementation principles, and test type/coverage emphasis. (Test *timing* is fixed: strict TDD is mandatory — see step 4b.)
    - **IF EXISTS**: Read data-model.md for entities and relationships
    - **IF EXISTS**: Read contracts/ for API specifications and test requirements
    - **IF EXISTS**: Read research.md for technical decisions and constraints
    - **IF EXISTS**: Read quickstart.md for integration scenarios
 
-4b. **Apply constitution to implementation approach**: The constitution's testing philosophy and implementation principles determine HOW tasks are executed — not just WHAT gets built. Before beginning execution:
-   - **Testing approach**: Read the constitution's testing decisions to determine:
-     - Whether to follow strict TDD (tests before code), test-alongside (tests with each component), or test-after
-     - Whether to prefer unit tests, integration tests, or a specific mix
-     - Coverage expectations and quality gates
-   - **Code quality**: Apply any constitution principles about code style, documentation, observability
-   - **Architecture enforcement**: Follow the constitution's modularity and dependency direction decisions as you create files
-   - If the constitution is silent on testing, default to: write tests alongside implementation (not deferred to a polish phase)
-   - **Execution verification is MANDATORY and independent of test-authoring timing**: Whatever the testing philosophy (test-first, test-alongside, or test-after), every unit of work MUST be verified against ground truth before it is marked complete — compile/build the affected code and run the relevant tests, linters, and static analysis. "Test-After" governs only WHEN new tests are authored; it never waives in-loop verification. Never mark a task `[X]` based on self-assessment (e.g., ticking a checklist item) when an executable check is available — a passing build/test run is the only acceptable evidence of completion.
+4b. **Strict TDD is MANDATORY — this is the implementation contract**: Regardless of anything the constitution, plan, or tasks.md say about test *timing*, every unit of behavior is built with the red-green-refactor cycle. The constitution is consulted only for test *types* (unit/integration/contract mix), mock-vs-real dependencies, coverage gates, and non-testing principles (code quality, architecture, observability) — never to weaken, defer, or skip test-first ordering.
+
+   For each unit of work (endpoint, model, service, branch of behavior), follow this cycle and do not skip steps:
+   - **RED**: Write the test(s) first and run them. Confirm they FAIL for the right reason (a genuine assertion/behavior failure, not a typo, missing import, or collection error). A test that passes immediately, or errors out before reaching its assertion, is not a valid RED — fix the test until it fails meaningfully. **Never write implementation code before a failing test exists.**
+   - **GREEN**: Write the minimum implementation needed to make the failing test(s) pass. Run the tests and confirm they now pass.
+   - **REFACTOR**: Clean up implementation and tests while keeping the suite green. Re-run after refactoring.
+   - **Reorder if needed**: If tasks.md sequenced an implementation task before its test task, reorder at execution time so the test is authored and failing first. Test-first ordering wins over any conflicting task sequence.
+   - **Code quality**: Apply the constitution's principles about code style, documentation, and observability.
+   - **Architecture enforcement**: Follow the constitution's modularity and dependency-direction decisions as you create files.
+   - **Execution verification is MANDATORY and layered on top of TDD**: Beyond the per-unit red-green-refactor cycle, every task and phase boundary MUST be verified against ground truth before it is marked complete — compile/build the affected code and run the relevant tests, linters, and static analysis. Never mark a task `[X]` based on self-assessment (e.g., ticking a checklist item) when an executable check is available — a passing build/test run (new tests observed RED then GREEN, and no previously-passing tests regressed) is the only acceptable evidence of completion.
 
 5. **Project Setup Verification**:
    - **REQUIRED**: Create/verify ignore files based on actual project setup:
@@ -134,15 +135,15 @@ This is **Stage 5 (Tasks)** - Implementation phase:
 7. Execute implementation following the task plan:
    - **Phase-by-phase execution**: Complete each phase before moving to the next
    - **Respect dependencies**: Run sequential tasks in order, parallel tasks [P] can run together
-   - **Follow constitution's testing philosophy** (see step 4b): If TDD — execute test tasks before implementation. If test-alongside — write tests with each component. If test-after — complete implementation then test. If constitution is silent, write tests alongside.
+   - **Strict TDD always** (see step 4b): execute the test task(s) for each unit before its implementation — confirm RED, implement to GREEN, then refactor. If the task list sequenced implementation before its tests, reorder so the failing test comes first.
    - **File-based coordination**: Tasks affecting the same files must run sequentially
    - **Validation checkpoints (verify-and-iterate)**: At every task and phase boundary, run the project's verification commands and confirm they pass GREEN before proceeding (see the self-correction loop in step 9). Do not start a dependent task on a red build.
 
 8. Implementation execution rules:
    - **Setup first**: Initialize project structure, dependencies, configuration
-   - **Tests per constitution**: Follow the testing approach determined in step 4b. If constitution mandates TDD, write tests before implementation for each component. If test-alongside, write tests with each component. Never defer all testing to a final phase.
-   - **Core development**: Implement models, services, CLI commands, endpoints — each with their tests as dictated by the testing approach
-   - **Integration work**: Database connections, middleware, logging, external services — with integration tests if constitution requires them
+   - **Tests first, always (strict TDD)**: For every component, write and run its failing test(s) before writing any implementation (see step 4b). Never defer testing to a later phase.
+   - **Core development**: Implement models, services, CLI commands, endpoints — each preceded by its failing test, then implemented to green
+   - **Integration work**: Database connections, middleware, logging, external services — with their integration tests written first (test type/emphasis per constitution)
    - **Polish and validation**: Performance optimization, documentation, final coverage check against constitution requirements
 
 9. Progress tracking and error handling:

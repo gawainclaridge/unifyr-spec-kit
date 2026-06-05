@@ -526,7 +526,7 @@ Optionally, establish your project's high-level architectural decisions using th
 /speckit.constitution Create principles focused on code quality, testing standards, user experience consistency, and performance requirements. Include governance for how these principles should guide technical decisions and implementation choices.
 ```
 
-This creates or updates the `.specify/memory/constitution.md` file with your project's foundational guidelines. The constitution is its own stage (Stage 3) and **must be finalized before** Stage 4 (Planning).
+This writes the constitution **beside your `project.md`** at `specs/project-<name>/constitution.md` (or, for a standalone feature, in the feature directory at `specs/<###-feature>/constitution.md`), seeded from the read-only `.specify/memory/constitution.md` template. The constitution is its own stage (Stage 3) and **must be finalized before** Stage 4 (Planning).
 
 At this stage, your project folder contents should resemble the following:
 

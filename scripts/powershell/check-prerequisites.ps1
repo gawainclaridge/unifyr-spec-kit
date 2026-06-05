@@ -59,8 +59,13 @@ EXAMPLES:
 # Get feature paths and validate branch
 $paths = Get-FeaturePathsEnv
 
-if (-not (Test-FeatureBranch -Branch $paths.CURRENT_BRANCH -HasGit:$paths.HAS_GIT)) { 
-    exit 1 
+# Skip strict feature-branch validation in paths-only mode (it performs no
+# prerequisite validation), so path resolution — including the constitution
+# path — also works on project-* and main branches.
+if (-not $PathsOnly) {
+    if (-not (Test-FeatureBranch -Branch $paths.CURRENT_BRANCH -HasGit:$paths.HAS_GIT)) {
+        exit 1
+    }
 }
 
 # If paths-only mode, output paths and exit (support combined -Json -PathsOnly)
@@ -73,6 +78,7 @@ if ($PathsOnly) {
             FEATURE_SPEC = $paths.FEATURE_SPEC
             IMPL_PLAN    = $paths.IMPL_PLAN
             TASKS        = $paths.TASKS
+            CONSTITUTION = $paths.CONSTITUTION
         } | ConvertTo-Json -Compress
     } else {
         Write-Output "REPO_ROOT: $($paths.REPO_ROOT)"
@@ -81,6 +87,7 @@ if ($PathsOnly) {
         Write-Output "FEATURE_SPEC: $($paths.FEATURE_SPEC)"
         Write-Output "IMPL_PLAN: $($paths.IMPL_PLAN)"
         Write-Output "TASKS: $($paths.TASKS)"
+        Write-Output "CONSTITUTION: $($paths.CONSTITUTION)"
     }
     exit 0
 }
@@ -127,13 +134,15 @@ if ($IncludeTasks -and (Test-Path $paths.TASKS)) {
 # Output results
 if ($Json) {
     # JSON output
-    [PSCustomObject]@{ 
+    [PSCustomObject]@{
         FEATURE_DIR = $paths.FEATURE_DIR
-        AVAILABLE_DOCS = $docs 
+        CONSTITUTION = $paths.CONSTITUTION
+        AVAILABLE_DOCS = $docs
     } | ConvertTo-Json -Compress
 } else {
     # Text output
     Write-Output "FEATURE_DIR:$($paths.FEATURE_DIR)"
+    Write-Output "CONSTITUTION:$($paths.CONSTITUTION)"
     Write-Output "AVAILABLE_DOCS:"
     
     # Show status of each potential document

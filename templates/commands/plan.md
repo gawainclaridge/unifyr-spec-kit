@@ -36,10 +36,10 @@ This is **Stage 4 (Planning)** of the Unifyr process:
 
 ## Outline
 
-1. **Setup**: Run `{SCRIPT}` from repo root and parse JSON for FEATURE_SPEC, IMPL_PLAN, SPECS_DIR, BRANCH. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
+1. **Setup**: Run `{SCRIPT}` from repo root and parse JSON for FEATURE_SPEC, IMPL_PLAN, SPECS_DIR, BRANCH, CONSTITUTION. `CONSTITUTION` is the absolute path to this work's constitution (beside project.md when in a project, else in the feature dir). For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
 
 2. **Verify prerequisites**:
-   - **Constitution finalized**: Check if `.specify/memory/constitution.md` exists and is finalized
+   - **Constitution finalized**: Check if the file at `CONSTITUTION` (from step 1) exists and is finalized
      - If found AND no remaining placeholder tokens (`[ALL_CAPS]`): proceed normally.
      - If found BUT has remaining placeholder tokens: WARN "Constitution exists but is incomplete (N placeholders remain). Would you like to complete it now with a quick Q&A? (yes/no)"
        - If yes: Execute **Phase -1** (see below).
@@ -65,12 +65,12 @@ This is **Stage 4 (Planning)** of the Unifyr process:
      - Plan MUST respect Shared Constraints
      - Plan SHOULD inherit Shared Tech Decisions unless spec explicitly overrides
 
-3. **Load context**: Read FEATURE_SPEC and `/memory/constitution.md`. Load IMPL_PLAN template (already copied).
+3. **Load context**: Read FEATURE_SPEC and the constitution at `CONSTITUTION`. Load IMPL_PLAN template (already copied).
 
 3b. **Apply constitution to plan decisions**: The constitution contains high-level architectural decisions and overarching implementation principles that MUST actively drive the plan — not just serve as a compliance gate. As you fill each plan section, use the constitution to:
    - **Technical Context**: Inherit technology choices, framework preferences, and constraints from the constitution. If the constitution specifies a testing philosophy (e.g., "TDD mandatory", "integration tests preferred over mocks"), reflect that in the Testing field. If it specifies storage decisions, reflect those in the Storage field.
    - **Project Structure**: Follow the constitution's architecture and modularity decisions (e.g., "Library-First", "microservices", "monolith") when choosing the project layout.
-   - **Testing Scenarios**: Align test design with the constitution's testing philosophy. If the constitution mandates integration-first testing, design integration scenarios. If it mandates TDD, structure tests accordingly.
+   - **Testing Scenarios**: Strict TDD is mandatory in this pipeline — design tests so they are authored and FAIL before implementation, and structure the plan so `/speckit.tasks` can order test tasks before their implementation tasks. Use the constitution only to choose test *types* and emphasis (integration-first vs unit-first, mock vs real dependencies, coverage gate) — never to defer or skip test-first ordering.
    - **Migration Plan**: Follow the constitution's versioning and migration decisions (e.g., "reversible migrations required", "API version coexistence period").
    - **Phase structure**: If the constitution defines observability or security requirements, ensure the plan includes tasks that address them.
 
@@ -118,12 +118,12 @@ This is **Stage 4 (Planning)** of the Unifyr process:
 
 This phase executes a condensed version of `/speckit.constitution` inline when no constitution exists or when it is incomplete. It enables planning to proceed without a separate command invocation. The resulting constitution provides architectural decisions and implementation principles that actively drive the plan — not just compliance gates.
 
-1. Load `/memory/constitution.md` template
+1. Load the seed template at `.specify/memory/constitution.md`
 2. **Codebase scan**: Scan repo root for technical signals across the 10-category taxonomy (Testing, Code Quality, Architecture, Observability, CI/CD, Security, Versioning, Simplicity, Migration, i18n). Classify each as Detected / Partial / No Signal.
 3. Present scan results table to user.
-4. **Q&A loop**: Ask up to 8 targeted questions (one at a time) following the same format as `/speckit.constitution` Step 3 (multiple-choice with recommended option, or short-answer with suggestion). Record answers in working memory. **Critical**: The Testing Philosophy question must surface the testing approach (TDD, test-alongside, or test-after), test type preference (unit, integration, contract), and coverage expectations — this decision directly determines how `/speckit.tasks` generates test tasks and how `/speckit.implement` executes them.
+4. **Q&A loop**: Ask up to 8 targeted questions (one at a time) following the same format as `/speckit.constitution` Step 3 (multiple-choice with recommended option, or short-answer with suggestion). Record answers in working memory. **Critical**: Strict TDD is mandatory and NON-NEGOTIABLE — do NOT ask whether to use TDD, test-alongside, or test-after. The testing question(s) may only cover test type preference (unit, integration, contract), mock vs real dependencies, and coverage expectations. Always retain the seed template's "Test-First Development (NON-NEGOTIABLE)" principle verbatim.
 5. **Free-text additions**: Prompt user for any additional principles.
-6. **Draft and write constitution**: Synthesize scan + Q&A + free-text into completed `/memory/constitution.md` with architectural decisions and implementation principles.
+6. **Draft and write constitution**: Synthesize scan + Q&A + free-text and write the completed constitution to the resolved `CONSTITUTION` path (beside project.md when in a project, else in the feature dir). Never overwrite the seed template at `.specify/memory/constitution.md`.
 7. **Add Sign-Off section** with Pending statuses.
 8. Report: "Constitution v1.0.0 created. Proceeding to planning..."
 9. Continue to Step 3 (Load context).

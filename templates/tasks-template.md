@@ -14,7 +14,7 @@ description: "Task list template for feature implementation"
 **Input**: Design documents from `/specs/[###-feature-name]/`
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
 
-**Tests**: The examples below include test tasks. Testing approach follows the constitution — if the constitution mandates TDD, tests come before implementation; if test-alongside, tests are written with each component. Only omit tests entirely if the constitution or user explicitly says no tests.
+**Tests**: Strict TDD is mandatory. Every test task is authored first and must FAIL before its implementation task (red-green-refactor); test tasks are always ordered before the implementation they cover. The constitution decides test *types* and coverage, not timing. Only omit tests entirely if the user explicitly says no tests for this feature.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 
@@ -104,9 +104,9 @@ Examples of foundational tasks (adjust based on your project):
 
 **Independent Test**: [How to verify this story works on its own]
 
-### Tests for User Story 1 (per constitution testing philosophy)
+### Tests for User Story 1 (strict TDD — write first, must FAIL)
 
-> **NOTE: If constitution mandates TDD, write these tests FIRST and ensure they FAIL before implementation. Otherwise, write alongside implementation.**
+> **NOTE: Strict TDD — write these tests FIRST and ensure they FAIL before writing any implementation (red-green-refactor).**
 
 - [ ] T010 [P] [US1] Contract test for [endpoint] in tests/contract/test_[name].py
 - [ ] T011 [P] [US1] Integration test for [user journey] in tests/integration/test_[name].py
@@ -130,7 +130,7 @@ Examples of foundational tasks (adjust based on your project):
 
 **Independent Test**: [How to verify this story works on its own]
 
-### Tests for User Story 2 (per constitution testing philosophy)
+### Tests for User Story 2 (strict TDD — write first, must FAIL)
 
 - [ ] T018 [P] [US2] Contract test for [endpoint] in tests/contract/test_[name].py
 - [ ] T019 [P] [US2] Integration test for [user journey] in tests/integration/test_[name].py
@@ -152,7 +152,7 @@ Examples of foundational tasks (adjust based on your project):
 
 **Independent Test**: [How to verify this story works on its own]
 
-### Tests for User Story 3 (per constitution testing philosophy)
+### Tests for User Story 3 (strict TDD — write first, must FAIL)
 
 - [ ] T024 [P] [US3] Contract test for [endpoint] in tests/contract/test_[name].py
 - [ ] T025 [P] [US3] Integration test for [user journey] in tests/integration/test_[name].py
@@ -223,7 +223,7 @@ Examples of foundational tasks (adjust based on your project):
 ## Parallel Example: User Story 1
 
 ```bash
-# Launch all tests for User Story 1 together (per constitution testing philosophy):
+# Launch all tests for User Story 1 together (strict TDD — write first, must FAIL):
 Task: "Contract test for [endpoint] in tests/contract/test_[name].py"
 Task: "Integration test for [user journey] in tests/integration/test_[name].py"
 

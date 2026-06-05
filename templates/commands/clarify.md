@@ -40,6 +40,7 @@ Execution steps:
 1. Run `{SCRIPT}` from repo root **once** (combined `--json --paths-only` mode / `-Json -PathsOnly`). Parse minimal JSON payload fields:
    - `FEATURE_DIR`
    - `FEATURE_SPEC`
+   - `CONSTITUTION` (absolute path to the constitution for this work — beside project.md when in a project, else in the feature dir)
    - (Optionally capture `IMPL_PLAN`, `TASKS` for future chained flows.)
    - If JSON parsing fails, abort and instruct user to re-run `/speckit.specify` or verify feature branch environment.
    - For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
@@ -147,7 +148,7 @@ Execution steps:
 
     **Example-led question format** (for unfamiliar topics like observability where the team is new to the domain): rather than asking blank-slate questions ("name your telemetry events"), generate concrete examples derived from THIS feature's domain and ask the team to react. Treat "we don't need this bucket" — or "we don't need this section at all" — as valid, encouraged answers when justified.
 
-    Before generating the table, **load the constitution** (`/memory/constitution.md`) and read its observability principle (often PRINCIPLE_4 or PRINCIPLE_5) to learn the project-wide conventions (event naming style, required log fields, PII rules). Apply those conventions when generating examples; do NOT re-propose conventions already in the constitution.
+    Before generating the table, **load the constitution** (the `CONSTITUTION` path from step 1; skip if the file does not exist yet) and read its observability principle (often PRINCIPLE_4 or PRINCIPLE_5) to learn the project-wide conventions (event naming style, required log fields, PII rules). Apply those conventions when generating examples; do NOT re-propose conventions already in the constitution.
 
     Observability question template — generate buckets specific to the feature being specified, not generic boilerplate. Only include buckets where a feature-specific item is plausible; omit buckets that are unlikely to apply for this feature type:
 

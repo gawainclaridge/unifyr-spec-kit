@@ -25,7 +25,9 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ## Outline
 
-You are creating or updating the project constitution at `/memory/constitution.md`. The constitution captures **high-level architectural decisions and overarching implementation principles** that directly drive how `/speckit.plan` structures the implementation and how `/speckit.implement` executes it. It goes beyond the agent file (which captures universal product truths) to capture initiative-specific engineering guidance. This file is a TEMPLATE containing placeholder tokens in square brackets (e.g. `[PROJECT_NAME]`, `[PRINCIPLE_1_NAME]`). Your job is to (a) scan the codebase for existing architectural patterns and implementation conventions, (b) run an interactive Q&A to surface decisions and principles that haven't been established yet, (c) draft the constitution as a set of concrete decisions and principles, and (d) propagate amendments across dependent artifacts.
+You are creating or updating the project constitution. The constitution is stored **beside `project.md`** at `specs/project-<name>/constitution.md` when the work is part of a project; for a standalone feature it lives in the feature directory at `specs/<###-feature>/constitution.md`. The exact target path is resolved for you by the setup script and exposed as the `CONSTITUTION` field (see step 1) — never hardcode it. New constitutions are seeded from the read-only template at `.specify/memory/constitution.md`, which is never overwritten.
+
+The constitution captures **high-level architectural decisions and overarching implementation principles** that directly drive how `/speckit.plan` structures the implementation and how `/speckit.implement` executes it. It goes beyond the agent file (which captures universal product truths) to capture initiative-specific engineering guidance. The seed template contains placeholder tokens in square brackets (e.g. `[PROJECT_NAME]`, `[PRINCIPLE_1_NAME]`). Your job is to (a) scan the codebase for existing architectural patterns and implementation conventions, (b) run an interactive Q&A to surface decisions and principles that haven't been established yet, (c) draft the constitution as a set of concrete decisions and principles, and (d) propagate amendments across dependent artifacts.
 
 ### Workflow Context (Unifyr Process)
 
@@ -64,8 +66,11 @@ The constitution includes:
 
 Follow this execution flow:
 
-1. **Load template**: Load the existing constitution template at `/memory/constitution.md`.
+1. **Resolve target path and load base content**: Run `{SCRIPT}` from repo root and parse its output for `CONSTITUTION` (the absolute path this constitution will be written to) and `REPO_ROOT`. All paths must be absolute. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
+   - **If the file at `CONSTITUTION` already exists**: load it — you are AMENDING an existing constitution. Preserve prior decisions, version history, and sign-offs unless this run changes them.
+   - **Otherwise** (new constitution): load the read-only seed template at `.specify/memory/constitution.md` as the starting structure, then write the result to `CONSTITUTION`.
    - Identify every placeholder token of the form `[ALL_CAPS_IDENTIFIER]`.
+   - **Location reminder**: `CONSTITUTION` resolves to `specs/project-<name>/constitution.md` (beside project.md) when the work is part of a project, or `specs/<###-feature>/constitution.md` for a standalone feature. The seed template at `.specify/memory/constitution.md` is never overwritten.
    **IMPORTANT**: The user might require less or more principles than the ones used in the template. If a number is specified, respect that - follow the general template. You will update the doc accordingly.
 
 2. **Codebase scan**: Scan the repository root for existing architectural patterns, implementation conventions, and technical decisions across 10 categories. The goal is to understand what architectural decisions and implementation principles have **already been established** (implicitly or explicitly) so the Q&A can focus on gaps. For each category, check for the listed file patterns and classify as **Detected** (strong signals found, can draft an architectural decision), **Partial** (some signals but the decision isn't clear), or **No Signal** (no decision evident, need to ask).
@@ -107,13 +112,14 @@ Follow this execution flow:
    - Rank by `Impact * Uncertainty` (Testing > Security > Architecture > CI/CD > Quality > Migration > i18n > Observability > Versioning > Simplicity as default priority, adjustable by context).
    - Select top **8** questions maximum. If more remain, defer lowest-priority to "Deferred" with rationale.
 
-   **Critical: Testing Philosophy question guidance** — The Testing Philosophy decision directly determines how `/speckit.tasks` generates test tasks (before, alongside, or after implementation) and how `/speckit.implement` executes them. The question for this category MUST surface these specific decisions:
-   - **Testing approach**: TDD (tests before code), test-alongside (tests written with each component), or test-after
+   **Critical: Testing Philosophy is FIXED — strict TDD is mandatory and NON-NEGOTIABLE.** This fork enforces strict Test-Driven Development across the entire pipeline: `/speckit.tasks` always orders test tasks before their implementation tasks, and `/speckit.implement` always follows red-green-refactor (write failing tests → confirm RED → implement to GREEN → refactor). **Do NOT ask the user whether to use TDD, test-alongside, or test-after — the test-timing decision is already made.** Every constitution MUST carry a "Test-First Development (NON-NEGOTIABLE)" principle stating this; the seed template already includes it as a fixed principle, so retain it verbatim (do not turn it back into an open question).
+
+   The testing question(s) you DO ask cover only the dimensions that remain open *within* strict TDD:
    - **Test type preference**: Unit tests, integration tests, contract tests, or a specific mix
    - **Mock vs real dependencies**: Mock-heavy isolation or real-dependency testing (testcontainers, docker-compose)
    - **Coverage expectations**: Specific thresholds or qualitative gates (e.g., "80% line coverage", "all public APIs tested")
 
-   If the scan detected tooling but not approach (e.g., jest config exists but no TDD enforcement), the question should confirm the approach, not the tooling. Example question: "What testing approach should the constitution enforce?" with options like "A: Strict TDD — tests written before implementation, must fail first", "B: Test-alongside — tests written with each component during implementation", "C: Integration-first — focus on integration/contract tests, minimal unit tests", "D: Test-after — implementation first, tests added after features work".
+   If the scan detected test tooling, confirm the test-type/mocking/coverage choices above — never re-open the test-timing decision. Example question: "Within our mandatory TDD workflow, what should tests emphasise?" with options like "A: Integration-first — real dependencies, contract tests before unit tests", "B: Unit-first — fast isolated unit tests with mocks, integration tests for critical paths", "C: Balanced mix with an explicit coverage gate".
 
    **3b. Sequential questioning** (interactive, EXACTLY ONE question at a time):
 
@@ -206,7 +212,7 @@ Follow this execution flow:
    - Dates ISO format YYYY-MM-DD.
    - Principles are declarative, testable, and free of vague language ("should" → replace with MUST/SHOULD rationale where appropriate).
 
-8. **Write** the completed constitution back to `/memory/constitution.md` (overwrite).
+8. **Write** the completed constitution to the resolved `CONSTITUTION` path (overwrite). Create the parent directory if it does not yet exist. **Never write to the seed template at `.specify/memory/constitution.md`** — it stays pristine so future constitutions can be seeded from it.
 
 9. **Add Sign-Off section** (if not present) to track team approvals:
 
@@ -243,4 +249,4 @@ If the user supplies partial updates (e.g., only one principle revision), still 
 
 If critical info missing (e.g., ratification date truly unknown), insert `TODO(<FIELD_NAME>): explanation` and include in the Sync Impact Report under deferred items.
 
-Do not create a new template; always operate on the existing `/memory/constitution.md` file.
+Do not create a new template; always write to the resolved `CONSTITUTION` path. The seed template at `.specify/memory/constitution.md` is read-only — copy from it when creating a new constitution, but never overwrite it.
