@@ -14,6 +14,11 @@
     },
     "MD033": false,
     "MD041": false,
+    // Command-prompt files use sub-step numbering (e.g. 4a/4b) and deeply-indented
+    // step content, which these rules misread as bad ordered-list prefixes / indented
+    // code blocks. Disabled repo-wide so the structured prompts lint cleanly.
+    "MD029": false,
+    "MD046": false,
     "MD049": {
       "style": "asterisk"
     },

@@ -154,25 +154,29 @@ directories captured above]
 
 <!--
   Define testing scenarios for each unit of work.
-  QA should review and extend these during Stage 4 (Planning).
-  These scenarios inform the task breakdown in /speckit.tasks.
+  Strict TDD is mandatory: these scenarios become test tasks that are authored first and must
+  FAIL before implementation. QA should review and extend these during Stage 4 (Planning).
+  These scenarios inform the task breakdown in /speckit.tasks (tests ordered before implementation).
 -->
 
 ### User Story 1: [Title from spec]
 
 **Happy Path Tests:**
+
 1. **Scenario**: [Description]
    - **Given**: [Precondition]
    - **When**: [Action]
    - **Then**: [Expected result]
 
 **Edge Case Tests:**
+
 1. **Scenario**: [Description]
    - **Given**: [Edge condition]
    - **When**: [Action]
    - **Then**: [Expected handling]
 
 **Error Handling Tests:**
+
 1. **Scenario**: [Description]
    - **Given**: [Error condition]
    - **When**: [Action]

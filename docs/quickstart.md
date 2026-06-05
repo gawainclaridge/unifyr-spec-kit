@@ -5,6 +5,8 @@ This guide will help you get started with Spec-Driven Development using Unifyr S
 > [!NOTE]
 > **Fork of Spec Kit** — Unifyr Spec Kit is a fork of [GitHub's Spec Kit](https://github.com/github/spec-kit), tailored to Unifyr's agile scrum processes. Key additions include a 5-stage process with team ownership, multi-feature project support, Jira integration with Fibonacci story points, per-story task files for parallel sprint work, interactive constitution Q&A before planning, and mid-flight change guidance. See the [README](../README.md) for a full comparison table.
 
+<!-- -->
+
 > [!NOTE]
 > All automation scripts now provide both Bash (`.sh`) and PowerShell (`.ps1`) variants. The `specify` CLI auto-selects based on OS unless you pass `--script sh|ps`.
 
@@ -47,6 +49,7 @@ uvx --from git+https://github.com/gawainclaridge/spec-kit.git@unifyr-spec-kit sp
 Your agent file (e.g., `CLAUDE.md` for Claude Code) should contain your **product-level architecture** and universal engineering truths. This is the permanent, high-level "who we are as a product" document that rarely changes.
 
 Think of it as the product's architectural identity:
+
 - "We use a microservices architecture deployed on AWS"
 - "All APIs follow REST conventions with OpenAPI specs"
 - "We use PostgreSQL for persistent storage"
@@ -269,6 +272,7 @@ specs/
 ```
 
 The `project.md` file contains:
+
 - **Out of Scope**: Project-level exclusions shared across all features
 - **Shared Constraints**: Technical and business constraints
 - **Features Table**: Links to all specs in the project

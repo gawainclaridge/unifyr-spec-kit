@@ -31,6 +31,7 @@ The text the user typed after `/speckit.specify` in the triggering message **is*
 ### Argument Parsing
 
 Check for optional flags in the user input:
+
 - `--project <name>`: Add this spec to an existing project branch (multi-spec mode)
   - Example: `/speckit.specify --project taskify Add user authentication`
   - If project branch doesn't exist, suggest running `/speckit.project taskify` first
@@ -38,11 +39,12 @@ Check for optional flags in the user input:
 Given that feature description, do this:
 
 1. **Check for constitution** (optional but recommended):
-   - Check if `.specify/memory/constitution.md` exists
-   - If NOT found:
-     - Display warning: "Constitution not found. Consider creating one with /speckit.constitution before planning."
-     - Continue with specification creation (do NOT block)
-   - If found: Note principles for spec alignment
+   - The constitution lives beside project.md at `specs/project-<name>/constitution.md` when using `--project`, otherwise in the feature dir at `<FEATURE_DIR>/constitution.md`. (It is normally created later, in Stage 3 via `/speckit.constitution`.)
+   - Check whether that file exists:
+     - If NOT found:
+       - Display warning: "Constitution not found. Consider creating one with /speckit.constitution before planning."
+       - Continue with specification creation (do NOT block)
+     - If found: Note principles for spec alignment
 
 2. **If `--project` flag provided**:
    - Check if project branch `project-<name>` exists

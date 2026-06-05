@@ -17,6 +17,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 ### Workflow Context (Unifyr Process)
 
 This is **Stage 5 (Tasks)** - Issue Creation phase:
+
 - **Team**: Engineering only
 - **Prerequisites**: tasks.md MUST exist
 - **Output**: GitHub issues or Jira tickets (Epic → Story → Sub-task)
@@ -27,6 +28,7 @@ This is **Stage 5 (Tasks)** - Issue Creation phase:
 ### Argument Parsing
 
 Check for optional flags in the user input:
+
 - `--jira <PROJECT-KEY>`: Create Jira tickets instead of GitHub issues
   - Example: `/speckit.taskstoissues --jira PROJ`
 - `--github` (default): Create GitHub issues
@@ -42,6 +44,7 @@ Check for optional flags in the user input:
 
    **If `--github` flag or no flag (default)**:
    - Get the Git remote by running:
+
      ```bash
      git config --get remote.origin.url
      ```
@@ -183,6 +186,7 @@ Epic (Feature)
 ### Required Information
 
 For Jira integration, you need:
+
 - Project key (provided via `--jira <KEY>`)
 - Jira instance URL (from environment or user input)
 

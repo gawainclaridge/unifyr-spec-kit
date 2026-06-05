@@ -28,6 +28,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 ### Workflow Context (Unifyr Process)
 
 This is **Stage 5 (Tasks)** of the Unifyr process:
+
 - **Team**: Engineering only
 - **Prerequisites**:
   - plan.md MUST exist (constitution was finalized in Stage 3, plan created in Stage 4)
@@ -40,23 +41,26 @@ This is **Stage 5 (Tasks)** of the Unifyr process:
 ### Argument Parsing
 
 Check for optional flags in the user input:
+
 - `--per-story`: Generate separate task files per user story (Unifyr-style)
   - Creates `tasks.md` (master index) + `tasks-us1.md`, `tasks-us2.md`, etc.
   - Each per-story file links to a Jira story ticket
 - Default (no flag): Single `tasks.md` file with all tasks organized by story internally
 
-1. **Setup**: Run `{SCRIPT}` from repo root and parse FEATURE_DIR and AVAILABLE_DOCS list. All paths must be absolute. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
+1. **Setup**: Run `{SCRIPT}` from repo root and parse FEATURE_DIR, CONSTITUTION, and AVAILABLE_DOCS list. All paths must be absolute. `CONSTITUTION` is this work's constitution path (beside project.md when in a project, else in the feature dir). For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
 
    **Check for config**: Read `.speckit/config.yaml` if exists for `tasks.format` setting:
+
    ```yaml
    tasks:
      format: single  # or "per-story"
    ```
+
    The `--per-story` flag overrides config.
 
 2. **Load design documents**: Read from FEATURE_DIR:
    - **Required**: plan.md (tech stack, libraries, structure), spec.md (user stories with priorities)
-   - **Required**: `/memory/constitution.md` (testing philosophy, implementation principles — determines whether and how test tasks are generated)
+   - **Required**: the constitution at `CONSTITUTION` (from step 1) — implementation principles, test type/coverage emphasis. (Test *timing* is fixed: strict TDD is mandatory, so test tasks are always generated before their implementation tasks.)
    - **Optional**: data-model.md (entities), contracts/ (API endpoints), research.md (decisions), quickstart.md (test scenarios)
    - **Check for project context**: Determine if feature is part of a project
      - Check if current directory is under `specs/project-<name>/`
@@ -89,7 +93,7 @@ Check for optional flags in the user input:
    - Phase 1: Setup tasks (project initialization)
    - Phase 2: Foundational tasks (blocking prerequisites for all user stories)
    - Phase 3+: One phase per user story (in priority order from spec.md)
-   - Each phase includes: story goal, independent test criteria, tests (per constitution's testing philosophy), implementation tasks
+   - Each phase includes: story goal, independent test criteria, tests (strict TDD — authored first and must FAIL before implementation), implementation tasks
    - Final Phase: Polish & cross-cutting concerns
    - All tasks must follow the strict checklist format (see Task Generation Rules below)
    - Clear file paths for each task
@@ -129,7 +133,7 @@ The tasks.md should be immediately executable - each task must be specific enoug
 
 **CRITICAL**: Tasks MUST be organized by user story to enable independent implementation and testing.
 
-**Testing approach follows the constitution**: Read `/memory/constitution.md` to determine the testing philosophy. If the constitution mandates TDD, generate test tasks ordered BEFORE their corresponding implementation tasks. If the constitution specifies integration-first testing, generate integration test tasks. If the constitution is silent on testing, generate test tasks alongside implementation (not deferred). Only omit test tasks entirely if the constitution explicitly states no tests are required OR the user explicitly says to skip tests.
+**Strict TDD is mandatory — test tasks ALWAYS come before their implementation tasks.** Test *timing* is not a constitution choice: every implementation task must be preceded by a test task that is authored first and expected to FAIL before the implementation makes it pass (red-green-refactor). Read the constitution at `CONSTITUTION` only to choose test *types* and emphasis (integration-first vs unit-first, mock vs real dependencies, coverage gate) — never to defer, reorder, or skip test-first ordering. Only omit test tasks entirely if the user explicitly says to skip tests for this feature; if they do, warn that this overrides the mandatory-TDD principle.
 
 ### Checklist Format (REQUIRED)
 
@@ -171,12 +175,12 @@ Every task MUST strictly follow this format:
      - Models needed for that story
      - Services needed for that story
      - Endpoints/UI needed for that story
-     - Tests for that story (per constitution's testing philosophy — TDD, test-alongside, or omit only if constitution/user explicitly says no tests)
+     - Tests for that story (strict TDD — test tasks authored first and ordered before implementation; omit only if the user explicitly says no tests)
    - Mark story dependencies (most stories should be independent)
 
 2. **From Contracts**:
    - Map each contract/endpoint → to the user story it serves
-   - If constitution mandates testing: Each contract → contract test task [P] before or alongside implementation in that story's phase (per constitution's testing philosophy)
+   - Each contract → a contract test task [P] ordered BEFORE its implementation task in that story's phase (strict TDD — the contract test must fail first)
 
 3. **From Data Model**:
    - Map each entity to the user story(ies) that need it
@@ -190,10 +194,9 @@ Every task MUST strictly follow this format:
 
 ### Phase Structure
 
-- **Phase 1**: Setup (project initialization, test framework setup if constitution requires testing)
+- **Phase 1**: Setup (project initialization, test framework setup — always required since TDD is mandatory)
 - **Phase 2**: Foundational (blocking prerequisites - MUST complete before user stories)
 - **Phase 3+**: User Stories in priority order (P1, P2, P3...)
-  - If constitution mandates TDD: Tests → Models → Services → Endpoints → Integration
-  - If constitution is silent or test-alongside: Models (with tests) → Services (with tests) → Endpoints → Integration
+  - Strict TDD ordering (mandatory): Tests (written first, must FAIL) → Models → Services → Endpoints → Integration
   - Each phase should be a complete, independently testable increment
 - **Final Phase**: Polish & Cross-Cutting Concerns (NOT where tests go — tests belong with their implementation phase)

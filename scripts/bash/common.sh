@@ -83,6 +83,41 @@ check_feature_branch() {
 
 get_feature_dir() { echo "$1/specs/$2"; }
 
+# Resolve the constitution file path.
+# The constitution lives beside project.md when the work is part of a project
+# (specs/project-<name>/constitution.md); otherwise it lives in the feature
+# directory (specs/<###-feature>/constitution.md). The seed template that new
+# constitutions are created from stays at .specify/memory/constitution.md.
+get_constitution_file() {
+    local repo_root="$1"
+    local feature_dir="$2"
+    local current_branch="$3"
+
+    # 1) On a project branch -> the project directory holds the constitution
+    if [[ "$current_branch" == project-* ]]; then
+        echo "$repo_root/specs/$current_branch/constitution.md"
+        return
+    fi
+
+    # 2) Feature directory nested under a project directory -> use the project dir
+    local parent_dir parent_base
+    parent_dir="$(dirname "$feature_dir")"
+    parent_base="$(basename "$parent_dir")"
+    if [[ "$parent_base" == project-* ]]; then
+        echo "$parent_dir/constitution.md"
+        return
+    fi
+
+    # 3) SPECIFY_PROJECT env var set -> the named project directory
+    if [[ -n "${SPECIFY_PROJECT:-}" ]]; then
+        echo "$repo_root/specs/project-${SPECIFY_PROJECT}/constitution.md"
+        return
+    fi
+
+    # 4) Standalone feature -> the feature directory holds the constitution
+    echo "$feature_dir/constitution.md"
+}
+
 # Find feature directory by numeric prefix instead of exact branch match
 # This allows multiple branches to work on the same spec (e.g., 004-fix-bug, 004-add-feature)
 find_feature_dir_by_prefix() {
@@ -135,6 +170,7 @@ get_feature_paths() {
 
     # Use prefix-based lookup to support multiple branches per spec
     local feature_dir=$(find_feature_dir_by_prefix "$repo_root" "$current_branch")
+    local constitution_file=$(get_constitution_file "$repo_root" "$feature_dir" "$current_branch")
 
     cat <<EOF
 REPO_ROOT='$repo_root'
@@ -148,6 +184,7 @@ RESEARCH='$feature_dir/research.md'
 DATA_MODEL='$feature_dir/data-model.md'
 QUICKSTART='$feature_dir/quickstart.md'
 CONTRACTS_DIR='$feature_dir/contracts'
+CONSTITUTION='$constitution_file'
 EOF
 }
 

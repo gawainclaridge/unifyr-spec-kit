@@ -23,6 +23,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 ### Workflow Context (Unifyr Process)
 
 This is **Stage 1 (Specification)** of the Unifyr process:
+
 - **Team**: Product
 - **Purpose**: Create universal constraints and shared context that bound all feature specifications in a multi-feature project
 - **Prerequisites**: None
@@ -36,6 +37,7 @@ This command creates or manages a project.md file for multi-feature projects. A 
 ### When to Use Projects
 
 Use projects when:
+
 - Multiple features share significant context (target users, constraints, tech decisions)
 - Features are part of a larger initiative (e.g., "Taskify Platform")
 - You want to avoid repeating shared information in each spec.md
@@ -43,6 +45,7 @@ Use projects when:
 ### Argument Parsing
 
 The first argument is the project name:
+
 - `/speckit.project taskify` - Create or manage the "taskify" project
 - `/speckit.project taskify --list` - List all specs in the project
 - `/speckit.project taskify --add-spec` - Add current spec to the project
@@ -144,10 +147,12 @@ Project.md provides **universal constraints** that bound all specifications. Fea
 ### Jira Integration
 
 Projects map to Jira Epics:
+
 - Project → Epic
 - Feature specs → Stories under the Epic
 - Tasks → Sub-tasks under Stories
 
 Update Jira Integration section with:
+
 - Jira Project key
 - Epic key (once created)

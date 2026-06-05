@@ -8,6 +8,23 @@
 
 ## Core Architectural Decisions
 
+### Test-First Development (NON-NEGOTIABLE)
+<!-- FIXED PRINCIPLE: This fork enforces strict TDD pipeline-wide. Keep this principle in
+     every constitution verbatim. /speckit.constitution must NOT turn it back into a Q&A choice. -->
+Strict Test-Driven Development is mandatory across this initiative and is not subject to the
+constitution Q&A:
+
+- Every unit of behavior is built **red-green-refactor**: write a failing test first, confirm it
+  FAILS for the right reason, write the minimum code to make it pass, then refactor with the suite
+  green.
+- `/speckit.tasks` MUST order test tasks before their implementation tasks. `/speckit.implement`
+  MUST author and run the failing test before writing implementation, and reorder any task list
+  that violates this.
+- No implementation code is written before a failing test exists. A task is "done" only when its
+  tests were observed RED then GREEN and the build / lint / static-analysis checks pass.
+- The remaining testing choices (test types & mix, mock vs real dependencies, coverage gate) are
+  captured in the principles below, but they may never weaken or defer this test-first ordering.
+
 ### [PRINCIPLE_1_NAME]
 <!-- Example: I. Library-First Architecture -->
 [PRINCIPLE_1_DESCRIPTION]
@@ -19,14 +36,14 @@
 <!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats; This ensures observability and testability across all components -->
 
 ### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First Development (NON-NEGOTIABLE) -->
+<!-- Example: III. Code Quality & Standards -->
 [PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced; /speckit.plan must order test tasks before implementation tasks -->
+<!-- Example: Lint + format gates enforced in CI; type checking required; no merge on failing quality gates -->
 
 ### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration-First Testing Strategy -->
+<!-- Example: IV. Testing Emphasis (test TYPES & coverage — test TIMING is fixed by the Test-First principle above) -->
 [PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Prefer real databases over mocks; Contract tests mandatory before implementation; Focus areas: library contracts, inter-service communication, shared schemas -->
+<!-- Example: Integration-first — prefer real databases over mocks; contract tests for all public APIs; 80% line coverage gate; unit tests for pure logic -->
 
 ### [PRINCIPLE_5_NAME]
 <!-- Example: V. Simplicity Constraints / VI. Versioning Strategy / VII. Observability & Telemetry Conventions -->
@@ -48,7 +65,6 @@
       warrants a new one.
     - SLOs and alert thresholds: managed in the regression process, not in feature specs.
 -->
-
 
 ## [SECTION_2_NAME]
 <!-- Example: Technical Constraints, Security Architecture, Migration Strategy, etc. -->

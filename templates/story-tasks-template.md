@@ -40,6 +40,7 @@
 ## Prerequisites
 
 **Required Before Starting:**
+
 - [ ] Foundational phase complete (from main tasks.md)
 - [ ] [Any story-specific prerequisites]
 
@@ -51,9 +52,9 @@
 
 <!--
   Tests from plan.md Testing Scenarios for this user story.
-  Testing approach follows the constitution: If TDD, write tests FIRST and ensure
-  they FAIL before implementation. If test-alongside, write tests with each component.
-  Only omit tests if constitution or user explicitly says no tests.
+  Strict TDD is mandatory: write these tests FIRST and ensure they FAIL before any
+  implementation (red-green-refactor). Test tasks are always ordered before the
+  implementation they cover. Only omit tests if the user explicitly says no tests.
 -->
 
 - [ ] T001 [P] Contract test: [scenario] in tests/contract/[file]
