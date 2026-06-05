@@ -31,6 +31,7 @@ The text the user typed after `/speckit.specify` in the triggering message **is*
 ### Argument Parsing
 
 Check for optional flags in the user input:
+
 - `--project <name>`: Add this spec to an existing project branch (multi-spec mode)
   - Example: `/speckit.specify --project taskify Add user authentication`
   - If project branch doesn't exist, suggest running `/speckit.project taskify` first

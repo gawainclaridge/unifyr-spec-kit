@@ -290,6 +290,7 @@ specs/[###-feature]/
 ```
 
 Each per-story file can be independently:
+
 - Linked to a specific Jira story ticket
 - Assigned to different team members
 - Tracked for completion status

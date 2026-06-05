@@ -770,6 +770,7 @@ The generated tasks.md provides a clear roadmap for the `/speckit.implement` com
 ```
 
 This creates:
+
 - `tasks.md` - Master index with setup and foundational phases
 - `tasks-us1.md`, `tasks-us2.md`, etc. - Individual story task files
 
@@ -834,6 +835,7 @@ Requirements change. Here's how to handle changes gracefully without losing mome
 If you've iterated more than 3-4 times on small fixes at the implementation level without resolving the issue, **stop patching and restart from the upstream artifact** (plan.md or spec.md). Continued patching compounds drift between what was specified and what gets built.
 
 Signs you need to restart from upstream:
+
 - Fixes keep introducing new issues
 - The implementation no longer resembles the plan
 - You're working around the architecture rather than with it

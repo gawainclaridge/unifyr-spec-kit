@@ -162,18 +162,21 @@ directories captured above]
 ### User Story 1: [Title from spec]
 
 **Happy Path Tests:**
+
 1. **Scenario**: [Description]
    - **Given**: [Precondition]
    - **When**: [Action]
    - **Then**: [Expected result]
 
 **Edge Case Tests:**
+
 1. **Scenario**: [Description]
    - **Given**: [Edge condition]
    - **When**: [Action]
    - **Then**: [Expected handling]
 
 **Error Handling Tests:**
+
 1. **Scenario**: [Description]
    - **Given**: [Error condition]
    - **When**: [Action]

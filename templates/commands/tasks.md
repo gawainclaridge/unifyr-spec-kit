@@ -28,6 +28,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 ### Workflow Context (Unifyr Process)
 
 This is **Stage 5 (Tasks)** of the Unifyr process:
+
 - **Team**: Engineering only
 - **Prerequisites**:
   - plan.md MUST exist (constitution was finalized in Stage 3, plan created in Stage 4)
@@ -40,6 +41,7 @@ This is **Stage 5 (Tasks)** of the Unifyr process:
 ### Argument Parsing
 
 Check for optional flags in the user input:
+
 - `--per-story`: Generate separate task files per user story (Unifyr-style)
   - Creates `tasks.md` (master index) + `tasks-us1.md`, `tasks-us2.md`, etc.
   - Each per-story file links to a Jira story ticket
@@ -48,10 +50,12 @@ Check for optional flags in the user input:
 1. **Setup**: Run `{SCRIPT}` from repo root and parse FEATURE_DIR, CONSTITUTION, and AVAILABLE_DOCS list. All paths must be absolute. `CONSTITUTION` is this work's constitution path (beside project.md when in a project, else in the feature dir). For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
 
    **Check for config**: Read `.speckit/config.yaml` if exists for `tasks.format` setting:
+
    ```yaml
    tasks:
      format: single  # or "per-story"
    ```
+
    The `--per-story` flag overrides config.
 
 2. **Load design documents**: Read from FEATURE_DIR:

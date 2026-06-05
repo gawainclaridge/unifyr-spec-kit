@@ -32,6 +32,7 @@ The constitution captures **high-level architectural decisions and overarching i
 ### Workflow Context (Unifyr Process)
 
 This is **Stage 3 (Constitution)** of the Unifyr process:
+
 - **Team**: Engineering
 - **Prerequisites**: spec.md from Stage 1, ideally clarified in Stage 2
 - **Output**: Finalized constitution.md with high-level architectural decisions and overarching implementation principles that drive planning and implementation
@@ -51,12 +52,14 @@ The constitution captures **high-level architectural decisions and overarching i
 | **Changes** | Per initiative, updated as principles evolve | Rarely, auto-regenerated from plans | Stable after creation |
 
 **Key distinctions**:
+
 - The **agent file** captures universal product architecture that rarely changes (e.g., "We deploy to AWS", "All APIs are REST"). The constitution captures initiative-specific **architectural decisions AND overarching implementation principles** that go beyond those universals to directly shape planning and implementation (e.g., "Library-First architecture", "TDD mandatory", "Integration tests preferred over mocks", "All APIs versioned", "Microservices with event-driven communication").
 - **Project.md** captures universal constraints that bound what specifications can include (out-of-scope exclusions, shared constraints, feature list). It is Product-managed and constrains the WHAT. The constitution captures the engineering HOW — the big decisions and principles that `/speckit.plan` translates into concrete technology choices, testing strategy, and phase structure.
 
 **Preparation guidance**: Before drafting a constitution, clean up existing repo documentation first. Document YOUR architectural decisions, not generic best practices. Focus on the big decisions that will directly constrain what `/speckit.plan` generates.
 
 The constitution includes:
+
 - High-level architectural decisions (e.g., monolith vs microservices, module boundaries, API patterns)
 - Overarching implementation principles that go beyond the agent file (e.g., testing philosophy, code quality approach, observability strategy)
 - Non-negotiable technical constraints and rules

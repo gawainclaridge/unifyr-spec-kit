@@ -13,6 +13,7 @@
      every constitution verbatim. /speckit.constitution must NOT turn it back into a Q&A choice. -->
 Strict Test-Driven Development is mandatory across this initiative and is not subject to the
 constitution Q&A:
+
 - Every unit of behavior is built **red-green-refactor**: write a failing test first, confirm it
   FAILS for the right reason, write the minimum code to make it pass, then refactor with the suite
   green.
@@ -64,7 +65,6 @@ constitution Q&A:
       warrants a new one.
     - SLOs and alert thresholds: managed in the regression process, not in feature specs.
 -->
-
 
 ## [SECTION_2_NAME]
 <!-- Example: Technical Constraints, Security Architecture, Migration Strategy, etc. -->

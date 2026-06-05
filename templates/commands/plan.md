@@ -27,6 +27,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 ### Workflow Context (Unifyr Process)
 
 This is **Stage 4 (Planning)** of the Unifyr process:
+
 - **Team**: Engineering only
 - **Prerequisites**:
   - spec.md exists and ideally clarified (Stage 2)
@@ -55,24 +56,26 @@ This is **Stage 4 (Planning)** of the Unifyr process:
      - If project.md exists, load and apply project context (see step 2b)
 
 2b. **Load project.md** (if feature is part of a project):
-   - Read `specs/project-<name>/project.md`:
-     - **Shared Constraints** → Validate plan doesn't violate these constraints
-     - **Shared Tech Decisions** → Inherit stack choices (if defined at project level)
-     - **Out of Scope** → Ensure plan doesn't include any excluded items
-     - **Jira Integration** → Use Epic key for linking
-   - Add "Project Alignment" check to plan validation:
-     - Plan MUST NOT include features listed in project Out of Scope
-     - Plan MUST respect Shared Constraints
-     - Plan SHOULD inherit Shared Tech Decisions unless spec explicitly overrides
+
+- Read `specs/project-<name>/project.md`:
+  - **Shared Constraints** → Validate plan doesn't violate these constraints
+  - **Shared Tech Decisions** → Inherit stack choices (if defined at project level)
+  - **Out of Scope** → Ensure plan doesn't include any excluded items
+  - **Jira Integration** → Use Epic key for linking
+- Add "Project Alignment" check to plan validation:
+  - Plan MUST NOT include features listed in project Out of Scope
+  - Plan MUST respect Shared Constraints
+  - Plan SHOULD inherit Shared Tech Decisions unless spec explicitly overrides
 
 3. **Load context**: Read FEATURE_SPEC and the constitution at `CONSTITUTION`. Load IMPL_PLAN template (already copied).
 
 3b. **Apply constitution to plan decisions**: The constitution contains high-level architectural decisions and overarching implementation principles that MUST actively drive the plan — not just serve as a compliance gate. As you fill each plan section, use the constitution to:
-   - **Technical Context**: Inherit technology choices, framework preferences, and constraints from the constitution. If the constitution specifies a testing philosophy (e.g., "TDD mandatory", "integration tests preferred over mocks"), reflect that in the Testing field. If it specifies storage decisions, reflect those in the Storage field.
-   - **Project Structure**: Follow the constitution's architecture and modularity decisions (e.g., "Library-First", "microservices", "monolith") when choosing the project layout.
-   - **Testing Scenarios**: Strict TDD is mandatory in this pipeline — design tests so they are authored and FAIL before implementation, and structure the plan so `/speckit.tasks` can order test tasks before their implementation tasks. Use the constitution only to choose test *types* and emphasis (integration-first vs unit-first, mock vs real dependencies, coverage gate) — never to defer or skip test-first ordering.
-   - **Migration Plan**: Follow the constitution's versioning and migration decisions (e.g., "reversible migrations required", "API version coexistence period").
-   - **Phase structure**: If the constitution defines observability or security requirements, ensure the plan includes tasks that address them.
+
+- **Technical Context**: Inherit technology choices, framework preferences, and constraints from the constitution. If the constitution specifies a testing philosophy (e.g., "TDD mandatory", "integration tests preferred over mocks"), reflect that in the Testing field. If it specifies storage decisions, reflect those in the Storage field.
+- **Project Structure**: Follow the constitution's architecture and modularity decisions (e.g., "Library-First", "microservices", "monolith") when choosing the project layout.
+- **Testing Scenarios**: Strict TDD is mandatory in this pipeline — design tests so they are authored and FAIL before implementation, and structure the plan so `/speckit.tasks` can order test tasks before their implementation tasks. Use the constitution only to choose test *types* and emphasis (integration-first vs unit-first, mock vs real dependencies, coverage gate) — never to defer or skip test-first ordering.
+- **Migration Plan**: Follow the constitution's versioning and migration decisions (e.g., "reversible migrations required", "API version coexistence period").
+- **Phase structure**: If the constitution defines observability or security requirements, ensure the plan includes tasks that address them.
 
    The constitution goes beyond the agent file (universal product truths) — it captures initiative-specific decisions that the plan must actively incorporate, not just validate against.
 

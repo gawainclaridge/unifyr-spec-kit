@@ -23,6 +23,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 ### Workflow Context (Unifyr Process)
 
 This is **Stage 2 (Review)** of the Unifyr process:
+
 - **Teams**: Product, Engineering, QA (cross-functional)
 - **Purpose**: Analyze spec for gaps, add edge cases, clarify ambiguities
 - **Prerequisites**: Completed spec.md from Stage 1

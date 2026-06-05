@@ -153,12 +153,14 @@ After a plan is created, this command analyzes the plan and related design docum
 - **Per-story files**: Separate `tasks-us1.md`, `tasks-us2.md`, etc. for larger teams
 
 Configure via `.speckit/config.yaml`:
+
 ```yaml
 tasks:
   format: single  # or "per-story"
 ```
 
 Or use the `--per-story` flag:
+
 ```bash
 /speckit.tasks --per-story
 ```
@@ -352,6 +354,7 @@ The commands embody SDD principles by treating specifications as executable arti
 Unifyr Spec Kit supports two branch strategies:
 
 **Single-spec branches (default):**
+
 ```text
 main
 ├── 001-user-auth        → specs/001-user-auth/spec.md
@@ -360,6 +363,7 @@ main
 ```
 
 **Multi-spec project branches (via `--project`):**
+
 ```text
 main
 └── project-taskify      → specs/project-taskify/

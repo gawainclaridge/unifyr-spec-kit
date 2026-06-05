@@ -40,6 +40,7 @@
 ## Prerequisites
 
 **Required Before Starting:**
+
 - [ ] Foundational phase complete (from main tasks.md)
 - [ ] [Any story-specific prerequisites]
 

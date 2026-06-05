@@ -96,8 +96,8 @@
   These apply to all features in this project.
 -->
 
-- [Project Principle 1]: [Description]
-- [Project Principle 2]: [Description]
+- [Project Principle 1]: [Why this principle matters for the project]
+- [Project Principle 2]: [Why this principle matters for the project]
 
 ## Jira Integration
 

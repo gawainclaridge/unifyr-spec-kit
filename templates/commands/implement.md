@@ -16,6 +16,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 ### Workflow Context (Unifyr Process)
 
 This is **Stage 5 (Tasks)** - Implementation phase:
+
 - **Team**: Engineering only
 - **Prerequisites**:
   - tasks.md MUST exist (constitution was finalized in Stage 3, plan in Stage 4)
@@ -74,13 +75,14 @@ This is **Stage 5 (Tasks)** - Implementation phase:
 4b. **Strict TDD is MANDATORY — this is the implementation contract**: Regardless of anything the constitution, plan, or tasks.md say about test *timing*, every unit of behavior is built with the red-green-refactor cycle. The constitution is consulted only for test *types* (unit/integration/contract mix), mock-vs-real dependencies, coverage gates, and non-testing principles (code quality, architecture, observability) — never to weaken, defer, or skip test-first ordering.
 
    For each unit of work (endpoint, model, service, branch of behavior), follow this cycle and do not skip steps:
-   - **RED**: Write the test(s) first and run them. Confirm they FAIL for the right reason (a genuine assertion/behavior failure, not a typo, missing import, or collection error). A test that passes immediately, or errors out before reaching its assertion, is not a valid RED — fix the test until it fails meaningfully. **Never write implementation code before a failing test exists.**
-   - **GREEN**: Write the minimum implementation needed to make the failing test(s) pass. Run the tests and confirm they now pass.
-   - **REFACTOR**: Clean up implementation and tests while keeping the suite green. Re-run after refactoring.
-   - **Reorder if needed**: If tasks.md sequenced an implementation task before its test task, reorder at execution time so the test is authored and failing first. Test-first ordering wins over any conflicting task sequence.
-   - **Code quality**: Apply the constitution's principles about code style, documentation, and observability.
-   - **Architecture enforcement**: Follow the constitution's modularity and dependency-direction decisions as you create files.
-   - **Execution verification is MANDATORY and layered on top of TDD**: Beyond the per-unit red-green-refactor cycle, every task and phase boundary MUST be verified against ground truth before it is marked complete — compile/build the affected code and run the relevant tests, linters, and static analysis. Never mark a task `[X]` based on self-assessment (e.g., ticking a checklist item) when an executable check is available — a passing build/test run (new tests observed RED then GREEN, and no previously-passing tests regressed) is the only acceptable evidence of completion.
+
+- **RED**: Write the test(s) first and run them. Confirm they FAIL for the right reason (a genuine assertion/behavior failure, not a typo, missing import, or collection error). A test that passes immediately, or errors out before reaching its assertion, is not a valid RED — fix the test until it fails meaningfully. **Never write implementation code before a failing test exists.**
+- **GREEN**: Write the minimum implementation needed to make the failing test(s) pass. Run the tests and confirm they now pass.
+- **REFACTOR**: Clean up implementation and tests while keeping the suite green. Re-run after refactoring.
+- **Reorder if needed**: If tasks.md sequenced an implementation task before its test task, reorder at execution time so the test is authored and failing first. Test-first ordering wins over any conflicting task sequence.
+- **Code quality**: Apply the constitution's principles about code style, documentation, and observability.
+- **Architecture enforcement**: Follow the constitution's modularity and dependency-direction decisions as you create files.
+- **Execution verification is MANDATORY and layered on top of TDD**: Beyond the per-unit red-green-refactor cycle, every task and phase boundary MUST be verified against ground truth before it is marked complete — compile/build the affected code and run the relevant tests, linters, and static analysis. Never mark a task `[X]` based on self-assessment (e.g., ticking a checklist item) when an executable check is available — a passing build/test run (new tests observed RED then GREEN, and no previously-passing tests regressed) is the only acceptable evidence of completion.
 
 5. **Project Setup Verification**:
    - **REQUIRED**: Create/verify ignore files based on actual project setup:
