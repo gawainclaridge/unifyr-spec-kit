@@ -14,7 +14,9 @@ description: "Task list template for feature implementation"
 **Input**: Design documents from `/specs/[###-feature-name]/`
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
 
-**Tests**: Strict TDD is mandatory. Every test task is authored first and must FAIL before its implementation task (red-green-refactor); test tasks are always ordered before the implementation they cover. The constitution decides test *types* and coverage, not timing. Only omit tests entirely if the user explicitly says no tests for this feature.
+**Testing mode**: Strict TDD <!-- or `Spike (TDD waived)` — set by /speckit.tasks --spike -->
+
+**Tests**: By default strict TDD applies — every test task is authored first and must FAIL before its implementation task (red-green-refactor), and test tasks are ordered before the implementation they cover. The constitution decides test *types* and coverage, not timing. In **Spike** testing mode (above), test-first ordering is waived: tests may be omitted or written after.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 

@@ -73,7 +73,7 @@ This is **Stage 4 (Planning)** of the Unifyr process:
 
 - **Technical Context**: Inherit technology choices, framework preferences, and constraints from the constitution. If the constitution specifies a testing philosophy (e.g., "TDD mandatory", "integration tests preferred over mocks"), reflect that in the Testing field. If it specifies storage decisions, reflect those in the Storage field.
 - **Project Structure**: Follow the constitution's architecture and modularity decisions (e.g., "Library-First", "microservices", "monolith") when choosing the project layout.
-- **Testing Scenarios**: Strict TDD is mandatory in this pipeline — design tests so they are authored and FAIL before implementation, and structure the plan so `/speckit.tasks` can order test tasks before their implementation tasks. Use the constitution only to choose test *types* and emphasis (integration-first vs unit-first, mock vs real dependencies, coverage gate) — never to defer or skip test-first ordering.
+- **Testing Scenarios**: Strict TDD is the default — design tests so they are authored and FAIL before implementation, and structure the plan so `/speckit.tasks` can order test tasks before their implementation tasks. Use the constitution only to choose test *types* and emphasis (integration-first vs unit-first, mock vs real dependencies, coverage gate) — never to defer or skip test-first ordering. (Genuine spikes can waive TDD at tasks/implement time via `--spike`.)
 - **Migration Plan**: Follow the constitution's versioning and migration decisions (e.g., "reversible migrations required", "API version coexistence period").
 - **Phase structure**: If the constitution defines observability or security requirements, ensure the plan includes tasks that address them.
 
