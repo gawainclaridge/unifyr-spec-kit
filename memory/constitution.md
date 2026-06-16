@@ -11,8 +11,8 @@
 ### Test-First Development (NON-NEGOTIABLE)
 <!-- FIXED PRINCIPLE: This fork enforces strict TDD pipeline-wide. Keep this principle in
      every constitution verbatim. /speckit.constitution must NOT turn it back into a Q&A choice. -->
-Strict Test-Driven Development is mandatory across this initiative and is not subject to the
-constitution Q&A:
+Strict Test-Driven Development is the default for all feature/production work and is not subject
+to the constitution Q&A:
 
 - Every unit of behavior is built **red-green-refactor**: write a failing test first, confirm it
   FAILS for the right reason, write the minimum code to make it pass, then refactor with the suite
@@ -24,6 +24,10 @@ constitution Q&A:
   tests were observed RED then GREEN and the build / lint / static-analysis checks pass.
 - The remaining testing choices (test types & mix, mock vs real dependencies, coverage gate) are
   captured in the principles below, but they may never weaken or defer this test-first ordering.
+- **Sole exception — spikes**: explicitly-designated exploratory/throwaway work may waive TDD when
+  run via `/speckit.tasks --spike` (alias `--no-tdd`), which records `Testing mode: Spike (TDD
+  waived)` in tasks.md; `/speckit.implement` and `/speckit.analyze` honor that marker. Spikes still
+  build/lint/run before a task is done, and any code that ships to production follows TDD.
 
 ### [PRINCIPLE_1_NAME]
 <!-- Example: I. Library-First Architecture -->
