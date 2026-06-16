@@ -52,7 +52,7 @@ Check for optional flags in the user input:
    > [!CAUTION]
    > ONLY PROCEED TO GITHUB STEPS IF THE REMOTE IS A GITHUB URL
 
-4. **For GitHub**: For each task in the list, use the GitHub MCP server to create a new issue in the repository that is representative of the Git remote.
+4. **For GitHub**: For each task in the list, use the GitHub MCP server to create a new issue in the repository that is representative of the Git remote. Reference artifacts as **deep-links** (see the **Building Artifact Links** section), not bare paths.
 
    > [!CAUTION]
    > UNDER NO CIRCUMSTANCES EVER CREATE ISSUES IN REPOSITORIES THAT DO NOT MATCH THE REMOTE URL
@@ -125,7 +125,7 @@ Stories created in the issue tracker should be **demo-able vertical slices**, no
 ### Rules
 
 - Each story MUST be independently demonstrable to QA/Product
-- Story description links to the relevant spec.md section for acceptance criteria (do NOT duplicate full AC in the ticket)
+- Story description deep-links to the relevant spec.md section for acceptance criteria (see the **Building Artifact Links** section); do NOT duplicate full AC in the ticket
 - Story description includes brief **Demo Criteria**: 1-2 sentences describing what can be shown when complete
 - Stories should represent user-visible value, not technical layers
 
@@ -141,6 +141,42 @@ Stories created in the issue tracker should be **demo-able vertical slices**, no
 - "User can register and log in" (demo-able: show the registration flow)
 - "User can create and view projects" (demo-able: create a project, see it listed)
 - "User can drag tasks between board columns" (demo-able: drag and drop a card)
+
+---
+
+## Building Artifact Links (deep-link to source)
+
+Ticket descriptions reference repo artifacts (spec.md, plan.md, tasks.md, constitution.md). Emit these as **clickable deep-links to the source host on the correct branch** — Jira and GitHub render bare paths as dead text.
+
+**1. Resolve the repo web base** from the origin remote:
+
+```bash
+git remote get-url origin
+```
+
+Parse it, auto-detecting the host (strip a trailing `.git` and any `user@` credentials):
+
+- **Bitbucket Cloud** (host `bitbucket.org`): SSH `git@bitbucket.org:WS/REPO.git` or HTTPS `https://USER@bitbucket.org/WS/REPO.git` → base `https://bitbucket.org/WS/REPO`. File URL: `BASE/src/<branch>/<path>`, line anchor `#lines-<N>`.
+- **Bitbucket Server / Data Center** (any other host; URL contains `/scm/` or port `:7999`): `https://HOST/scm/PROJ/REPO.git` or `ssh://git@HOST:7999/PROJ/REPO.git` → base `https://HOST/projects/PROJ/repos/REPO`. File URL: `BASE/browse/<path>?at=refs/heads/<branch>`, line anchor `#<N>`.
+- **GitHub** (host `github.com`): base `https://github.com/OWNER/REPO`. File URL: `BASE/blob/<branch>/<path>`, line anchor `#L<N>`.
+- **Unrecognized host**: skip deep-linking — fall back to the bare repo-relative path and say so in the output.
+
+**2. Choose the branch** the artifacts live on:
+
+- If the artifacts are under `specs/project-<name>/` → use the project branch `project-<name>`.
+- Otherwise → use the current feature branch (`git rev-parse --abbrev-ref HEAD`).
+
+**3. Build the repo-relative path** by stripping REPO_ROOT from the absolute artifact path (e.g. `specs/project-acme/spec.md`); URL-encode spaces as `%20`.
+
+**4. Section anchor (optional)**: for a Story that points at one user-story section, find that heading's 1-based line number in spec.md and append the host-specific line anchor from step 1.
+
+Worked examples (project `acme`, branch `project-acme`, US2 heading on line 88):
+
+- Cloud: `https://bitbucket.org/unifyr/platform/src/project-acme/specs/project-acme/spec.md#lines-88`
+- Server: `https://bitbucket.example.com/projects/UNI/repos/platform/browse/specs/project-acme/spec.md?at=refs/heads/project-acme#88`
+
+> [!NOTE]
+> A link only resolves once the branch and files are pushed to the remote. Ensure the project branch (with its spec.md/plan.md/tasks.md) is pushed before creating tickets; if it isn't, warn the user and push first, or fall back to bare paths.
 
 ---
 
@@ -165,19 +201,19 @@ Epic (Feature)
 
 1. **Create Epic** (if not exists):
    - Title: Feature name from tasks.md
-   - Description: Start with the **Experience Vision** paragraph from spec.md (the full text, not a link), followed by links to spec.md and plan.md. This ensures the north star is visible directly on the epic without navigating to other documents.
+   - Description: Start with the **Experience Vision** paragraph from spec.md (the full text, not a link), followed by **deep-links** to spec.md and plan.md (see the **Building Artifact Links** section). This ensures the north star is visible directly on the epic without navigating to other documents.
    - Note: If Epic already exists, use existing key
 
 2. **For each User Story phase**:
    - Create Story ticket linked to Epic
    - Title: User Story title from spec.md
-   - Description: Spec Reference link to the relevant section in spec.md + Demo Criteria (1-2 sentences describing what can be demonstrated when complete). Do NOT duplicate full acceptance criteria in the ticket.
+   - Description: A **deep-link** to the relevant section in spec.md (see the **Building Artifact Links** section — include the section's line anchor) + Demo Criteria (1-2 sentences describing what can be demonstrated when complete). Do NOT duplicate full acceptance criteria in the ticket.
    - Story Points: Set using the standard Jira `Story Points` estimate field with the Fibonacci score from the Complexity Scoring step
 
 3. **For each task within a story**:
    - Create Sub-task linked to Story
    - Title: Task description
-   - Include file paths in description
+   - Include a **deep-link** to the relevant artifact/section in the description (see the **Building Artifact Links** section), not a bare path
 
 4. **If per-story mode (tasks-us*.md files exist)**:
    - Process each story task file
