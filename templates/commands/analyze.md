@@ -101,7 +101,7 @@ Focus on high-signal findings. Limit to 50 findings total; aggregate remainder i
 
 - Any requirement or plan element conflicting with a MUST principle
 - Missing mandated sections or quality gates from constitution
-- **Strict TDD ordering (mandatory)**: any implementation task sequenced before its corresponding test task, or any user-story phase whose tests are not authored first (tests MUST exist and FAIL before implementation). This violates the Test-First Development (NON-NEGOTIABLE) principle — treat as CRITICAL.
+- **Strict TDD ordering**: unless tasks.md declares `Testing mode: Spike (TDD waived)`, any implementation task sequenced before its corresponding test task — or any user-story phase whose tests are not authored first (tests MUST exist and FAIL before implementation) — violates the Test-First Development (NON-NEGOTIABLE) principle; treat as CRITICAL. In spike mode, test-after or omitted tests are expected and are NOT a violation.
 
 #### E. Coverage Gaps
 

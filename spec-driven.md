@@ -144,7 +144,7 @@ After a plan is created, this command analyzes the plan and related design docum
 1. **Inputs**: Reads `plan.md` (required), `spec.md` (required for user stories), and optionally `data-model.md`, `contracts/`, and `research.md`
 2. **Task Derivation**: Converts contracts, entities, and scenarios into specific tasks organized by user story
 3. **Parallelization**: Marks independent tasks `[P]` and outlines safe parallel groups
-4. **Jira Placeholders**: Adds `[JIRA-EPIC-KEY]` and `[JIRA-XXX]` placeholders for issue tracking
+4. **Jira Placeholders**: Adds `[JIRA-EPIC-KEY]` and `[JIRA-STORY-KEY]` placeholders for issue tracking
 5. **Output**: Writes `tasks.md` (or per-story files) in the feature directory
 
 **Task Format Options:**
@@ -194,8 +194,8 @@ Converts tasks into issue tracker tickets with complexity scoring and demo-able 
 1. **Complexity Scoring**: Evaluates each story using Fibonacci points (1-20) before creating tickets. Stories include Story Points in the standard Jira estimate field.
 2. **Demo-able Stories**: Each story is created as a vertical slice that can be independently demonstrated to QA/Product. Story descriptions link to spec.md for acceptance criteria rather than duplicating them.
 3. **GitHub Issues** (default): Creates issues in the repository matching the Git remote
-4. **Jira Tickets**: Creates Epic → Story → Sub-task hierarchy when `--jira <PROJECT-KEY>` is provided
-5. **Placeholder Updates**: Replaces `[JIRA-XXX]` placeholders with actual ticket keys
+4. **Jira Tickets**: Creates Epic → Story hierarchy when `--jira <PROJECT-KEY>` is provided
+5. **Placeholder Updates**: Replaces `[JIRA-EPIC-KEY]`/`[JIRA-STORY-KEY]` placeholders with actual ticket keys
 
 ```bash
 # Create GitHub issues (default)
@@ -486,7 +486,7 @@ The templates transform the LLM from a creative writer into a disciplined specif
 
 ## The Constitutional Foundation: Enforcing Architectural Discipline
 
-At the heart of SDD lies a constitution—a set of immutable principles that govern how specifications become code. The constitution (`memory/constitution.md`) acts as the architectural DNA of the system, ensuring that every generated implementation maintains consistency, simplicity, and quality.
+At the heart of SDD lies a constitution—a set of immutable principles that govern how specifications become code. The constitution (stored beside `project.md` at `specs/project-<name>/constitution.md`, or in the feature directory for standalone work; seeded from `.specify/memory/constitution.md`) acts as the architectural DNA of the system, ensuring that every generated implementation maintains consistency, simplicity, and quality.
 
 ### The Nine Articles of Development
 

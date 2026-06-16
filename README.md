@@ -24,8 +24,9 @@
 > | **5-stage process** | Specification → Review → Constitution → Planning → Tasks with explicit team ownership (Product, Engineering, QA) | Maps directly to our sprint ceremonies and handoff points |
 > | **Multi-feature projects** | `/speckit.project` command and `--project` flag group related specs under a shared project context | Supports epic-level planning where multiple features share constraints, users, and scope boundaries |
 > | **Constitution enforcement** | Constitution is a hard prerequisite for `/speckit.plan` | Ensures high-level architectural decisions are agreed before any planning begins, reducing rework |
-> | **Jira integration** | `--jira` flag on `/speckit.taskstoissues` creates Epic → Story → Sub-task hierarchy with Fibonacci story points | Tickets flow straight into our Jira boards with correct hierarchy and sizing |
+> | **Jira integration** | `--jira` flag on `/speckit.taskstoissues` creates an Epic → Story hierarchy with Fibonacci story points; ticket descriptions deep-link spec.md/plan.md to the Bitbucket branch | Tickets flow into our Jira boards with correct hierarchy, sizing, and clickable source links |
 > | **Per-story task files** | `--per-story` flag on `/speckit.tasks` generates separate task files per user story | Enables parallel story assignment across team members in a sprint |
+> | **Enforced TDD (with escape hatch)** | Strict test-first (red-green-refactor) is the pipeline default; `--spike` / `--no-tdd` waives it for throwaway/exploratory work | A robust validation path on production code, without blocking spikes |
 > | **Complexity scoring** | Fibonacci-based story point estimates with calibration (8 pts ≈ 5 days) and split advisory at 20+ pts | Right-sizes features before sprint commitment; flags over-scoped work early |
 > | **Mid-flight change guidance** | Amend-vs-restart decision framework, 3-4 iteration rule, impact matrix | Gives the team a shared playbook for handling scope changes without accumulating drift |
 > | **Artifact stability framework** | constitution (very stable) → spec (stable) → plan (moderate) → tasks (volatile) | Everyone knows which artifacts are safe to change and which require re-approval |
@@ -335,9 +336,10 @@ Key flags for commonly used commands:
 | ------------------------ | ---------------------- | -------------------------------------------------------- |
 | `/speckit.specify`       | `--project <name>`     | Add spec to existing project branch instead of creating new branch |
 | `/speckit.tasks`         | `--per-story`          | Generate separate task files per user story (tasks-us1.md, etc.) |
+| `/speckit.tasks`         | `--spike` / `--no-tdd` | Waive strict TDD for an exploratory/throwaway feature (tests optional, no test-first ordering) |
 | `/speckit.project`       | `--list`               | List all specs in the project                            |
 | `/speckit.project`       | `--add-spec`           | Add current spec to the project                          |
-| `/speckit.taskstoissues` | `--jira <PROJECT-KEY>` | Create Jira tickets (Epic → Story → Sub-task hierarchy)  |
+| `/speckit.taskstoissues` | `--jira <PROJECT-KEY>` | Create Jira tickets (Epic → Story hierarchy)  |
 | `/speckit.taskstoissues` | `--github`             | Create GitHub issues (default)                           |
 
 ### Environment Variables
@@ -610,7 +612,7 @@ The command runs an interactive workflow:
 
    | Category | Architectural decisions it informs |
    |----------|-----------------------------------|
-   | Testing Philosophy | Test strategy, coverage expectations, TDD vs integration-first |
+   | Testing Philosophy | Test *types* & coverage (timing is fixed: strict TDD by default, `--spike` to waive) |
    | Code Quality & Standards | Consistency standards, formatting conventions |
    | Architecture & Modularity | Module boundaries, monorepo structure, dependency direction |
    | Observability & Debugging | Logging strategy, tracing, monitoring approach |
@@ -757,9 +759,9 @@ This step creates a `tasks.md` file in your feature specification directory that
 - **Dependency management** - Tasks are ordered to respect dependencies between components (e.g., models before services, services before endpoints)
 - **Parallel execution markers** - Tasks that can run in parallel are marked with `[P]` to optimize development workflow
 - **File path specifications** - Each task includes the exact file paths where implementation should occur
-- **Constitution-driven testing** - Test tasks follow the constitution's testing philosophy (TDD, test-alongside, or as specified)
+- **Strict TDD by default** - test tasks are authored first and must fail before implementation (red-green-refactor); the constitution sets test *types* and coverage, not timing. Waivable per feature with `/speckit.tasks --spike` for genuine throwaway/exploratory work
 - **Checkpoint validation** - Each user story phase includes checkpoints to validate independent functionality
-- **Jira placeholders** - `[JIRA-EPIC-KEY]` and `[JIRA-XXX]` placeholders for issue tracking integration
+- **Jira placeholders** - `[JIRA-EPIC-KEY]` and `[JIRA-STORY-KEY]` placeholders for issue tracking integration
 
 The generated tasks.md provides a clear roadmap for the `/speckit.implement` command, ensuring systematic implementation that maintains code quality and allows for incremental delivery of user stories.
 
@@ -808,7 +810,7 @@ The `/speckit.implement` command will:
 - Validate that all prerequisites are in place (constitution, spec, plan, and tasks)
 - Parse the task breakdown from `tasks.md`
 - Execute tasks in the correct order, respecting dependencies and parallel execution markers
-- Follow the testing approach defined in the constitution (TDD, test-alongside, or as specified)
+- Follow strict TDD by default (tests first, then red-green-refactor); honor a `Testing mode: Spike` marker in tasks.md when present (tests optional / may come after)
 - Provide progress updates and handle errors appropriately
 
 > [!IMPORTANT]

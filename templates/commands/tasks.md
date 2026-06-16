@@ -45,7 +45,8 @@ Check for optional flags in the user input:
 - `--per-story`: Generate separate task files per user story (Unifyr-style)
   - Creates `tasks.md` (master index) + `tasks-us1.md`, `tasks-us2.md`, etc.
   - Each per-story file links to a Jira story ticket
-- Default (no flag): Single `tasks.md` file with all tasks organized by story internally
+- `--spike` (alias `--no-tdd`): Waive strict TDD for this exploratory/throwaway feature — generate without mandatory test-first ordering and record a `Testing mode: Spike (TDD waived)` marker so `/speckit.implement` and `/speckit.analyze` honor it. Use only for genuine spikes; production code keeps strict TDD.
+- Default (no flag): Single `tasks.md` file with all tasks organized by story internally, strict TDD
 
 1. **Setup**: Run `{SCRIPT}` from repo root and parse FEATURE_DIR, CONSTITUTION, and AVAILABLE_DOCS list. All paths must be absolute. `CONSTITUTION` is this work's constitution path (beside project.md when in a project, else in the feature dir). For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
 
@@ -133,7 +134,9 @@ The tasks.md should be immediately executable - each task must be specific enoug
 
 **CRITICAL**: Tasks MUST be organized by user story to enable independent implementation and testing.
 
-**Strict TDD is mandatory — test tasks ALWAYS come before their implementation tasks.** Test *timing* is not a constitution choice: every implementation task must be preceded by a test task that is authored first and expected to FAIL before the implementation makes it pass (red-green-refactor). Read the constitution at `CONSTITUTION` only to choose test *types* and emphasis (integration-first vs unit-first, mock vs real dependencies, coverage gate) — never to defer, reorder, or skip test-first ordering. Only omit test tasks entirely if the user explicitly says to skip tests for this feature; if they do, warn that this overrides the mandatory-TDD principle.
+**Strict TDD is the default — test tasks come before their implementation tasks.** Test *timing* is not a constitution choice: by default every implementation task must be preceded by a test task that is authored first and expected to FAIL before the implementation makes it pass (red-green-refactor). Read the constitution at `CONSTITUTION` only to choose test *types* and emphasis (integration-first vs unit-first, mock vs real dependencies, coverage gate) — never to defer, reorder, or skip test-first ordering.
+
+**Spike exception**: in spike mode (`--spike`/`--no-tdd`, or the user designates the feature exploratory/throwaway), test-first ordering is waived — tests may be omitted or placed after implementation. Record the testing mode near the top of tasks.md (just under the title) so `/speckit.implement` and `/speckit.analyze` honor it: write `Testing mode: Spike (TDD waived)` for a spike, otherwise `Testing mode: Strict TDD`.
 
 ### Checklist Format (REQUIRED)
 

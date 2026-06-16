@@ -16,12 +16,7 @@
 **Story Ticket**: [JIRA-STORY-KEY] - [Story Title]
 **Estimated Complexity**: [N] points
 
-### Linked Jira Tasks
-
-| Task ID | Jira Key | Description | Status |
-|---------|----------|-------------|--------|
-| T001 | [JIRA-XXX] | [Description] | Not Started |
-| T002 | [JIRA-XXX] | [Description] | Not Started |
+> Tasks for this story are tracked as a **checklist on the Story ticket** ([JIRA-STORY-KEY]) — see Testing/Implementation Tasks below. We do not create Jira sub-tasks; Story is the most granular issue type.
 
 ---
 

@@ -139,6 +139,12 @@ For larger teams, you can generate separate task files per user story:
 /speckit.tasks --per-story
 ```
 
+For an exploratory spike where strict TDD doesn't fit, waive it (tests optional / may come after):
+
+```markdown
+/speckit.tasks --spike
+```
+
 Optionally, create Jira tickets or GitHub issues from your tasks:
 
 ```markdown
@@ -150,6 +156,9 @@ Optionally, create Jira tickets or GitHub issues from your tasks:
 # Create Jira tickets
 /speckit.taskstoissues --jira PROJ
 ```
+
+> [!NOTE]
+> Tickets created this way **deep-link** their spec.md/plan.md references to the source on your Bitbucket (or GitHub) branch — push the project branch first so the links resolve. Hierarchy stops at Story (no Jira sub-tasks); a story's tasks live as a checklist on the Story.
 
 Then, use the **`/speckit.implement`** slash command to execute the plan:
 
@@ -285,7 +294,7 @@ Unifyr Spec Kit includes Jira placeholders in generated artifacts:
 | Artifact | Placeholder | Maps To |
 |----------|-------------|---------|
 | project.md | `[JIRA-EPIC-KEY]` | Epic |
-| tasks.md | `[JIRA-XXX]` | Story/Sub-task |
+| tasks.md | `[JIRA-STORY-KEY]` | Story |
 | tasks-us*.md | `[JIRA-STORY-KEY]` | Story |
 
 Use `/speckit.taskstoissues --jira PROJ` to create actual tickets and update placeholders with real keys.
