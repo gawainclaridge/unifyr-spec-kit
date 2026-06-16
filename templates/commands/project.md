@@ -150,7 +150,7 @@ Projects map to Jira Epics:
 
 - Project → Epic
 - Feature specs → Stories under the Epic
-- Tasks → Sub-tasks under Stories
+- Tasks → tracked as a checklist on each Story (no Jira sub-tasks)
 
 Update Jira Integration section with:
 

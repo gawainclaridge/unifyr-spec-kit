@@ -24,7 +24,7 @@
 > | **5-stage process** | Specification → Review → Constitution → Planning → Tasks with explicit team ownership (Product, Engineering, QA) | Maps directly to our sprint ceremonies and handoff points |
 > | **Multi-feature projects** | `/speckit.project` command and `--project` flag group related specs under a shared project context | Supports epic-level planning where multiple features share constraints, users, and scope boundaries |
 > | **Constitution enforcement** | Constitution is a hard prerequisite for `/speckit.plan` | Ensures high-level architectural decisions are agreed before any planning begins, reducing rework |
-> | **Jira integration** | `--jira` flag on `/speckit.taskstoissues` creates Epic → Story → Sub-task hierarchy with Fibonacci story points | Tickets flow straight into our Jira boards with correct hierarchy and sizing |
+> | **Jira integration** | `--jira` flag on `/speckit.taskstoissues` creates Epic → Story hierarchy with Fibonacci story points | Tickets flow straight into our Jira boards with correct hierarchy and sizing |
 > | **Per-story task files** | `--per-story` flag on `/speckit.tasks` generates separate task files per user story | Enables parallel story assignment across team members in a sprint |
 > | **Complexity scoring** | Fibonacci-based story point estimates with calibration (8 pts ≈ 5 days) and split advisory at 20+ pts | Right-sizes features before sprint commitment; flags over-scoped work early |
 > | **Mid-flight change guidance** | Amend-vs-restart decision framework, 3-4 iteration rule, impact matrix | Gives the team a shared playbook for handling scope changes without accumulating drift |
@@ -337,7 +337,7 @@ Key flags for commonly used commands:
 | `/speckit.tasks`         | `--per-story`          | Generate separate task files per user story (tasks-us1.md, etc.) |
 | `/speckit.project`       | `--list`               | List all specs in the project                            |
 | `/speckit.project`       | `--add-spec`           | Add current spec to the project                          |
-| `/speckit.taskstoissues` | `--jira <PROJECT-KEY>` | Create Jira tickets (Epic → Story → Sub-task hierarchy)  |
+| `/speckit.taskstoissues` | `--jira <PROJECT-KEY>` | Create Jira tickets (Epic → Story hierarchy)  |
 | `/speckit.taskstoissues` | `--github`             | Create GitHub issues (default)                           |
 
 ### Environment Variables
@@ -759,7 +759,7 @@ This step creates a `tasks.md` file in your feature specification directory that
 - **File path specifications** - Each task includes the exact file paths where implementation should occur
 - **Constitution-driven testing** - Test tasks follow the constitution's testing philosophy (TDD, test-alongside, or as specified)
 - **Checkpoint validation** - Each user story phase includes checkpoints to validate independent functionality
-- **Jira placeholders** - `[JIRA-EPIC-KEY]` and `[JIRA-XXX]` placeholders for issue tracking integration
+- **Jira placeholders** - `[JIRA-EPIC-KEY]` and `[JIRA-STORY-KEY]` placeholders for issue tracking integration
 
 The generated tasks.md provides a clear roadmap for the `/speckit.implement` command, ensuring systematic implementation that maintains code quality and allows for incremental delivery of user stories.
 

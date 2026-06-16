@@ -285,7 +285,7 @@ Unifyr Spec Kit includes Jira placeholders in generated artifacts:
 | Artifact | Placeholder | Maps To |
 |----------|-------------|---------|
 | project.md | `[JIRA-EPIC-KEY]` | Epic |
-| tasks.md | `[JIRA-XXX]` | Story/Sub-task |
+| tasks.md | `[JIRA-STORY-KEY]` | Story |
 | tasks-us*.md | `[JIRA-STORY-KEY]` | Story |
 
 Use `/speckit.taskstoissues --jira PROJ` to create actual tickets and update placeholders with real keys.

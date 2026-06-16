@@ -20,7 +20,7 @@ This is **Stage 5 (Tasks)** - Issue Creation phase:
 
 - **Team**: Engineering only
 - **Prerequisites**: tasks.md MUST exist
-- **Output**: GitHub issues or Jira tickets (Epic → Story → Sub-task)
+- **Output**: GitHub issues or Jira tickets (Epic → Story; no sub-tasks)
 - **Next step**: `/speckit.implement`
 
 ## Outline
@@ -60,7 +60,7 @@ Check for optional flags in the user input:
 5. **For Jira**: See Jira Workflow section below.
 
 6. **Update task files**: After creating tickets, update the task files:
-   - Replace `[JIRA-XXX]` or `[JIRA-EPIC-KEY]` placeholders with actual ticket keys
+   - Replace `[JIRA-EPIC-KEY]` and `[JIRA-STORY-KEY]` placeholders with actual ticket keys
    - Update status columns if present
 
 ---
@@ -89,7 +89,7 @@ For each story, evaluate these factors and take the median:
 
 | Factor | Low (1-2) | Medium (3-5) | High (8-13) | Very High (20) |
 |--------|-----------|--------------|-------------|----------------|
-| Sub-task count | 1-3 tasks | 4-6 tasks | 7-10 tasks | 10+ tasks |
+| Task count | 1-3 tasks | 4-6 tasks | 7-10 tasks | 10+ tasks |
 | Schema changes | None | 1-2 entities | 3-5 entities | Major redesign |
 | API surface | 0-1 endpoints | 2-3 endpoints | 4-6 endpoints | New service |
 | UI complexity | None / minor | Single view | Multiple views | Complex interactions |
@@ -189,11 +189,7 @@ When `--jira <PROJECT-KEY>` is provided:
 ```text
 Epic (Feature)
 ├── Story (User Story 1)
-│   ├── Sub-task (T001)
-│   └── Sub-task (T002)
 ├── Story (User Story 2)
-│   ├── Sub-task (T003)
-│   └── Sub-task (T004)
 └── ...
 ```
 
@@ -210,14 +206,13 @@ Epic (Feature)
    - Description: A **deep-link** to the relevant section in spec.md (see the **Building Artifact Links** section — include the section's line anchor) + Demo Criteria (1-2 sentences describing what can be demonstrated when complete). Do NOT duplicate full acceptance criteria in the ticket.
    - Story Points: Set using the standard Jira `Story Points` estimate field with the Fibonacci score from the Complexity Scoring step
 
-3. **For each task within a story**:
-   - Create Sub-task linked to Story
-   - Title: Task description
-   - Include a **deep-link** to the relevant artifact/section in the description (see the **Building Artifact Links** section), not a bare path
+3. **Task breakdown (no Jira sub-tasks — we never go below Story)**: embed the story's tasks (T0xx from tasks.md) as a **checklist in the Story description** so the breakdown stays visible and trackable on the Story itself:
+   - Render each as a checklist item — `- [ ] T0xx <description>` — with a **deep-link** to the relevant artifact/section (see the **Building Artifact Links** section).
+   - Do NOT create Sub-task issues.
 
 4. **If per-story mode (tasks-us*.md files exist)**:
-   - Process each story task file
-   - Update `[JIRA-XXX]` placeholders in each file
+   - Process each story task file as a single Story ticket (its tasks become that Story's checklist, per step 3)
+   - Update the `[JIRA-STORY-KEY]` placeholder in each file with the created Story key
 
 ### Required Information
 
