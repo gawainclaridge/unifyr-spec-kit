@@ -89,10 +89,10 @@
 - [Pattern 1]: [Why chosen for this project]
 - [Pattern 2]: [Why chosen for this project]
 
-## Project Constitution Extensions
+## Project Engineering Charter Extensions
 
 <!--
-  Project-specific principles that extend the base constitution.
+  Project-specific principles that extend the base charter.
   These apply to all features in this project.
 -->
 

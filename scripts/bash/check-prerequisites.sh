@@ -82,7 +82,7 @@ source "$SCRIPT_DIR/common.sh"
 eval $(get_feature_paths)
 
 # Skip strict feature-branch validation in paths-only mode (it performs no
-# prerequisite validation), so path resolution — including the constitution
+# prerequisite validation), so path resolution — including the charter
 # path — also works on project-* and main branches.
 if ! $PATHS_ONLY; then
     check_feature_branch "$CURRENT_BRANCH" "$HAS_GIT" || exit 1
@@ -92,8 +92,8 @@ fi
 if $PATHS_ONLY; then
     if $JSON_MODE; then
         # Minimal JSON paths payload (no validation performed)
-        printf '{"REPO_ROOT":"%s","BRANCH":"%s","FEATURE_DIR":"%s","FEATURE_SPEC":"%s","IMPL_PLAN":"%s","TASKS":"%s","CONSTITUTION":"%s"}\n' \
-            "$REPO_ROOT" "$CURRENT_BRANCH" "$FEATURE_DIR" "$FEATURE_SPEC" "$IMPL_PLAN" "$TASKS" "$CONSTITUTION"
+        printf '{"REPO_ROOT":"%s","BRANCH":"%s","FEATURE_DIR":"%s","FEATURE_SPEC":"%s","IMPL_PLAN":"%s","TASKS":"%s","CHARTER":"%s","CONSTITUTION":"%s"}\n' \
+            "$REPO_ROOT" "$CURRENT_BRANCH" "$FEATURE_DIR" "$FEATURE_SPEC" "$IMPL_PLAN" "$TASKS" "$CHARTER" "$CONSTITUTION"
     else
         echo "REPO_ROOT: $REPO_ROOT"
         echo "BRANCH: $CURRENT_BRANCH"
@@ -101,6 +101,7 @@ if $PATHS_ONLY; then
         echo "FEATURE_SPEC: $FEATURE_SPEC"
         echo "IMPL_PLAN: $IMPL_PLAN"
         echo "TASKS: $TASKS"
+        echo "CHARTER: $CHARTER"
         echo "CONSTITUTION: $CONSTITUTION"
     fi
     exit 0
@@ -155,10 +156,11 @@ if $JSON_MODE; then
         json_docs="[${json_docs%,}]"
     fi
     
-    printf '{"FEATURE_DIR":"%s","CONSTITUTION":"%s","AVAILABLE_DOCS":%s}\n' "$FEATURE_DIR" "$CONSTITUTION" "$json_docs"
+    printf '{"FEATURE_DIR":"%s","CHARTER":"%s","CONSTITUTION":"%s","AVAILABLE_DOCS":%s}\n' "$FEATURE_DIR" "$CHARTER" "$CONSTITUTION" "$json_docs"
 else
     # Text output
     echo "FEATURE_DIR:$FEATURE_DIR"
+    echo "CHARTER:$CHARTER"
     echo "CONSTITUTION:$CONSTITUTION"
     echo "AVAILABLE_DOCS:"
     

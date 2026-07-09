@@ -50,6 +50,7 @@ if ($Json) {
         SPECS_DIR = $paths.FEATURE_DIR
         BRANCH = $paths.CURRENT_BRANCH
         HAS_GIT = $paths.HAS_GIT
+        CHARTER = $paths.CHARTER
         CONSTITUTION = $paths.CONSTITUTION
     }
     $result | ConvertTo-Json -Compress
@@ -59,5 +60,6 @@ if ($Json) {
     Write-Output "SPECS_DIR: $($paths.FEATURE_DIR)"
     Write-Output "BRANCH: $($paths.CURRENT_BRANCH)"
     Write-Output "HAS_GIT: $($paths.HAS_GIT)"
+    Write-Output "CHARTER: $($paths.CHARTER)"
     Write-Output "CONSTITUTION: $($paths.CONSTITUTION)"
 }

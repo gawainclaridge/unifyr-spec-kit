@@ -5,9 +5,9 @@ handoffs:
     agent: speckit.clarify
     prompt: Review and clarify the specification
     send: true
-  - label: Create Constitution (Stage 3)
-    agent: speckit.constitution
-    prompt: Create project constitution with principles for...
+  - label: Create Engineering Charter (Stage 3)
+    agent: speckit.charter
+    prompt: Create project charter with principles for...
   - label: Build Technical Plan (Stage 4)
     agent: speckit.plan
     prompt: Create a plan for the spec. I am building with...
@@ -38,11 +38,11 @@ Check for optional flags in the user input:
 
 Given that feature description, do this:
 
-1. **Check for constitution** (optional but recommended):
-   - The constitution lives beside project.md at `specs/project-<name>/constitution.md` when using `--project`, otherwise in the feature dir at `<FEATURE_DIR>/constitution.md`. (It is normally created later, in Stage 3 via `/speckit.constitution`.)
+1. **Check for Engineering Charter** (optional but recommended):
+   - The charter lives beside project.md at `specs/project-<name>/charter.md` when using `--project`, otherwise in the feature dir at `<FEATURE_DIR>/charter.md`. (It is normally created later, in Stage 3 via `/speckit.charter`.)
    - Check whether that file exists:
      - If NOT found:
-       - Display warning: "Constitution not found. Consider creating one with /speckit.constitution before planning."
+       - Display warning: "Charter not found. Consider creating one with /speckit.charter before planning."
        - Continue with specification creation (do NOT block)
      - If found: Note principles for spec alignment
 
@@ -142,10 +142,15 @@ Given that feature description, do this:
        - **If part of project**: Do NOT duplicate project.md "Out of Scope" items; instead add:
          `> See [project.md](../project.md) for project-level exclusions`
        - Only add feature-specific non-goals that are not already covered at project level
-    10. Initialize Sign-Off table with "Pending" statuses
-    11. Initialize Changelog with version 1.0
-    12. If `--project` mode: Update project.md Features table with new spec
-    13. Return: SUCCESS (spec ready for clarification or planning)
+    10. Fill Adoption & Rollout section
+       - Decide, on purpose, how EXISTING customers move onto this feature — not just how it behaves for new customers going forward.
+       - Draft a best-guess adoption path across the buckets (Existing cohort / Adoption path / One-time migration / Transition & comms) using informed defaults; /speckit.clarify will challenge and refine it with the team.
+       - This is the PRODUCT decision (who gets what, when); do NOT put technical breaking-change/schema-migration mechanics here — those belong to the plan's Migration Plan.
+       - If the feature genuinely has no existing-customer surface (net-new product with no current users, internal refactor, doc-only change), replace the bullets with a single line: "No existing-customer impact — <reason>."
+    11. Initialize Sign-Off table with "Pending" statuses
+    12. Initialize Changelog with version 1.0
+    13. If `--project` mode: Update project.md Features table with new spec
+    14. Return: SUCCESS (spec ready for clarification or planning)
 
 7. Write the specification to SPEC_FILE using the template structure, replacing placeholders with concrete details derived from the feature description (arguments) while preserving section order and headings.
 
@@ -178,6 +183,7 @@ Given that feature description, do this:
       - [ ] All acceptance scenarios are defined
       - [ ] Edge cases are identified
       - [ ] Scope is clearly bounded
+      - [ ] Adoption & Rollout is addressed (existing-customer path stated, or explicitly "no existing-customer impact")
       - [ ] Dependencies and assumptions identified
       
       ## Feature Readiness
@@ -244,7 +250,7 @@ Given that feature description, do this:
    d. **Update Checklist**: After each validation iteration, update the checklist file with current pass/fail status
 
 9. Report completion with branch name, spec file path, checklist results, and readiness for the next phase (`/speckit.clarify` or `/speckit.plan`).
-   - If constitution was not found, remind user to create one before `/speckit.plan`
+   - If the charter was not found, remind user to create one before `/speckit.plan`
 
 **NOTE:** The script creates and checks out the new branch and initializes the spec file before writing.
 

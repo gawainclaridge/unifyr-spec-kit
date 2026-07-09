@@ -3,7 +3,7 @@
 This guide will help you get started with Spec-Driven Development using Unifyr Spec Kit.
 
 > [!NOTE]
-> **Fork of Spec Kit** — Unifyr Spec Kit is a fork of [GitHub's Spec Kit](https://github.com/github/spec-kit), tailored to Unifyr's agile scrum processes. Key additions include a 5-stage process with team ownership, multi-feature project support, Jira integration with Fibonacci story points, per-story task files for parallel sprint work, interactive constitution Q&A before planning, and mid-flight change guidance. See the [README](../README.md) for a full comparison table.
+> **Fork of Spec Kit** — Unifyr Spec Kit is a fork of [GitHub's Spec Kit](https://github.com/github/spec-kit), tailored to Unifyr's agile scrum processes. Key additions include a 5-stage process with team ownership, multi-feature project support, Jira integration with Fibonacci story points, per-story task files for parallel sprint work, interactive Engineering Charter Q&A before planning, and mid-flight change guidance. See the [README](../README.md) for a full comparison table.
 
 <!-- -->
 
@@ -18,7 +18,7 @@ Unifyr Spec Kit follows a structured 5-stage workflow aligned with team collabor
 |-------|-------|----------------|
 | **Stage 1: Specification** | Product | Create project.md (optional for multi-feature), draft spec.md |
 | **Stage 2: Review** | Product/Engineering/QA | `/speckit.clarify`, review spec, add acceptance criteria, sign off |
-| **Stage 3: Constitution** | Engineering | `/speckit.constitution` — establish high-level architectural decisions that guide planning and implementation |
+| **Stage 3: Charter** | Engineering | `/speckit.charter` — establish high-level architectural decisions that guide planning and implementation |
 | **Stage 4: Planning** | Engineering | Create plan.md, define testing scenarios, migration plans |
 | **Stage 5: Tasks** | Engineering | Generate tasks.md, link to issue tracker, implement |
 
@@ -62,11 +62,11 @@ Think of it as the product's architectural identity:
 | File | Owner | About | Scope |
 |------|-------|-------|-------|
 | **Agent file** (CLAUDE.md etc.) | Engineering | Universal product truths | Entire product/repo |
-| **Constitution** | Engineering | **Architectural decisions & implementation principles** that drive plan & implement | Project/epic set |
+| **Engineering Charter** | Engineering | **Architectural decisions & implementation principles** that drive plan & implement | Project/epic set |
 | **Project.md** | Product | **Universal constraints** that bound specifications | Multi-feature project |
 
 - **Agent file**: Universal product architecture and engineering truths that rarely change. The permanent product identity. Engineering-maintained.
-- **Constitution**: Initiative-specific architectural decisions AND overarching implementation principles that go beyond the agent file. Created in Stage 3, actively drives Stage 4 (Planning) and Stage 5 (Implementation). Engineering-managed.
+- **Charter**: Initiative-specific architectural decisions AND overarching implementation principles that go beyond the agent file. Created in Stage 3, actively drives Stage 4 (Planning) and Stage 5 (Implementation). Engineering-managed.
 - **Project.md**: Out-of-scope exclusions, shared constraints, and feature list that bound what specifications can include. Product-managed.
 
 ### Step 2: Create Specifications (Stage 1: Specification)
@@ -93,33 +93,33 @@ Use **`/speckit.clarify`** to identify and resolve ambiguities in your specifica
 /speckit.clarify Focus on security and performance requirements.
 ```
 
-### Step 4: Create Constitution (Stage 3: Constitution)
+### Step 4: Create Engineering Charter (Stage 3: Charter)
 
-Use **`/speckit.constitution`** to establish high-level architectural decisions for this initiative. The command scans your codebase for existing patterns and runs an interactive Q&A to fill gaps — producing the architectural foundation that `/speckit.plan` and `/speckit.implement` use as guardrails:
+Use **`/speckit.charter`** to establish high-level architectural decisions for this initiative. The command scans your codebase for existing patterns and runs an interactive Q&A to fill gaps — producing the architectural foundation that `/speckit.plan` and `/speckit.implement` use as guardrails:
 
 ```markdown
-/speckit.constitution
+/speckit.charter
 ```
 
 Or provide principles directly:
 
 ```markdown
-/speckit.constitution This project follows a "Library-First" approach. All features must be implemented as standalone libraries first. We use TDD strictly. We prefer functional programming patterns.
+/speckit.charter This project follows a "Library-First" approach. All features must be implemented as standalone libraries first. We use TDD strictly. We prefer functional programming patterns.
 ```
 
-#### Practical Guidance for the Constitution
+#### Practical Guidance for the Engineering Charter
 
-- Expect to invest 2-3 days of senior engineering time on the constitution
+- Expect to invest 2-3 days of senior engineering time on the charter
 - Clean up existing repo documentation first (README, architecture notes) before drafting
 - Document YOUR architectural decisions, not generic best practices — these directly constrain what `/speckit.plan` generates
 - Start with 5-7 focused decisions that you actually enforce today
 
 > [!NOTE]
-> The constitution **must be finalized before** `/speckit.plan` (Stage 4) — the plan reads the constitution to shape technology choices, phase gates, and testing strategy. If you skip this step, `/speckit.plan` will offer to create one inline.
+> The charter **must be finalized before** `/speckit.plan` (Stage 4) — the plan reads the charter to shape technology choices, phase gates, and architecture. If you skip this step, `/speckit.plan` will offer to create one inline. (Strict TDD is enforced pipeline-wide regardless — it is not a charter decision.)
 
 ### Step 5: Create Implementation Plan (Stage 4: Planning)
 
-Use the **`/speckit.plan`** slash command to provide your tech stack and architecture choices. The constitution must be finalized before this step.
+Use the **`/speckit.plan`** slash command to provide your tech stack and architecture choices. A finalized Engineering Charter is required before the plan can be produced — if one doesn't exist, `/speckit.plan` offers to create it inline (Phase -1) before planning proceeds.
 
 ```markdown
 /speckit.plan The application uses Vite with minimal number of libraries. Use vanilla HTML, CSS, and JavaScript as much as possible. Images are not uploaded anywhere and metadata is stored in a local SQLite database.
@@ -184,10 +184,10 @@ different sample projects. Let's have the standard Kanban columns for the status
 first testing thing to ensure that our basic features are set up.
 ```
 
-Optionally, draft the project's constitution to set ground rules:
+Optionally, draft the project's Engineering Charter to set ground rules:
 
 ```markdown
-/speckit.constitution Taskify is a "Security-First" application. All user inputs must be validated. We use a microservices architecture. Code must be fully documented.
+/speckit.charter Taskify is a "Security-First" application. All user inputs must be validated. We use a microservices architecture. Code must be fully documented.
 ```
 
 ### Stage 2: Review
@@ -210,12 +210,12 @@ Validate the specification checklist using the `/speckit.checklist` command:
 /speckit.checklist
 ```
 
-### Stage 3: Constitution
+### Stage 3: Charter
 
-Create and finalize the constitution with the interactive Q&A:
+Create and finalize the Engineering Charter with the interactive Q&A:
 
 ```bash
-/speckit.constitution Taskify is a "Security-First" application. All user inputs must be validated. We use a microservices architecture. Code must be fully documented.
+/speckit.charter Taskify is a "Security-First" application. All user inputs must be validated. We use a microservices architecture. Code must be fully documented.
 ```
 
 ### Stage 4: Planning

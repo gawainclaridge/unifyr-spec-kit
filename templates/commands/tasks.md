@@ -31,7 +31,7 @@ This is **Stage 5 (Tasks)** of the Unifyr process:
 
 - **Team**: Engineering only
 - **Prerequisites**:
-  - plan.md MUST exist (constitution was finalized in Stage 3, plan created in Stage 4)
+  - plan.md MUST exist (charter was finalized in Stage 3, plan created in Stage 4)
   - spec.md MUST exist (for user stories)
 - **Output**: tasks.md (or per-story files) with Jira placeholders
 - **Next steps**: `/speckit.taskstoissues`, `/speckit.implement`
@@ -48,7 +48,7 @@ Check for optional flags in the user input:
 - `--spike` (alias `--no-tdd`): Waive strict TDD for this exploratory/throwaway feature — generate without mandatory test-first ordering and record a `Testing mode: Spike (TDD waived)` marker so `/speckit.implement` and `/speckit.analyze` honor it. Use only for genuine spikes; production code keeps strict TDD.
 - Default (no flag): Single `tasks.md` file with all tasks organized by story internally, strict TDD
 
-1. **Setup**: Run `{SCRIPT}` from repo root and parse FEATURE_DIR, CONSTITUTION, and AVAILABLE_DOCS list. All paths must be absolute. `CONSTITUTION` is this work's constitution path (beside project.md when in a project, else in the feature dir). For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
+1. **Setup**: Run `{SCRIPT}` from repo root and parse FEATURE_DIR, CHARTER, and AVAILABLE_DOCS list. All paths must be absolute. `CHARTER` is this work's Engineering Charter path (beside project.md when in a project, else in the feature dir); the script also emits `CONSTITUTION` as a deprecated alias and resolves a legacy `constitution.md` when no `charter.md` exists yet. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
 
    **Check for config**: Read `.speckit/config.yaml` if exists for `tasks.format` setting:
 
@@ -61,7 +61,7 @@ Check for optional flags in the user input:
 
 2. **Load design documents**: Read from FEATURE_DIR:
    - **Required**: plan.md (tech stack, libraries, structure), spec.md (user stories with priorities)
-   - **Required**: the constitution at `CONSTITUTION` (from step 1) — implementation principles, test type/coverage emphasis. (Test *timing* is fixed: strict TDD is mandatory, so test tasks are always generated before their implementation tasks.)
+   - **Required**: the charter at `CHARTER` (from step 1) — implementation principles (architecture, code quality, observability, etc.). Test *types*/coverage default sensibly for the stack; the charter does not own testing. (Test *timing* is fixed: strict TDD is a pipeline invariant, so test tasks are always generated before their implementation tasks.)
    - **Optional**: data-model.md (entities), contracts/ (API endpoints), research.md (decisions), quickstart.md (test scenarios)
    - **Check for project context**: Determine if feature is part of a project
      - Check if current directory is under `specs/project-<name>/`
@@ -134,7 +134,7 @@ The tasks.md should be immediately executable - each task must be specific enoug
 
 **CRITICAL**: Tasks MUST be organized by user story to enable independent implementation and testing.
 
-**Strict TDD is the default — test tasks come before their implementation tasks.** Test *timing* is not a constitution choice: by default every implementation task must be preceded by a test task that is authored first and expected to FAIL before the implementation makes it pass (red-green-refactor). Read the constitution at `CONSTITUTION` only to choose test *types* and emphasis (integration-first vs unit-first, mock vs real dependencies, coverage gate) — never to defer, reorder, or skip test-first ordering.
+**Strict TDD is the default — test tasks come before their implementation tasks.** Test *timing* is a pipeline invariant, not a charter choice: by default every implementation task must be preceded by a test task that is authored first and expected to FAIL before the implementation makes it pass (red-green-refactor). Test *types* and emphasis (integration-first vs unit-first, mock vs real dependencies, coverage) default sensibly for the stack — never defer, reorder, or skip test-first ordering.
 
 **Spike exception**: in spike mode (`--spike`/`--no-tdd`, or the user designates the feature exploratory/throwaway), test-first ordering is waived — tests may be omitted or placed after implementation. Record the testing mode near the top of tasks.md (just under the title) so `/speckit.implement` and `/speckit.analyze` honor it: write `Testing mode: Spike (TDD waived)` for a spike, otherwise `Testing mode: Strict TDD`.
 

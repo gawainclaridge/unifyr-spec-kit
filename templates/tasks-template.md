@@ -16,7 +16,7 @@ description: "Task list template for feature implementation"
 
 **Testing mode**: Strict TDD <!-- or `Spike (TDD waived)` — set by /speckit.tasks --spike -->
 
-**Tests**: By default strict TDD applies — every test task is authored first and must FAIL before its implementation task (red-green-refactor), and test tasks are ordered before the implementation they cover. The constitution decides test *types* and coverage, not timing. In **Spike** testing mode (above), test-first ordering is waived: tests may be omitted or written after.
+**Tests**: By default strict TDD applies — every test task is authored first and must FAIL before its implementation task (red-green-refactor), and test tasks are ordered before the implementation they cover. Strict TDD (test timing) is a pipeline invariant, not a charter choice; test *types* and coverage default sensibly for the stack. In **Spike** testing mode (above), test-first ordering is waived: tests may be omitted or written after.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 

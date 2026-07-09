@@ -21,18 +21,18 @@ Identify inconsistencies, duplications, ambiguities, and underspecified items ac
 
 **STRICTLY READ-ONLY**: Do **not** modify any files. Output a structured analysis report. Offer an optional remediation plan (user must explicitly approve before any follow-up editing commands would be invoked manually).
 
-**Constitution Authority**: The project constitution (resolved via the `CONSTITUTION` path from step 1 — beside project.md when in a project, else in the feature dir) is **non-negotiable** within this analysis scope. Constitution conflicts are automatically CRITICAL and require adjustment of the spec, plan, or tasks—not dilution, reinterpretation, or silent ignoring of the principle. If a principle itself needs to change, that must occur in a separate, explicit constitution update outside `/speckit.analyze`.
+**Engineering Charter Authority**: The project charter (resolved via the `CHARTER` path from step 1 — beside project.md when in a project, else in the feature dir) is **non-negotiable** within this analysis scope. Charter conflicts are automatically CRITICAL and require adjustment of the spec, plan, or tasks—not dilution, reinterpretation, or silent ignoring of the principle. If a principle itself needs to change, that must occur in a separate, explicit charter update outside `/speckit.analyze`.
 
 ## Execution Steps
 
 ### 1. Initialize Analysis Context
 
-Run `{SCRIPT}` once from repo root and parse JSON for FEATURE_DIR, CONSTITUTION, and AVAILABLE_DOCS. Derive absolute paths:
+Run `{SCRIPT}` once from repo root and parse JSON for FEATURE_DIR, CHARTER, and AVAILABLE_DOCS. Derive absolute paths:
 
 - SPEC = FEATURE_DIR/spec.md
 - PLAN = FEATURE_DIR/plan.md
 - TASKS = FEATURE_DIR/tasks.md
-- CONSTITUTION = CONSTITUTION path from JSON (beside project.md when in a project, else in the feature dir)
+- CHARTER = CHARTER path from JSON (beside project.md when in a project, else in the feature dir)
 
 Abort with an error message if any required file is missing (instruct the user to run missing prerequisite command).
 For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
@@ -64,9 +64,9 @@ Load only the minimal necessary context from each artifact:
 - Parallel markers [P]
 - Referenced file paths
 
-**From constitution:**
+**From the Engineering Charter:**
 
-- Load the constitution from the `CONSTITUTION` path (resolved in step 1) for principle validation
+- Load the charter from the `CHARTER` path (resolved in step 1) for principle validation
 
 ### 3. Build Semantic Models
 
@@ -75,7 +75,7 @@ Create internal representations (do not include raw artifacts in output):
 - **Requirements inventory**: Each functional + non-functional requirement with a stable key (derive slug based on imperative phrase; e.g., "User can upload file" → `user-can-upload-file`)
 - **User story/action inventory**: Discrete user actions with acceptance criteria
 - **Task coverage mapping**: Map each task to one or more requirements or stories (inference by keyword / explicit reference patterns like IDs or key phrases)
-- **Constitution rule set**: Extract principle names and MUST/SHOULD normative statements
+- **Charter rule set**: Extract principle names and MUST/SHOULD normative statements
 
 ### 4. Detection Passes (Token-Efficient Analysis)
 
@@ -97,11 +97,11 @@ Focus on high-signal findings. Limit to 50 findings total; aggregate remainder i
 - User stories missing acceptance criteria alignment
 - Tasks referencing files or components not defined in spec/plan
 
-#### D. Constitution Alignment
+#### D. Charter Alignment
 
 - Any requirement or plan element conflicting with a MUST principle
-- Missing mandated sections or quality gates from constitution
-- **Strict TDD ordering**: unless tasks.md declares `Testing mode: Spike (TDD waived)`, any implementation task sequenced before its corresponding test task — or any user-story phase whose tests are not authored first (tests MUST exist and FAIL before implementation) — violates the Test-First Development (NON-NEGOTIABLE) principle; treat as CRITICAL. In spike mode, test-after or omitted tests are expected and are NOT a violation.
+- Missing mandated sections or quality gates from the charter
+- **Strict TDD ordering** (pipeline invariant, not a charter principle): unless tasks.md declares `Testing mode: Spike (TDD waived)`, any implementation task sequenced before its corresponding test task — or any user-story phase whose tests are not authored first (tests MUST exist and FAIL before implementation) — violates the pipeline-wide test-first rule; treat as CRITICAL. In spike mode, test-after or omitted tests are expected and are NOT a violation.
 
 #### E. Coverage Gaps
 
@@ -120,7 +120,7 @@ Focus on high-signal findings. Limit to 50 findings total; aggregate remainder i
 
 Use this heuristic to prioritize findings:
 
-- **CRITICAL**: Violates constitution MUST, missing core spec artifact, or requirement with zero coverage that blocks baseline functionality
+- **CRITICAL**: Violates charter MUST, missing core spec artifact, or requirement with zero coverage that blocks baseline functionality
 - **HIGH**: Duplicate or conflicting requirement, ambiguous security/performance attribute, untestable acceptance criterion
 - **MEDIUM**: Terminology drift, missing non-functional task coverage, underspecified edge case
 - **LOW**: Style/wording improvements, minor redundancy not affecting execution order
@@ -142,7 +142,7 @@ Output a Markdown report (no file writes) with the following structure:
 | Requirement Key | Has Task? | Task IDs | Notes |
 |-----------------|-----------|----------|-------|
 
-**Constitution Alignment Issues:** (if any)
+**Charter Alignment Issues:** (if any)
 
 **Unmapped Tasks:** (if any)
 
@@ -180,7 +180,7 @@ Ask the user: "Would you like me to suggest concrete remediation edits for the t
 
 - **NEVER modify files** (this is read-only analysis)
 - **NEVER hallucinate missing sections** (if absent, report them accurately)
-- **Prioritize constitution violations** (these are always CRITICAL)
+- **Prioritize charter violations** (these are always CRITICAL)
 - **Use examples over exhaustive rules** (cite specific instances, not generic patterns)
 - **Report zero issues gracefully** (emit success report with coverage statistics)
 
