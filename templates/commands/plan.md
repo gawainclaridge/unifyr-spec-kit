@@ -121,12 +121,12 @@ This is **Stage 4 (Planning)** of the Unifyr process:
 
 This phase executes a condensed version of `/speckit.charter` inline when no charter exists or when it is incomplete. It enables planning to proceed without a separate command invocation. The resulting charter provides architectural decisions and implementation principles that actively drive the plan — not just compliance gates.
 
-1. Load the seed template at `.specify/memory/charter.md`
+1. Load the seed template at `memory/charter.md`
 2. **Codebase scan**: Scan repo root for technical signals across the 10-category taxonomy (Code Quality, Architecture, Observability, CI/CD, Security, Versioning, Simplicity, Migration, i18n, UX & Design Inputs). Classify each as Detected / Partial / No Signal. **Testing is not a charter category** — strict TDD is a pipeline invariant, so never scan for or ask about it. **UX & Design Inputs is optional** — classify No Signal and skip for API/backend/infra work with no user-facing surface.
 3. Present scan results table to user.
 4. **Q&A loop**: Ask up to 8 targeted questions (one at a time) following the same format as `/speckit.charter` Step 3 (multiple-choice with recommended option, or short-answer with suggestion). Record answers in working memory. **Do NOT ask about testing** — test timing (strict TDD) is fixed pipeline-wide and test type/coverage default sensibly for the stack; the charter never owns testing.
 5. **Free-text additions**: Prompt user for any additional principles.
-6. **Draft and write charter**: Synthesize scan + Q&A + free-text and write the completed charter to the resolved `CHARTER` path (beside project.md when in a project, else in the feature dir). Never overwrite the seed template at `.specify/memory/charter.md`.
+6. **Draft and write charter**: Synthesize scan + Q&A + free-text and write the completed charter to the resolved `CHARTER` path (beside project.md when in a project, else in the feature dir). Never overwrite the seed template at `memory/charter.md`.
 7. **Add Sign-Off section** with Pending statuses.
 8. Report: "Charter v1.0.0 created. Proceeding to planning..."
 9. Continue to Step 3 (Load context).
