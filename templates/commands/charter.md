@@ -25,7 +25,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ## Outline
 
-You are creating or updating the Engineering Charter. The charter is stored **beside `project.md`** at `specs/project-<name>/charter.md` when the work is part of a project; for a standalone feature it lives in the feature directory at `specs/<###-feature>/charter.md`. The exact target path is resolved for you by the setup script and exposed as the `CHARTER` field (see step 1) — never hardcode it. New charters are seeded from the read-only template at `.specify/memory/charter.md`, which is never overwritten.
+You are creating or updating the Engineering Charter. The charter is stored **beside `project.md`** at `specs/project-<name>/charter.md` when the work is part of a project; for a standalone feature it lives in the feature directory at `specs/<###-feature>/charter.md`. The exact target path is resolved for you by the setup script and exposed as the `CHARTER` field (see step 1) — never hardcode it. New charters are seeded from the read-only template at `memory/charter.md`, which is never overwritten.
 
 > **Naming note**: the Engineering Charter was formerly called the "constitution". The `/speckit.constitution` command still works as a deprecated alias, and the setup script also exposes the path as `CONSTITUTION` for back-compat, but `charter` / `CHARTER` / `charter.md` are the current names. Repos created before the rename may still have a legacy `constitution.md` — the setup script resolves to it automatically when no `charter.md` exists yet.
 
@@ -75,9 +75,9 @@ Follow this execution flow:
 
 1. **Resolve target path and load base content**: Run `{SCRIPT}` from repo root and parse its output for `CHARTER` (the absolute path this charter will be written to) and `REPO_ROOT`. All paths must be absolute. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
    - **If the file at `CHARTER` already exists**: load it — you are AMENDING an existing charter. Preserve prior decisions, version history, and sign-offs unless this run changes them.
-   - **Otherwise** (new charter): load the read-only seed template at `.specify/memory/charter.md` as the starting structure, then write the result to `CHARTER`.
+   - **Otherwise** (new charter): load the read-only seed template at `memory/charter.md` as the starting structure, then write the result to `CHARTER`.
    - Identify every placeholder token of the form `[ALL_CAPS_IDENTIFIER]`.
-   - **Location reminder**: `CHARTER` resolves to `specs/project-<name>/charter.md` (beside project.md) when the work is part of a project, or `specs/<###-feature>/charter.md` for a standalone feature. The seed template at `.specify/memory/charter.md` is never overwritten.
+   - **Location reminder**: `CHARTER` resolves to `specs/project-<name>/charter.md` (beside project.md) when the work is part of a project, or `specs/<###-feature>/charter.md` for a standalone feature. The seed template at `memory/charter.md` is never overwritten.
    **IMPORTANT**: The user might require less or more principles than the ones used in the template. If a number is specified, respect that - follow the general template. You will update the doc accordingly.
 
 2. **Codebase scan**: Scan the repository root for existing architectural patterns, implementation conventions, and technical decisions across 10 categories. The goal is to understand what architectural decisions and implementation principles have **already been established** (implicitly or explicitly) so the Q&A can focus on gaps. For each category, check for the listed file patterns and classify as **Detected** (strong signals found, can draft an architectural decision), **Partial** (some signals but the decision isn't clear), or **No Signal** (no decision evident, need to ask).
@@ -214,7 +214,7 @@ Follow this execution flow:
    - Dates ISO format YYYY-MM-DD.
    - Principles are declarative, testable, and free of vague language ("should" → replace with MUST/SHOULD rationale where appropriate).
 
-8. **Write** the completed charter to the resolved `CHARTER` path (overwrite). Create the parent directory if it does not yet exist. **Never write to the seed template at `.specify/memory/charter.md`** — it stays pristine so future charters can be seeded from it.
+8. **Write** the completed charter to the resolved `CHARTER` path (overwrite). Create the parent directory if it does not yet exist. **Never write to the seed template at `memory/charter.md`** — it stays pristine so future charters can be seeded from it.
 
 9. **Add Sign-Off section** (if not present) to track team approvals:
 
@@ -251,4 +251,4 @@ If the user supplies partial updates (e.g., only one principle revision), still 
 
 If critical info missing (e.g., ratification date truly unknown), insert `TODO(<FIELD_NAME>): explanation` and include in the Sync Impact Report under deferred items.
 
-Do not create a new template; always write to the resolved `CHARTER` path. The seed template at `.specify/memory/charter.md` is read-only — copy from it when creating a new charter, but never overwrite it.
+Do not create a new template; always write to the resolved `CHARTER` path. The seed template at `memory/charter.md` is read-only — copy from it when creating a new charter, but never overwrite it.
