@@ -4,9 +4,9 @@ handoffs:
   - label: Create Specification
     agent: speckit.specify
     prompt: Create a feature specification for this project. --project {PROJECT_NAME} I want to build...
-  - label: Create Constitution
-    agent: speckit.constitution
-    prompt: Create project constitution with principles for...
+  - label: Create Engineering Charter
+    agent: speckit.charter
+    prompt: Create project charter with principles for...
 scripts:
   sh: scripts/bash/create-project.sh --json "{ARGS}"
   ps: scripts/powershell/create-project.ps1 -Json "{ARGS}"
@@ -104,7 +104,7 @@ The first argument is the project name:
    - Project.md path
    - Next steps:
      - "Run `/speckit.specify --project <name> <description>` to add features"
-     - "Run `/speckit.constitution` to create project constitution"
+     - "Run `/speckit.charter` to create project charter"
 
 ## Project Structure
 

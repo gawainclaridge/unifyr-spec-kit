@@ -49,25 +49,25 @@
 **Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
 **Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
 
-## Constitution Check
+## Charter Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
-*The constitution actively drives this plan's decisions — not just compliance gates.*
+*The Engineering Charter actively drives this plan's decisions — not just compliance gates.*
 
 ### Decisions That Shaped This Plan
 
-<!-- List architectural decisions and implementation principles from the constitution
-     that actively influenced technology choices, architecture, testing strategy, and
+<!-- List architectural decisions and implementation principles from the charter
+     that actively influenced technology choices, architecture, and
      migration approach in this plan. Show how each decision mapped to a plan choice. -->
 
-| Constitution Decision | How It Shaped This Plan |
+| Charter Decision | How It Shaped This Plan |
 |-----------------------|------------------------|
-| [e.g., "TDD mandatory"] | [e.g., "Test scenarios designed before implementation tasks"] |
 | [e.g., "Library-First architecture"] | [e.g., "Project structure uses standalone library modules"] |
+| [e.g., "PostgreSQL for all storage"] | [e.g., "Data model targets Postgres with Alembic migrations"] |
 
 ### Compliance Gates
 
-[Gates determined based on constitution file]
+[Gates determined based on charter file]
 
 ## Project Structure
 
@@ -143,7 +143,7 @@ directories captured above]
 
 ## Complexity Tracking
 
-> **Fill ONLY if Constitution Check has violations that must be justified**
+> **Fill ONLY if Charter Check has violations that must be justified**
 
 | Violation | Why Needed | Simpler Alternative Rejected Because |
 |-----------|------------|-------------------------------------|
@@ -199,5 +199,5 @@ directories captured above]
 |-------|------|----------|------|--------|
 | Plan Draft | Engineering | | | Pending |
 | Plan Review | QA | | | Pending |
-| Constitution Check | Engineering | | | Pending |
+| Charter Check | Engineering | | | Pending |
 | Final Sign-Off | All | | | Pending |

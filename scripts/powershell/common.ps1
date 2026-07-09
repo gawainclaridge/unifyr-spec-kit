@@ -92,32 +92,45 @@ function Get-FeatureDir {
     Join-Path $RepoRoot "specs/$Branch"
 }
 
-function Get-ConstitutionFile {
-    # Resolve the constitution file path.
-    # The constitution lives beside project.md when the work is part of a project
-    # (specs/project-<name>/constitution.md); otherwise it lives in the feature
-    # directory (specs/<###-feature>/constitution.md). The seed template that new
-    # constitutions are created from stays at .specify/memory/constitution.md.
+function Get-CharterFile {
+    # Resolve the Engineering Charter file path.
+    # The charter lives beside project.md when the work is part of a project
+    # (specs/project-<name>/charter.md); otherwise it lives in the feature
+    # directory (specs/<###-feature>/charter.md). The seed template that new
+    # charters are created from stays at .specify/memory/charter.md.
+    #
+    # Back-compat: the charter was formerly named "constitution". Repos created
+    # before the rename have a legacy constitution.md in the same location. If a
+    # charter.md is not present but a constitution.md is, the legacy path is
+    # returned so existing work keeps resolving; new charters always write charter.md.
     param([string]$RepoRoot, [string]$FeatureDir, [string]$Branch)
 
-    # 1) On a project branch -> the project directory holds the constitution
+    # 1) On a project branch -> the project directory holds the charter
     if ($Branch -like 'project-*') {
-        return (Join-Path $RepoRoot "specs/$Branch/constitution.md")
+        $dir = Join-Path $RepoRoot "specs/$Branch"
+    }
+    else {
+        # 2) Feature directory nested under a project directory -> use the project dir
+        $parentDir = Split-Path $FeatureDir -Parent
+        if ((Split-Path $parentDir -Leaf) -like 'project-*') {
+            $dir = $parentDir
+        }
+        # 3) SPECIFY_PROJECT env var set -> the named project directory
+        elseif ($env:SPECIFY_PROJECT) {
+            $dir = Join-Path $RepoRoot "specs/project-$($env:SPECIFY_PROJECT)"
+        }
+        # 4) Standalone feature -> the feature directory holds the charter
+        else {
+            $dir = $FeatureDir
+        }
     }
 
-    # 2) Feature directory nested under a project directory -> use the project dir
-    $parentDir = Split-Path $FeatureDir -Parent
-    if ((Split-Path $parentDir -Leaf) -like 'project-*') {
-        return (Join-Path $parentDir 'constitution.md')
-    }
-
-    # 3) SPECIFY_PROJECT env var set -> the named project directory
-    if ($env:SPECIFY_PROJECT) {
-        return (Join-Path $RepoRoot "specs/project-$($env:SPECIFY_PROJECT)/constitution.md")
-    }
-
-    # 4) Standalone feature -> the feature directory holds the constitution
-    return (Join-Path $FeatureDir 'constitution.md')
+    # Prefer charter.md; fall back to a legacy constitution.md when only that exists.
+    $charterPath = Join-Path $dir 'charter.md'
+    $legacyPath = Join-Path $dir 'constitution.md'
+    if (Test-Path $charterPath) { return $charterPath }
+    if (Test-Path $legacyPath) { return $legacyPath }
+    return $charterPath
 }
 
 function Get-FeaturePathsEnv {
@@ -125,8 +138,10 @@ function Get-FeaturePathsEnv {
     $currentBranch = Get-CurrentBranch
     $hasGit = Test-HasGit
     $featureDir = Get-FeatureDir -RepoRoot $repoRoot -Branch $currentBranch
-    $constitutionFile = Get-ConstitutionFile -RepoRoot $repoRoot -FeatureDir $featureDir -Branch $currentBranch
+    $charterFile = Get-CharterFile -RepoRoot $repoRoot -FeatureDir $featureDir -Branch $currentBranch
 
+    # CONSTITUTION is emitted as a deprecated alias of CHARTER so pre-rename
+    # command prompts still resolve; both point to the same path.
     [PSCustomObject]@{
         REPO_ROOT     = $repoRoot
         CURRENT_BRANCH = $currentBranch
@@ -139,7 +154,8 @@ function Get-FeaturePathsEnv {
         DATA_MODEL    = Join-Path $featureDir 'data-model.md'
         QUICKSTART    = Join-Path $featureDir 'quickstart.md'
         CONTRACTS_DIR = Join-Path $featureDir 'contracts'
-        CONSTITUTION  = $constitutionFile
+        CHARTER       = $charterFile
+        CONSTITUTION  = $charterFile
     }
 }
 

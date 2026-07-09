@@ -146,7 +146,7 @@ Stories created in the issue tracker should be **demo-able vertical slices**, no
 
 ## Building Artifact Links (deep-link to source)
 
-Ticket descriptions reference repo artifacts (spec.md, plan.md, tasks.md, constitution.md). Emit these as **clickable deep-links to the source host on the correct branch** — Jira and GitHub render bare paths as dead text.
+Ticket descriptions reference repo artifacts (spec.md, plan.md, tasks.md, charter.md). Emit these as **clickable deep-links to the source host on the correct branch** — Jira and GitHub render bare paths as dead text.
 
 **1. Resolve the repo web base** from the origin remote:
 

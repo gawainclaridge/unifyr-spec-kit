@@ -167,14 +167,36 @@
 - **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"]
 - **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
 
+## Adoption & Rollout *(mandatory)*
+
+<!--
+  How do EXISTING customers move onto this feature — not just how it behaves for
+  new customers signing up going forward? A new feature is rarely "new-only";
+  decide, on purpose, what happens to the cohort that already exists.
+
+  This is a PRODUCT decision (who gets what, when). The TECHNICAL mechanics of any
+  breaking change or schema migration live in the plan's Migration Plan, not here.
+
+  Draft your best answer at spec time; /speckit.clarify will challenge and refine
+  it with the team. If the feature genuinely has no existing-customer surface
+  (net-new product with no current users, internal refactor, doc-only change),
+  replace the bullets with the single line:
+  "No existing-customer impact — <reason>." and omit the rest.
+-->
+
+- **Existing cohort**: [Who already exists that this touches — accounts/tenants/users, and rough scale]
+- **Adoption path**: [Automatic for all existing X / opt-in via <setting> / grandfathered on old behaviour]
+- **One-time migration**: [Backfill of existing data/config needed — or none]
+- **Transition & comms**: [Deprecation window, in-app announcement, enablement doc — or none]
+
 ## Observability & Telemetry *(optional — added by /speckit.clarify when there is feature-specific telemetry to pin down)*
 
 <!--
   HOW THIS SECTION WORKS
 
   - Project-wide observability conventions (event naming style, required structured
-    log fields, PII redaction policy, dashboard standards) live in the constitution,
-    NOT here. /speckit.constitution captures them once for the initiative.
+    log fields, PII redaction policy, dashboard standards) live in the Engineering Charter,
+    NOT here. /speckit.charter captures them once for the initiative.
   - This section captures only what is *new for this feature*: specific events to
     emit, feature-specific fields, an audit trail need, a dashboard row, etc.
   - /speckit.clarify will propose feature-specific items derived from the spec for

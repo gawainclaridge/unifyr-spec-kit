@@ -1,9 +1,9 @@
 ---
 description: Identify underspecified areas in the current feature spec by asking up to 5 highly targeted clarification questions and encoding answers back into the spec.
 handoffs:
-  - label: Create Constitution (Stage 3)
-    agent: speckit.constitution
-    prompt: Create project constitution with principles for...
+  - label: Create Engineering Charter (Stage 3)
+    agent: speckit.charter
+    prompt: Create project charter with principles for...
   - label: Build Technical Plan (Stage 4)
     agent: speckit.plan
     prompt: Create a plan for the spec. I am building with...
@@ -28,7 +28,7 @@ This is **Stage 2 (Review)** of the Unifyr process:
 - **Purpose**: Analyze spec for gaps, add edge cases, clarify ambiguities
 - **Prerequisites**: Completed spec.md from Stage 1
 - **Output**: Clarified spec ready for planning
-- **Next step**: `/speckit.constitution` (Stage 3 - Engineering) or `/speckit.plan` (Stage 4)
+- **Next step**: `/speckit.charter` (Stage 3 - Engineering) or `/speckit.plan` (Stage 4)
 
 ## Outline
 
@@ -41,7 +41,7 @@ Execution steps:
 1. Run `{SCRIPT}` from repo root **once** (combined `--json --paths-only` mode / `-Json -PathsOnly`). Parse minimal JSON payload fields:
    - `FEATURE_DIR`
    - `FEATURE_SPEC`
-   - `CONSTITUTION` (absolute path to the constitution for this work — beside project.md when in a project, else in the feature dir)
+   - `CHARTER` (absolute path to the charter for this work — beside project.md when in a project, else in the feature dir)
    - (Optionally capture `IMPL_PLAN`, `TASKS` for future chained flows.)
    - If JSON parsing fails, abort and instruct user to re-run `/speckit.specify` or verify feature branch environment.
    - For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
@@ -86,15 +86,22 @@ Execution steps:
    - Security & privacy (authN/Z, data protection, threat assumptions)
    - Compliance / regulatory constraints (if any)
 
+   Adoption & Rollout (MUST CONSIDER — see step 4a):
+   - Existing customer cohort affected (who already exists that this feature touches)
+   - Adoption path: automatic/backfilled vs opt-in vs grandfathered on old behaviour
+   - One-time migration of existing data/config, transition period, or comms/enablement needed
+   - NOTE: this is the PRODUCT decision of who-gets-what-when. The TECHNICAL mechanics
+     of breaking changes / schema migrations belong to the plan's Migration Plan, not here.
+
    Observability & Telemetry (MUST CONSIDER — see step 4a):
    - Product analytics events (user-visible actions worth tracking)
-   - Structured log fields specific to this feature (beyond constitution-level required fields)
+   - Structured log fields specific to this feature (beyond charter-level required fields)
    - Metrics (counters, histograms for ops visibility)
    - Traces (span names, propagation)
    - Audit trail (immutable state-change records, if applicable)
    - Dashboards (existing dashboard target, or new dashboard need)
    - NOTE: Project-wide observability conventions (naming, required fields, PII rules)
-     live in the constitution — do not re-derive them here. Only capture what is
+     live in the charter — do not re-derive them here. Only capture what is
      *new for this feature*.
    - NOTE: SLOs and alert thresholds are deliberately excluded — owned by the
      regression process, not feature specs.
@@ -145,33 +152,56 @@ Execution steps:
 
     Current must-consider categories:
 
+    - **Adoption & Rollout** — the spec's `## Adoption & Rollout` section is authored at spec time (mandatory), so it normally arrives pre-drafted. Challenge and confirm it: (a) if it still contains placeholder text (`[Who already exists...]` etc.) or is thin/hand-wavy, ask the example-led adoption question below to fill the gap; (b) if it is drafted but represents a first-pass guess by the PO, ask the same question framed as a confirmation ("here is the drafted adoption path — does the team agree, or change it?") so the existing-customer path is a deliberate team decision, not an unreviewed default; (c) skip only if the section already states an explicit, team-confirmed "No existing-customer impact — <reason>." Record a skip in Clarifications with the reason.
+
     - **Observability & Telemetry** — check the spec's `## Observability & Telemetry` section. If it still shows the "[This section is empty until /speckit.clarify populates it...]" placeholder AND the spec describes any user-facing actions, state changes, or operational concerns, ask the example-led observability question below. Skip the question (and record the skip in Clarifications) if the feature is genuinely telemetry-irrelevant (e.g. dependency bump, internal refactor with no behavior change, doc-only change).
 
     **Example-led question format** (for unfamiliar topics like observability where the team is new to the domain): rather than asking blank-slate questions ("name your telemetry events"), generate concrete examples derived from THIS feature's domain and ask the team to react. Treat "we don't need this bucket" — or "we don't need this section at all" — as valid, encouraged answers when justified.
 
-    Before generating the table, **load the constitution** (the `CONSTITUTION` path from step 1; skip if the file does not exist yet) and read its observability principle (often PRINCIPLE_4 or PRINCIPLE_5) to learn the project-wide conventions (event naming style, required log fields, PII rules). Apply those conventions when generating examples; do NOT re-propose conventions already in the constitution.
+    Before generating the table, **load the charter** (the `CHARTER` path from step 1; skip if the file does not exist yet) and read its observability principle (often PRINCIPLE_4 or PRINCIPLE_5) to learn the project-wide conventions (event naming style, required log fields, PII rules). Apply those conventions when generating examples; do NOT re-propose conventions already in the charter.
 
     Observability question template — generate buckets specific to the feature being specified, not generic boilerplate. Only include buckets where a feature-specific item is plausible; omit buckets that are unlikely to apply for this feature type:
 
     ```markdown
     ## Question [N]: Observability & Telemetry
 
-    **Why we're asking**: This is easy to overlook and expensive to retrofit. The goal is to capture what is *new for this feature* — not project-wide conventions (those live in the constitution).
+    **Why we're asking**: This is easy to overlook and expensive to retrofit. The goal is to capture what is *new for this feature* — not project-wide conventions (those live in the charter).
 
     Below are likely feature-specific telemetry items. Which apply? What's missing? What should be removed? You can also answer **"none — this feature doesn't need a telemetry section"** if appropriate.
 
     | Bucket | Proposed (specific to this feature) |
     |--------|-------------------------------------|
     | Product analytics events | e.g. `<Object> <Verbed>` with properties [...] (derived from primary user actions in spec) |
-    | Feature-specific log fields | e.g. `<custom_field>` beyond the constitution's required fields |
+    | Feature-specific log fields | e.g. `<custom_field>` beyond the charter's required fields |
     | Metrics | e.g. counter `<feature>_<action>_total{...}`, histogram `<feature>_<operation>_ms` |
     | Traces | e.g. span `<feature>.<primary_operation>` |
     | Audit trail | e.g. <state-change> persisted with actor + before/after + reason — or omit |
     | Dashboards | e.g. new row on `<existing-dashboard-name>`, or "joins existing X" |
 
-    **NOTE**: SLOs and alert thresholds are intentionally excluded — those are owned by the regression process. Project-wide conventions are intentionally excluded — those live in the constitution.
+    **NOTE**: SLOs and alert thresholds are intentionally excluded — those are owned by the regression process. Project-wide conventions are intentionally excluded — those live in the charter.
 
     **How to answer**: A free-form reply works. Examples: "events look right, drop the audit trail and dashboards rows, add a metric for X", or "none — internal refactor, no telemetry needed", or paste an edited version of the table.
+    ```
+
+    Adoption & rollout question template — generate an adoption path specific to the feature being specified, not generic boilerplate. Only include buckets that plausibly apply for this feature; omit buckets that are unlikely to apply:
+
+    ```markdown
+    ## Question [N]: Adoption & Rollout
+
+    **Why we're asking**: A new feature is rarely "new customers only, going forward" — the team should decide, on purpose, what happens to customers who already exist. This is easy to leave implicit and expensive to retrofit.
+
+    Below is a likely adoption path for this feature. Which applies? What's missing? You can also answer **"none — this feature has no existing-customer impact"** if appropriate.
+
+    | Bucket | Proposed (specific to this feature) |
+    |--------|-------------------------------------|
+    | Existing cohort | e.g. <who already exists that this touches — accounts/tenants/users, rough scale> |
+    | Adoption path | e.g. automatic for all existing X / opt-in via <setting> / grandfathered on old behaviour |
+    | One-time migration | e.g. backfill <data/config> for existing X — or none needed |
+    | Transition & comms | e.g. <deprecation window>, in-app announcement, enablement doc — or none |
+
+    **NOTE**: This captures the PRODUCT decision (who gets what, when). The technical mechanics of any breaking change or schema migration are handled later in the plan's Migration Plan.
+
+    **How to answer**: A free-form reply works. Examples: "automatic for all existing tenants, backfill their settings, no comms needed", or "opt-in only, grandfather everyone else", or "none — brand-new product, no existing customers".
     ```
 
     When integrating the answer (per step 6):
@@ -225,6 +255,7 @@ Execution steps:
        - User interaction / actor distinction → Update User Stories or Actors subsection (if present) with clarified role, constraint, or scenario.
        - Data shape / entities → Update Data Model (add fields, types, relationships) preserving ordering; note added constraints succinctly.
        - Non-functional constraint → Add/modify measurable criteria in Non-Functional / Quality Attributes section (convert vague adjective to metric or explicit target).
+       - Adoption & rollout answer → Update the pre-drafted `## Adoption & Rollout` section: (a) replace any remaining placeholder bullets and reconcile the drafted bullets (Existing cohort / Adoption path / One-time migration / Transition & comms) with the team's confirmed answer — overwrite a first-pass guess rather than duplicating it; (b) if the team confirms there is no existing-customer surface, replace the bullets with a single line: `No existing-customer impact — <one-line reason>.`. Do not delete the section. In either case, append the Q→A bullet under `## Clarifications` per the standard pattern.
        - Observability & telemetry answer → Replace the placeholder line in `## Observability & Telemetry` based on the team's response: (a) if specific items were picked, add `### <Bucket>` subsections only for the buckets in scope (Product Analytics Events / Feature-Specific Log Fields / Metrics / Traces / Audit Trail / Dashboards) and list the items as bullets; (b) if the team waived the section, replace the placeholder with a single italicized sentence: `_No feature-specific telemetry — <one-line reason>._`. In either case, append the Q→A bullet under `## Clarifications` per the standard pattern.
        - Edge case / negative flow → Add a new bullet under Edge Cases / Error Handling (or create such subsection if template provides placeholder for it).
        - Terminology conflict → Normalize term across spec; retain original only if necessary by adding `(formerly referred to as "X")` once.

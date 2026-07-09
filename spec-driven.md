@@ -85,13 +85,13 @@ Stage 2 - Review (Product/Engineering/QA)
 ├── Add acceptance criteria, edge cases
 └── Sign off spec (advisory)
 
-Stage 3 - Constitution (Engineering)
-├── /speckit.constitution → Scans codebase, runs interactive Q&A
+Stage 3 - Charter (Engineering)
+├── /speckit.charter → Scans codebase, runs interactive Q&A
 ├── Establishes architectural decisions & implementation principles that drive plan & implement
-└── Sign off constitution (required before planning)
+└── Sign off charter (finalized before or during planning; enforced before plan.md is produced)
 
 Stage 4 - Planning (Engineering)
-├── /speckit.plan        → Creates plan.md (requires constitution finalized)
+├── /speckit.plan        → Creates plan.md (requires a finalized charter; creates one inline via Phase -1 if missing)
 └── Testing scenarios defined
 
 Stage 5 - Tasks (Engineering)
@@ -106,7 +106,7 @@ Understanding artifact stability helps teams know what can change and when:
 
 | Artifact | Stability | Notes |
 |----------|-----------|-------|
-| constitution.md | Very Stable | Rarely changes after initial creation |
+| charter.md | Very Stable | Rarely changes after initial creation |
 | spec.md | Stable | Changes require review and sign-off |
 | plan.md | Moderate | Technical decisions may evolve |
 | tasks.md | Volatile | Regenerate from plan changes, don't edit directly |
@@ -132,7 +132,7 @@ This command transforms a simple feature description (the user-prompt) into a co
 Once a feature specification exists, this command creates a comprehensive implementation plan:
 
 1. **Specification Analysis**: Reads and understands the feature requirements, user stories, and acceptance criteria
-2. **Constitutional Compliance**: Ensures alignment with project constitution and architectural principles
+2. **Charter Compliance**: Ensures alignment with project charter and architectural principles
 3. **Technical Translation**: Converts business requirements into technical architecture and implementation details
 4. **Detailed Documentation**: Generates supporting documents for data models, API contracts, and test scenarios
 5. **Quickstart Validation**: Produces a quickstart guide capturing key validation scenarios
@@ -240,7 +240,7 @@ Total: ~12 hours of documentation work
 
 # This automatically:
 # - Creates branch "003-chat-system"
-# - Generates specs/003-chat-system/spec.md with Non-Goals, Sign-Off, Changelog
+# - Generates specs/003-chat-system/spec.md with Non-Goals, Adoption & Rollout, Sign-Off, Changelog
 # - Populates it with structured requirements
 
 # ============================================
@@ -248,21 +248,22 @@ Total: ~12 hours of documentation work
 # ============================================
 
 # Analyze spec for gaps and clarify requirements
+# (challenges the drafted Adoption & Rollout path — how existing customers get the feature)
 /speckit.clarify
 
 # Manual review: Add acceptance criteria, edge cases
 # Sign off spec (advisory)
 
 # ============================================
-# STAGE 3 - Constitution (Engineering)
+# STAGE 3 - Charter (Engineering)
 # ============================================
 
-# Create/finalize constitution with interactive Q&A
+# Create/finalize charter with interactive Q&A
 # Scans codebase for technical signals, asks targeted questions
-/speckit.constitution
+/speckit.charter
 
 # Or provide principles directly:
-/speckit.constitution TDD mandatory, microservices architecture, all APIs versioned
+/speckit.charter microservices architecture, all APIs versioned, PostgreSQL for all storage
 
 # ============================================
 # STAGE 4 - Planning (Engineering)
@@ -297,9 +298,9 @@ Total: ~12 hours of documentation work
 
 Following the 5-stage process, you have:
 
-- **Stage 1**: A complete feature specification with an Experience Vision, user stories, non-goals, and acceptance criteria
+- **Stage 1**: A complete feature specification with an Experience Vision, user stories, non-goals, an adoption & rollout path for existing customers, and acceptance criteria
 - **Stage 2**: Clarified requirements with team review and sign-off
-- **Stage 3**: A finalized constitution with engineering principles and governance
+- **Stage 3**: A finalized charter with engineering principles and governance
 - **Stage 4**: A detailed implementation plan with technology choices, testing scenarios, and migration plans
 - **Stage 5**: Executable tasks, Jira tickets, and implemented code
 - All documents properly versioned in a feature branch
@@ -416,7 +417,7 @@ The templates include comprehensive checklists that act as "unit tests" for the 
 
 These checklists force the LLM to self-review its output systematically, catching gaps that might otherwise slip through. It's like giving the LLM a quality assurance framework.
 
-#### 4. **Constitutional Compliance Through Gates**
+#### 4. **Charter Compliance Through Gates**
 
 The implementation plan template enforces architectural principles through phase gates:
 
@@ -484,13 +485,13 @@ These constraints work together to produce specifications that are:
 
 The templates transform the LLM from a creative writer into a disciplined specification engineer, channeling its capabilities toward producing consistently high-quality, executable specifications that truly drive development.
 
-## The Constitutional Foundation: Enforcing Architectural Discipline
+## The Charter Foundation: Enforcing Architectural Discipline
 
-At the heart of SDD lies a constitution—a set of immutable principles that govern how specifications become code. The constitution (stored beside `project.md` at `specs/project-<name>/constitution.md`, or in the feature directory for standalone work; seeded from `.specify/memory/constitution.md`) acts as the architectural DNA of the system, ensuring that every generated implementation maintains consistency, simplicity, and quality.
+At the heart of SDD lies an Engineering Charter—a set of immutable principles that govern how specifications become code. The charter (stored beside `project.md` at `specs/project-<name>/charter.md`, or in the feature directory for standalone work; seeded from `.specify/memory/charter.md`) acts as the architectural DNA of the system, ensuring that every generated implementation maintains consistency, simplicity, and quality.
 
 ### The Nine Articles of Development
 
-The constitution defines nine articles that shape every aspect of the development process:
+The charter defines nine articles that shape every aspect of the development process. (Note: in the Unifyr fork the two testing articles below — III and IX — are enforced as a **pipeline invariant** by `/speckit.tasks` and `/speckit.implement` rather than being asked as charter Q&A; strict TDD is always on and is never turned back into a per-initiative choice.)
 
 #### Article I: Library-First Principle
 
@@ -559,7 +560,7 @@ Tests MUST use realistic environments:
 
 This ensures generated code works in practice, not just in theory.
 
-### Constitutional Enforcement Through Templates
+### Charter Enforcement Through Templates
 
 The implementation plan template operationalizes these articles through concrete checkpoints:
 
@@ -586,37 +587,37 @@ These gates act as compile-time checks for architectural principles. The LLM can
 
 ### The Power of Immutable Principles
 
-The constitution's power lies in its immutability. While implementation details can evolve, the core principles remain constant. This provides:
+The charter's power lies in its immutability. While implementation details can evolve, the core principles remain constant. This provides:
 
 1. **Consistency Across Time**: Code generated today follows the same principles as code generated next year
 2. **Consistency Across LLMs**: Different AI models produce architecturally compatible code
 3. **Architectural Integrity**: Every feature reinforces rather than undermines the system design
 4. **Quality Guarantees**: Test-first, library-first, and simplicity principles ensure maintainable code
 
-### Constitutional Evolution
+### Charter Evolution
 
 While principles are immutable, their application can evolve:
 
 ```text
 Section 4.2: Amendment Process
-Modifications to this constitution require:
+Modifications to this charter require:
 - Explicit documentation of the rationale for change
 - Review and approval by project maintainers
 - Backwards compatibility assessment
 ```
 
-This allows the methodology to learn and improve while maintaining stability. The constitution shows its own evolution with dated amendments, demonstrating how principles can be refined based on real-world experience.
+This allows the methodology to learn and improve while maintaining stability. The charter shows its own evolution with dated amendments, demonstrating how principles can be refined based on real-world experience.
 
 ### Beyond Rules: A Development Philosophy
 
-The constitution isn't just a rulebook—it's a philosophy that shapes how LLMs think about code generation:
+The charter isn't just a rulebook—it's a philosophy that shapes how LLMs think about code generation:
 
 - **Observability Over Opacity**: Everything must be inspectable through CLI interfaces
 - **Simplicity Over Cleverness**: Start simple, add complexity only when proven necessary
 - **Integration Over Isolation**: Test in real environments, not artificial ones
 - **Modularity Over Monoliths**: Every feature is a library with clear boundaries
 
-By embedding these principles into the specification and planning process, SDD ensures that generated code isn't just functional—it's maintainable, testable, and architecturally sound. The constitution transforms AI from a code generator into an architectural partner that respects and reinforces system design principles.
+By embedding these principles into the specification and planning process, SDD ensures that generated code isn't just functional—it's maintainable, testable, and architecturally sound. The charter transforms AI from a code generator into an architectural partner that respects and reinforces system design principles.
 
 ## The Transformation
 

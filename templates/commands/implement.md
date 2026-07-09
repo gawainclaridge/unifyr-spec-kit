@@ -19,14 +19,14 @@ This is **Stage 5 (Tasks)** - Implementation phase:
 
 - **Team**: Engineering only
 - **Prerequisites**:
-  - tasks.md MUST exist (constitution was finalized in Stage 3, plan in Stage 4)
-  - the constitution provides architectural decisions, implementation principles, and test type/coverage emphasis that guide HOW tasks are executed. Test *timing* defaults to strict TDD (red-green-refactor); it is waived only in **spike mode** (see step 4b).
+  - tasks.md MUST exist (charter was finalized in Stage 3, plan in Stage 4)
+  - the charter provides architectural decisions and implementation principles that guide HOW tasks are executed. Test *timing* defaults to strict TDD (red-green-refactor) as a pipeline invariant (waived only in **spike mode** — see step 4b); test *types*/coverage default sensibly for the stack (the charter does not own testing).
   - Recommended: Issue tickets created via `/speckit.taskstoissues`
 - **Output**: Implemented feature code
 
 ## Outline
 
-1. Run `{SCRIPT}` from repo root and parse FEATURE_DIR, CONSTITUTION, and AVAILABLE_DOCS list. All paths must be absolute. `CONSTITUTION` is this work's constitution path (beside project.md when in a project, else in the feature dir). For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
+1. Run `{SCRIPT}` from repo root and parse FEATURE_DIR, CHARTER, and AVAILABLE_DOCS list. All paths must be absolute. `CHARTER` is this work's Engineering Charter path (beside project.md when in a project, else in the feature dir); the script also emits `CONSTITUTION` as a deprecated alias and resolves a legacy `constitution.md` when no `charter.md` exists yet. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
 
 2. **Verify prerequisites**:
    - **Tasks required**: Verify tasks.md exists in FEATURE_DIR
@@ -66,7 +66,7 @@ This is **Stage 5 (Tasks)** - Implementation phase:
 4. Load and analyze the implementation context:
    - **REQUIRED**: Read tasks.md for the complete task list and execution plan
    - **REQUIRED**: Read plan.md for tech stack, architecture, and file structure
-   - **REQUIRED**: Read the constitution at `CONSTITUTION` (from step 1) for architectural decisions, implementation principles, and test type/coverage emphasis. (Test *timing* defaults to strict TDD; spike mode waives it — see step 4b.)
+   - **REQUIRED**: Read the charter at `CHARTER` (from step 1) for architectural decisions and implementation principles. (Test *timing* defaults to strict TDD; test *types*/coverage default sensibly for the stack; spike mode waives TDD — see step 4b.)
    - **IF EXISTS**: Read data-model.md for entities and relationships
    - **IF EXISTS**: Read contracts/ for API specifications and test requirements
    - **IF EXISTS**: Read research.md for technical decisions and constraints
@@ -79,7 +79,7 @@ This is **Stage 5 (Tasks)** - Implementation phase:
 - the user passed `--spike` (alias `--no-tdd`) in the input, or explicitly says this is a spike / throwaway / exploratory effort; or
 - tasks.md carries a `Testing mode: Spike` marker (set by `/speckit.tasks --spike`).
 
-   **Strict TDD (default) — the implementation contract**: every unit of behavior is built with the red-green-refactor cycle. The constitution is consulted only for test *types* (unit/integration/contract mix), mock-vs-real dependencies, coverage gates, and non-testing principles (code quality, architecture, observability) — never to weaken, defer, or skip test-first ordering. For each unit of work (endpoint, model, service, branch of behavior), follow this cycle and do not skip steps:
+   **Strict TDD (default) — the implementation contract**: every unit of behavior is built with the red-green-refactor cycle. Test *types* (unit/integration/contract mix), mock-vs-real dependencies, and coverage default sensibly for the stack; the charter is consulted for non-testing principles (code quality, architecture, observability) — never to weaken, defer, or skip test-first ordering. For each unit of work (endpoint, model, service, branch of behavior), follow this cycle and do not skip steps:
 
 - **RED**: Write the test(s) first and run them. Confirm they FAIL for the right reason (a genuine assertion/behavior failure, not a typo, missing import, or collection error). A test that passes immediately, or errors out before reaching its assertion, is not a valid RED — fix the test until it fails meaningfully. **Never write implementation code before a failing test exists.**
 - **GREEN**: Write the minimum implementation needed to make the failing test(s) pass. Run the tests and confirm they now pass.
@@ -90,8 +90,8 @@ This is **Stage 5 (Tasks)** - Implementation phase:
 
    **Both modes always apply:**
 
-- **Code quality**: Apply the constitution's principles about code style, documentation, and observability.
-- **Architecture enforcement**: Follow the constitution's modularity and dependency-direction decisions as you create files.
+- **Code quality**: Apply the charter's principles about code style, documentation, and observability.
+- **Architecture enforcement**: Follow the charter's modularity and dependency-direction decisions as you create files.
 - **Execution verification is MANDATORY** (independent of testing mode): every task and phase boundary MUST be verified against ground truth before it is marked complete — compile/build the affected code and run the relevant tests, linters, and static analysis. Even a spike must compile/build and pass whatever tests/lint exist. Never mark a task `[X]` based on self-assessment (e.g., ticking a checklist item) when an executable check is available — a passing build/test run is the only acceptable evidence of completion.
 
 5. **Project Setup Verification**:
@@ -155,12 +155,12 @@ This is **Stage 5 (Tasks)** - Implementation phase:
    - **Setup first**: Initialize project structure, dependencies, configuration
    - **Tests first by default (strict TDD)**: For every component, write and run its failing test(s) before writing any implementation (see step 4b). Never defer testing to a later phase. Exception: **spike mode** — tests optional / may come after.
    - **Core development**: Implement models, services, CLI commands, endpoints — each preceded by its failing test, then implemented to green
-   - **Integration work**: Database connections, middleware, logging, external services — with their integration tests written first (test type/emphasis per constitution)
-   - **Polish and validation**: Performance optimization, documentation, final coverage check against constitution requirements
+   - **Integration work**: Database connections, middleware, logging, external services — with their integration tests written first (test type/emphasis per stack defaults)
+   - **Polish and validation**: Performance optimization, documentation, final coverage check against the coverage target
 
 9. Progress tracking and error handling:
    - Report progress after each completed task
-   - **Verify-and-iterate (self-correction loop)**: After implementing each task — and at every phase boundary — run the project's verification commands: build/compile, the relevant test suite, and linters/static analysis. Discover the exact commands from plan.md's Technical Context, the constitution's quality gates, and the repo's build tooling (e.g., the build file, package scripts, CI config). If verification fails: read the actual error output, diagnose and fix the root cause, then re-run. Repeat up to a small bounded number of attempts (default: 3). Never mark a task `[X]` while its verification is red, and never start a dependent task on a red build.
+   - **Verify-and-iterate (self-correction loop)**: After implementing each task — and at every phase boundary — run the project's verification commands: build/compile, the relevant test suite, and linters/static analysis. Discover the exact commands from plan.md's Technical Context, the charter's quality gates, and the repo's build tooling (e.g., the build file, package scripts, CI config). If verification fails: read the actual error output, diagnose and fix the root cause, then re-run. Repeat up to a small bounded number of attempts (default: 3). Never mark a task `[X]` while its verification is red, and never start a dependent task on a red build.
    - If a non-parallel task is still failing after the bounded self-correction attempts: halt, and report the failing command, its output, your diagnosis, and suggested next steps.
    - For parallel tasks [P], continue with successful tasks, report failed ones
    - Provide clear error messages with context for debugging
@@ -170,8 +170,8 @@ This is **Stage 5 (Tasks)** - Implementation phase:
 10. Completion validation:
     - Verify all required tasks are completed
     - Check that implemented features match the original specification
-    - **Run the full relevant verification suite (build, tests, linters/static analysis) and confirm it passes GREEN — this is required, not conditional.** Validate coverage against the constitution's threshold if one is defined. Do NOT report success on the basis of self-assessment, completed checklist items, or "should pass" reasoning — only an actual passing run counts as evidence of completion.
-    - Confirm the implementation follows the technical plan and adheres to constitution principles
-    - Report final status with summary of completed work and constitution compliance
+    - **Run the full relevant verification suite (build, tests, linters/static analysis) and confirm it passes GREEN — this is required, not conditional.** Validate coverage against the coverage target if one is defined. Do NOT report success on the basis of self-assessment, completed checklist items, or "should pass" reasoning — only an actual passing run counts as evidence of completion.
+    - Confirm the implementation follows the technical plan and adheres to charter principles
+    - Report final status with summary of completed work and charter compliance
 
 Note: This command assumes a complete task breakdown exists in tasks.md. If tasks are incomplete or missing, suggest running `/speckit.tasks` first to regenerate the task list.

@@ -60,7 +60,7 @@ EXAMPLES:
 $paths = Get-FeaturePathsEnv
 
 # Skip strict feature-branch validation in paths-only mode (it performs no
-# prerequisite validation), so path resolution — including the constitution
+# prerequisite validation), so path resolution — including the charter
 # path — also works on project-* and main branches.
 if (-not $PathsOnly) {
     if (-not (Test-FeatureBranch -Branch $paths.CURRENT_BRANCH -HasGit:$paths.HAS_GIT)) {
@@ -78,6 +78,7 @@ if ($PathsOnly) {
             FEATURE_SPEC = $paths.FEATURE_SPEC
             IMPL_PLAN    = $paths.IMPL_PLAN
             TASKS        = $paths.TASKS
+            CHARTER      = $paths.CHARTER
             CONSTITUTION = $paths.CONSTITUTION
         } | ConvertTo-Json -Compress
     } else {
@@ -87,6 +88,7 @@ if ($PathsOnly) {
         Write-Output "FEATURE_SPEC: $($paths.FEATURE_SPEC)"
         Write-Output "IMPL_PLAN: $($paths.IMPL_PLAN)"
         Write-Output "TASKS: $($paths.TASKS)"
+        Write-Output "CHARTER: $($paths.CHARTER)"
         Write-Output "CONSTITUTION: $($paths.CONSTITUTION)"
     }
     exit 0
@@ -136,12 +138,14 @@ if ($Json) {
     # JSON output
     [PSCustomObject]@{
         FEATURE_DIR = $paths.FEATURE_DIR
+        CHARTER = $paths.CHARTER
         CONSTITUTION = $paths.CONSTITUTION
         AVAILABLE_DOCS = $docs
     } | ConvertTo-Json -Compress
 } else {
     # Text output
     Write-Output "FEATURE_DIR:$($paths.FEATURE_DIR)"
+    Write-Output "CHARTER:$($paths.CHARTER)"
     Write-Output "CONSTITUTION:$($paths.CONSTITUTION)"
     Write-Output "AVAILABLE_DOCS:"
     

@@ -21,17 +21,18 @@
 >
 > | Change | What it adds | Why it matters for Unifyr |
 > |--------|-------------|--------------------------|
-> | **5-stage process** | Specification → Review → Constitution → Planning → Tasks with explicit team ownership (Product, Engineering, QA) | Maps directly to our sprint ceremonies and handoff points |
+> | **5-stage process** | Specification → Review → Charter → Planning → Tasks with explicit team ownership (Product, Engineering, QA) | Maps directly to our sprint ceremonies and handoff points |
 > | **Multi-feature projects** | `/speckit.project` command and `--project` flag group related specs under a shared project context | Supports epic-level planning where multiple features share constraints, users, and scope boundaries |
-> | **Constitution enforcement** | Constitution is a hard prerequisite for `/speckit.plan` | Ensures high-level architectural decisions are agreed before any planning begins, reducing rework |
+> | **Charter enforcement** | `/speckit.plan` cannot produce a plan without a finalized charter — created either as a separate Stage 3 step or inline via the plan's auto-triggered Phase -1 | Architectural decisions are locked in before the plan is generated, without forcing a separate up-front step |
 > | **Jira integration** | `--jira` flag on `/speckit.taskstoissues` creates an Epic → Story hierarchy with Fibonacci story points; ticket descriptions deep-link spec.md/plan.md to the Bitbucket branch | Tickets flow into our Jira boards with correct hierarchy, sizing, and clickable source links |
 > | **Per-story task files** | `--per-story` flag on `/speckit.tasks` generates separate task files per user story | Enables parallel story assignment across team members in a sprint |
 > | **Enforced TDD (with escape hatch)** | Strict test-first (red-green-refactor) is the pipeline default; `--spike` / `--no-tdd` waives it for throwaway/exploratory work | A robust validation path on production code, without blocking spikes |
 > | **Complexity scoring** | Fibonacci-based story point estimates with calibration (8 pts ≈ 5 days) and split advisory at 20+ pts | Right-sizes features before sprint commitment; flags over-scoped work early |
 > | **Mid-flight change guidance** | Amend-vs-restart decision framework, 3-4 iteration rule, impact matrix | Gives the team a shared playbook for handling scope changes without accumulating drift |
-> | **Artifact stability framework** | constitution (very stable) → spec (stable) → plan (moderate) → tasks (volatile) | Everyone knows which artifacts are safe to change and which require re-approval |
-> | **Sign-off tracking** | Advisory sign-off tables in spec, plan, and constitution | Makes approval status visible across Product, Engineering, and QA |
+> | **Artifact stability framework** | charter (very stable) → spec (stable) → plan (moderate) → tasks (volatile) | Everyone knows which artifacts are safe to change and which require re-approval |
+> | **Sign-off tracking** | Advisory sign-off tables in spec, plan, and charter | Makes approval status visible across Product, Engineering, and QA |
 > | **Demo-able vertical slices** | Stories must be independently testable and demonstrable to QA/Product | Aligns with our sprint review format where every story is demoed |
+> | **Adoption & Rollout** | Mandatory spec section forcing an existing-customer adoption path (automatic / opt-in / grandfathered), challenged by `/speckit.clarify` | Stops features shipping as "new customers only, going forward" by accident; existing-customer rollout is a decision on the record |
 >
 > Upstream contributions are welcomed back. See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
@@ -115,7 +116,7 @@ Unifyr Spec Kit follows a structured 5-stage workflow aligned with team collabor
 |-------|-------|-------------|
 | **Stage 1: Specification** | Product | `/speckit.project`, `/speckit.specify` |
 | **Stage 2: Review** | Product/Engineering/QA | `/speckit.clarify` |
-| **Stage 3: Constitution** | Engineering | `/speckit.constitution` |
+| **Stage 3: Charter** | Engineering | `/speckit.charter` |
 | **Stage 4: Planning** | Engineering | `/speckit.plan` |
 | **Stage 5: Tasks** | Engineering | `/speckit.tasks`, `/speckit.taskstoissues`, `/speckit.implement` |
 
@@ -145,25 +146,25 @@ Use **`/speckit.clarify`** to identify and resolve ambiguities in your specifica
 /speckit.clarify Focus on security and performance requirements.
 ```
 
-### 4. Create constitution (Stage 3: Constitution)
+### 4. Create the Engineering Charter (Stage 3: Charter)
 
-Use **`/speckit.constitution`** to establish high-level architectural decisions for this initiative. The command scans your codebase for technical signals, then runs an interactive Q&A to fill gaps across 10 architectural concern categories:
+Use **`/speckit.charter`** to establish high-level architectural decisions for this initiative. The command scans your codebase for technical signals, then runs an interactive Q&A to fill gaps across 10 architectural concern categories:
 
 ```bash
-/speckit.constitution
+/speckit.charter
 ```
 
 Or seed it with known principles — the Q&A will confirm and fill gaps:
 
 ```bash
-/speckit.constitution Create principles focused on code quality, testing standards, user experience consistency, and performance requirements
+/speckit.charter Create principles focused on code quality, architecture boundaries, user experience consistency, and performance requirements
 ```
 
-The constitution captures **high-level architectural decisions** — the foundational technical direction that directly informs Stage 4 (Planning) and Stage 5 (Implementation). It must be finalized before planning can proceed. See [Stage 3 details](#stage-3-constitution-engineering) for the full workflow.
+The charter captures **high-level architectural decisions** — the foundational technical direction that directly informs Stage 4 (Planning) and Stage 5 (Implementation). It is finalized before *or during* planning: run `/speckit.charter` as a separate Stage 3 step, or let `/speckit.plan` create it inline (Phase -1) if it's missing. Either way, the plan cannot be produced without a finalized charter. See [Stage 3 details](#stage-3-charter-engineering) for the full workflow.
 
 ### 5. Create implementation plan (Stage 4: Planning)
 
-Use the **`/speckit.plan`** command to provide your tech stack and architecture choices. The constitution must be finalized before this step.
+Use the **`/speckit.plan`** command to provide your tech stack and architecture choices. A finalized charter is required before the plan can be produced — if one doesn't exist yet, `/speckit.plan` detects this and offers to create it inline (Phase -1) before planning proceeds.
 
 ```bash
 /speckit.plan The application uses Vite with minimal number of libraries. Use vanilla HTML, CSS, and JavaScript as much as possible. Images are not uploaded anywhere and metadata is stored in a local SQLite database.
@@ -303,7 +304,7 @@ Essential commands for the Spec-Driven Development workflow:
 
 | Command                 | Description                                                              |
 | ----------------------- | ------------------------------------------------------------------------ |
-| `/speckit.constitution` | Establish high-level architectural decisions and engineering principles that guide planning and implementation |
+| `/speckit.charter` | Establish high-level architectural decisions and engineering principles that guide planning and implementation |
 | `/speckit.specify`      | Define what you want to build (requirements and user stories)            |
 | `/speckit.plan`         | Create technical implementation plans with your chosen tech stack        |
 | `/speckit.tasks`        | Generate actionable task lists for implementation                        |
@@ -474,7 +475,7 @@ Go to the project folder and run your AI agent. In our example, we're using `cla
 
 ![Bootstrapping Claude Code environment](./media/bootstrap-claude-code.gif)
 
-You will know that things are configured correctly if you see the `/speckit.constitution`, `/speckit.specify`, `/speckit.plan`, `/speckit.tasks`, and `/speckit.implement` commands available.
+You will know that things are configured correctly if you see the `/speckit.charter`, `/speckit.specify`, `/speckit.plan`, `/speckit.tasks`, and `/speckit.implement` commands available.
 
 #### Create shared project context (`/speckit.project`) — optional
 
@@ -518,24 +519,24 @@ After this prompt is entered, you should see Claude Code kick off the planning a
 
 Once this step is completed, you should have a new branch created (e.g., `001-create-taskify`), as well as a new specification in the `specs/001-create-taskify` directory.
 
-The produced specification should contain an **Experience Vision** (a short narrative describing what success feels like from the customer's perspective), user stories, and functional requirements, as defined in the template.
+The produced specification should contain an **Experience Vision** (a short narrative describing what success feels like from the customer's perspective), user stories, functional requirements, and an **Adoption & Rollout** section (how existing customers move onto the feature — not just how it behaves for new customers going forward), as defined in the template.
 
-#### Draft project principles (`/speckit.constitution`) — optional
+#### Draft project principles (`/speckit.charter`) — optional
 
-Optionally, establish your project's high-level architectural decisions using the `/speckit.constitution` command. The constitution captures the architectural direction for a specific project or epic set — decisions that directly guide Stage 4 (Planning) and Stage 5 (Implementation):
+Optionally, establish your project's high-level architectural decisions using the `/speckit.charter` command. The charter captures the architectural direction for a specific project or epic set — decisions that directly guide Stage 4 (Planning) and Stage 5 (Implementation):
 
 ```text
-/speckit.constitution Create principles focused on code quality, testing standards, user experience consistency, and performance requirements. Include governance for how these principles should guide technical decisions and implementation choices.
+/speckit.charter Create principles focused on code quality, architecture boundaries, user experience consistency, and performance requirements. Include governance for how these principles should guide technical decisions and implementation choices.
 ```
 
-This writes the constitution **beside your `project.md`** at `specs/project-<name>/constitution.md` (or, for a standalone feature, in the feature directory at `specs/<###-feature>/constitution.md`), seeded from the read-only `.specify/memory/constitution.md` template. The constitution is its own stage (Stage 3) and **must be finalized before** Stage 4 (Planning).
+This writes the charter **beside your `project.md`** at `specs/project-<name>/charter.md` (or, for a standalone feature, in the feature directory at `specs/<###-feature>/charter.md`), seeded from the read-only `.specify/memory/charter.md` template. The charter is its own stage (Stage 3), but you don't have to run it separately — `/speckit.plan` will create one inline (Phase -1) if you go straight to planning. Either way, a finalized charter is required before the plan can be produced.
 
 At this stage, your project folder contents should resemble the following:
 
 ```text
 └── .specify
     ├── memory
-    │  └── constitution.md
+    │  └── charter.md
     ├── scripts
     │  ├── check-prerequisites.sh
     │  ├── common.sh
@@ -557,7 +558,7 @@ At this stage, your project folder contents should resemble the following:
 
 With the baseline specification created, you can go ahead and clarify any of the requirements that were not captured properly within the first shot attempt.
 
-You should run the structured clarification workflow **before** creating a technical plan to reduce rework downstream. If the spec is missing an **Experience Vision**, clarify will block and ask you to write one before proceeding — this is the north star that anchors all downstream clarification.
+You should run the structured clarification workflow **before** creating a technical plan to reduce rework downstream. If the spec is missing an **Experience Vision**, clarify will block and ask you to write one before proceeding — this is the north star that anchors all downstream clarification. Clarify also **challenges the drafted Adoption & Rollout path** — confirming with the team how existing customers get the feature — so "new customers only, going forward" is a deliberate decision rather than an unreviewed default.
 
 Preferred order:
 
@@ -584,35 +585,34 @@ Read the review and acceptance checklist, and check off each item in the checkli
 
 It's important to use the interaction with Claude Code as an opportunity to clarify and ask questions around the specification - **do not treat its first attempt as final**.
 
-### Stage 3: Constitution (Engineering)
+### Stage 3: Charter (Engineering)
 
-The constitution captures your team's **high-level architectural decisions and overarching implementation principles** for this initiative — the foundational technical direction that directly informs how `/speckit.plan` structures the implementation and how `/speckit.implement` executes it. It sits between the specification (the **what**) and the plan (the **how, technically**), acting as the architectural DNA that ensures all downstream technical choices stay aligned. Where the agent file captures universal product truths that rarely change, the constitution captures initiative-specific engineering guidance that goes beyond those universals.
+The Engineering Charter captures your team's **high-level architectural decisions and overarching implementation principles** for this initiative — the foundational technical direction that directly informs how `/speckit.plan` structures the implementation and how `/speckit.implement` executes it. It sits between the specification (the **what**) and the plan (the **how, technically**), acting as the architectural DNA that ensures all downstream technical choices stay aligned. Where the agent file captures universal product truths that rarely change, the charter captures initiative-specific engineering guidance that goes beyond those universals.
 
-#### Why the constitution matters
+#### Why the charter matters
 
-Without a constitution, every planning session reinvents architectural decisions from scratch. With one, the AI has clear engineering guardrails: it knows which patterns to follow, what architectural boundaries to respect, which implementation principles to enforce, and where complexity must be justified. The constitution feeds directly into `/speckit.plan` (Stage 4) — where it actively drives technology choices, architecture patterns, testing strategy, and migration approach — and into `/speckit.implement` (Stage 5) — where it enforces consistency across every generated file.
+Without a charter, every planning session reinvents architectural decisions from scratch. With one, the AI has clear engineering guardrails: it knows which patterns to follow, what architectural boundaries to respect, which implementation principles to enforce, and where complexity must be justified. The charter feeds directly into `/speckit.plan` (Stage 4) — where it actively drives technology choices, architecture patterns, and migration approach — and into `/speckit.implement` (Stage 5) — where it enforces consistency across every generated file. (Strict TDD is enforced pipeline-wide as an invariant, independent of the charter.)
 
 #### Understanding the three context files
 
 | File | Owner | About | Scope |
 |------|-------|-------|-------|
 | **Agent file** (CLAUDE.md etc.) | Engineering | Universal product truths | Entire product/repo |
-| **Constitution** | Engineering | **Architectural decisions & implementation principles** that drive plan & implement | Project/epic set |
+| **Charter** | Engineering | **Architectural decisions & implementation principles** that drive plan & implement | Project/epic set |
 | **Project.md** | Product | **Universal constraints** that bound specifications | Multi-feature project |
 
 - **Agent file**: Universal product architecture that rarely changes ("We deploy to AWS", "All APIs are REST"). The permanent product identity.
-- **Constitution**: Initiative-specific architectural decisions AND overarching implementation principles that `/speckit.plan` and `/speckit.implement` use as guardrails. Goes beyond the agent file to capture decisions specific to this initiative ("Library-First architecture", "TDD mandatory", "Max 3 projects", "All APIs versioned", "Integration tests preferred over mocks").
+- **Charter**: Initiative-specific architectural decisions AND overarching implementation principles that `/speckit.plan` and `/speckit.implement` use as guardrails. Goes beyond the agent file to capture decisions specific to this initiative ("Library-First architecture", "Max 3 projects", "All APIs versioned", "PostgreSQL for all persistent storage", "Internal component library is the UI source of truth"). Testing is deliberately excluded — strict TDD is a pipeline invariant, not a charter decision.
 - **Project.md**: Out-of-scope exclusions, shared constraints, and feature list that bound what specifications can include. Product-managed — ensures all feature specs stay within agreed boundaries.
 
-#### Create the constitution (`/speckit.constitution`)
+#### Create the charter (`/speckit.charter`)
 
 The command runs an interactive workflow:
 
-1. **Codebase scan** — Detects existing architectural patterns and technical decisions across 10 categories, so the constitution reflects what you've already built:
+1. **Codebase scan** — Detects existing architectural patterns and technical decisions across 10 categories, so the charter reflects what you've already built:
 
    | Category | Architectural decisions it informs |
    |----------|-----------------------------------|
-   | Testing Philosophy | Test *types* & coverage (timing is fixed: strict TDD by default, `--spike` to waive) |
    | Code Quality & Standards | Consistency standards, formatting conventions |
    | Architecture & Modularity | Module boundaries, monorepo structure, dependency direction |
    | Observability & Debugging | Logging strategy, tracing, monitoring approach |
@@ -622,40 +622,43 @@ The command runs an interactive workflow:
    | Simplicity & Constraints | Complexity budgets, dependency governance |
    | Migration & Compatibility | Migration strategy, backwards compatibility approach |
    | Internationalisation (i18n) | Translation architecture, locale handling |
+   | UX & Design Inputs *(optional)* | Design-system/component-library source of truth, design-asset handoff (Figma optional), accessibility standard — omit for API/backend/infra work |
 
    Each category is classified as **Detected** (strong signals — can draft a principle), **Partial** (some signals — needs confirmation), or **No Signal** (nothing found — needs a question).
+
+   > **Testing is intentionally not a charter category.** Strict TDD (test timing) is a pipeline invariant enforced by `/speckit.tasks` and `/speckit.implement`; test *types*/coverage default sensibly for the stack. The charter never asks about testing.
 
 2. **Interactive Q&A** — Up to 8 targeted questions, asked one at a time, covering gaps and ambiguities from the scan. Each question offers a recommended option with reasoning, and you can accept, pick an alternative, or provide a short custom answer.
 
 3. **Free-text additions** — After the guided questions, you can add any additional principles in your own words (e.g., "All database migrations must be reversible", "No third-party analytics SDKs").
 
-4. **Constitution generation** — Synthesizes scan results, Q&A answers, and free-text additions into a complete `constitution.md` with versioning, governance, and a derivation log.
+4. **Charter generation** — Synthesizes scan results, Q&A answers, and free-text additions into a complete `charter.md` with versioning, governance, and a derivation log.
 
 ```text
-/speckit.constitution
+/speckit.charter
 ```
 
 If you already know your principles, provide them directly — the Q&A will confirm and fill gaps:
 
 ```text
-/speckit.constitution This project follows TDD strictly. We use a microservices architecture. All APIs must be versioned.
+/speckit.charter We use a microservices architecture. All APIs must be versioned. PostgreSQL is the only persistent store.
 ```
 
 #### Practical guidance
 
 - **Preparation**: Clean up existing repo documentation (README, architecture notes) before drafting. The scan relies on what's in the repo.
-- **Time investment**: Expect 2–3 days of senior engineering time for a thorough constitution on a new initiative.
+- **Time investment**: Expect 2–3 days of senior engineering time for a thorough charter on a new initiative.
 - **Focus on architectural decisions**: Document the decisions you actually enforce, not generic best practices. "We use PostgreSQL for all persistent storage" is better than "Use appropriate database technology." These decisions directly constrain what `/speckit.plan` generates.
 - **Start focused**: 5–7 concrete architectural decisions are better than 15 aspirational ones. You can always amend later.
-- **Sign-off**: The constitution includes a Sign-Off table. While advisory, getting engineering and QA alignment before planning prevents rework.
+- **Sign-off**: The charter includes a Sign-Off table. While advisory, getting engineering and QA alignment before planning prevents rework.
 
 > [!IMPORTANT]
-> The constitution **must be finalized before** `/speckit.plan` (Stage 4) can proceed — the plan reads the constitution to shape technology choices, phase gates, and testing strategy. If you skip this step, `/speckit.plan` will detect the missing constitution and offer to run a condensed Q&A inline — but running the full `/speckit.constitution` command separately produces better, more thorough results.
+> The charter **must be finalized before** `/speckit.plan` (Stage 4) can proceed — the plan reads the charter to shape technology choices, phase gates, and architecture. If you skip this step, `/speckit.plan` will detect the missing charter and offer to run a condensed Q&A inline — but running the full `/speckit.charter` command separately produces better, more thorough results.
 
 ### Stage 4: Planning (Engineering)
 
 > [!NOTE]
-> The constitution must be finalized before this stage (Stage 3). If you skip the constitution step, `/speckit.plan` will offer to create one inline.
+> A finalized charter is required before this stage can produce a plan. You can create it beforehand with `/speckit.charter` (Stage 3), or skip straight to `/speckit.plan` and let it create one inline (Phase -1) before planning proceeds.
 
 #### Generate a plan (`/speckit.plan`)
 
@@ -673,7 +676,7 @@ The output of this step will include a number of implementation detail documents
 .
 ├── CLAUDE.md
 ├── memory
-│  └── constitution.md
+│  └── charter.md
 ├── scripts
 │  ├── check-prerequisites.sh
 │  ├── common.sh
@@ -741,7 +744,7 @@ This helps refine the implementation plan and helps you avoid potential blind sp
 You can also ask Claude Code (if you have the [GitHub CLI](https://docs.github.com/en/github-cli/github-cli) installed) to go ahead and create a pull request from your current branch to `main` with a detailed description, to make sure that the effort is properly tracked.
 
 > [!NOTE]
-> Before you have the agent implement it, it's also worth prompting Claude Code to cross-check the details to see if there are any over-engineered pieces (remember - it can be over-eager). If over-engineered components or decisions exist, you can ask Claude Code to resolve them. Ensure that Claude Code follows the [constitution](base/memory/constitution.md) as the foundational piece that it must adhere to when establishing the plan.
+> Before you have the agent implement it, it's also worth prompting Claude Code to cross-check the details to see if there are any over-engineered pieces (remember - it can be over-eager). If over-engineered components or decisions exist, you can ask Claude Code to resolve them. Ensure that Claude Code follows the [charter](base/memory/charter.md) as the foundational piece that it must adhere to when establishing the plan.
 
 ### Stage 5: Tasks (Engineering)
 
@@ -759,7 +762,7 @@ This step creates a `tasks.md` file in your feature specification directory that
 - **Dependency management** - Tasks are ordered to respect dependencies between components (e.g., models before services, services before endpoints)
 - **Parallel execution markers** - Tasks that can run in parallel are marked with `[P]` to optimize development workflow
 - **File path specifications** - Each task includes the exact file paths where implementation should occur
-- **Strict TDD by default** - test tasks are authored first and must fail before implementation (red-green-refactor); the constitution sets test *types* and coverage, not timing. Waivable per feature with `/speckit.tasks --spike` for genuine throwaway/exploratory work
+- **Strict TDD by default** - test tasks are authored first and must fail before implementation (red-green-refactor); test *timing* is a pipeline invariant (not a charter choice) and test *types*/coverage default sensibly for the stack. Waivable per feature with `/speckit.tasks --spike` for genuine throwaway/exploratory work
 - **Checkpoint validation** - Each user story phase includes checkpoints to validate independent functionality
 - **Jira placeholders** - `[JIRA-EPIC-KEY]` and `[JIRA-STORY-KEY]` placeholders for issue tracking integration
 
@@ -807,7 +810,7 @@ Once ready, use the `/speckit.implement` command to execute your implementation 
 
 The `/speckit.implement` command will:
 
-- Validate that all prerequisites are in place (constitution, spec, plan, and tasks)
+- Validate that all prerequisites are in place (charter, spec, plan, and tasks)
 - Parse the task breakdown from `tasks.md`
 - Execute tasks in the correct order, respecting dependencies and parallel execution markers
 - Follow strict TDD by default (tests first, then red-green-refactor); honor a `Testing mode: Spike` marker in tasks.md when present (tests optional / may come after)
@@ -860,7 +863,7 @@ Signs you need to restart from upstream:
 
 | Artifact | Stability | Implication for Changes |
 |----------|-----------|------------------------|
-| constitution.md | Very Stable | Rarely needs changing; if it does, assess all downstream impact |
+| charter.md | Very Stable | Rarely needs changing; if it does, assess all downstream impact |
 | spec.md | Stable | Changes require review; bump version and notify team |
 | plan.md | Moderate | May evolve as technical decisions change; regenerate tasks after |
 | tasks.md | Volatile | Regenerate from plan changes; don't edit directly |

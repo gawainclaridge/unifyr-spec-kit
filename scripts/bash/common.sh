@@ -83,39 +83,50 @@ check_feature_branch() {
 
 get_feature_dir() { echo "$1/specs/$2"; }
 
-# Resolve the constitution file path.
-# The constitution lives beside project.md when the work is part of a project
-# (specs/project-<name>/constitution.md); otherwise it lives in the feature
-# directory (specs/<###-feature>/constitution.md). The seed template that new
-# constitutions are created from stays at .specify/memory/constitution.md.
-get_constitution_file() {
+# Resolve the Engineering Charter file path.
+# The charter lives beside project.md when the work is part of a project
+# (specs/project-<name>/charter.md); otherwise it lives in the feature
+# directory (specs/<###-feature>/charter.md). The seed template that new
+# charters are created from stays at .specify/memory/charter.md.
+#
+# Back-compat: the charter was formerly named "constitution". Repos created
+# before the rename have a legacy `constitution.md` in the same location. If a
+# `charter.md` is not present but a `constitution.md` is, the legacy path is
+# returned so existing work keeps resolving; new charters are always written to
+# `charter.md`.
+get_charter_file() {
     local repo_root="$1"
     local feature_dir="$2"
     local current_branch="$3"
+    local dir
 
-    # 1) On a project branch -> the project directory holds the constitution
+    # 1) On a project branch -> the project directory holds the charter
     if [[ "$current_branch" == project-* ]]; then
-        echo "$repo_root/specs/$current_branch/constitution.md"
-        return
+        dir="$repo_root/specs/$current_branch"
+    else
+        # 2) Feature directory nested under a project directory -> use the project dir
+        local parent_dir parent_base
+        parent_dir="$(dirname "$feature_dir")"
+        parent_base="$(basename "$parent_dir")"
+        if [[ "$parent_base" == project-* ]]; then
+            dir="$parent_dir"
+        elif [[ -n "${SPECIFY_PROJECT:-}" ]]; then
+            # 3) SPECIFY_PROJECT env var set -> the named project directory
+            dir="$repo_root/specs/project-${SPECIFY_PROJECT}"
+        else
+            # 4) Standalone feature -> the feature directory holds the charter
+            dir="$feature_dir"
+        fi
     fi
 
-    # 2) Feature directory nested under a project directory -> use the project dir
-    local parent_dir parent_base
-    parent_dir="$(dirname "$feature_dir")"
-    parent_base="$(basename "$parent_dir")"
-    if [[ "$parent_base" == project-* ]]; then
-        echo "$parent_dir/constitution.md"
-        return
+    # Prefer charter.md; fall back to a legacy constitution.md when only that exists.
+    if [[ -f "$dir/charter.md" ]]; then
+        echo "$dir/charter.md"
+    elif [[ -f "$dir/constitution.md" ]]; then
+        echo "$dir/constitution.md"
+    else
+        echo "$dir/charter.md"
     fi
-
-    # 3) SPECIFY_PROJECT env var set -> the named project directory
-    if [[ -n "${SPECIFY_PROJECT:-}" ]]; then
-        echo "$repo_root/specs/project-${SPECIFY_PROJECT}/constitution.md"
-        return
-    fi
-
-    # 4) Standalone feature -> the feature directory holds the constitution
-    echo "$feature_dir/constitution.md"
 }
 
 # Find feature directory by numeric prefix instead of exact branch match
@@ -170,8 +181,10 @@ get_feature_paths() {
 
     # Use prefix-based lookup to support multiple branches per spec
     local feature_dir=$(find_feature_dir_by_prefix "$repo_root" "$current_branch")
-    local constitution_file=$(get_constitution_file "$repo_root" "$feature_dir" "$current_branch")
+    local charter_file=$(get_charter_file "$repo_root" "$feature_dir" "$current_branch")
 
+    # CONSTITUTION is emitted as a deprecated alias of CHARTER so pre-rename
+    # command prompts still resolve; both point to the same path.
     cat <<EOF
 REPO_ROOT='$repo_root'
 CURRENT_BRANCH='$current_branch'
@@ -184,7 +197,8 @@ RESEARCH='$feature_dir/research.md'
 DATA_MODEL='$feature_dir/data-model.md'
 QUICKSTART='$feature_dir/quickstart.md'
 CONTRACTS_DIR='$feature_dir/contracts'
-CONSTITUTION='$constitution_file'
+CHARTER='$charter_file'
+CONSTITUTION='$charter_file'
 EOF
 }
 

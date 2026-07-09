@@ -14,7 +14,7 @@
   - "Authentication via OAuth2 / OIDC through our identity provider"
 
   This is the product's architectural identity - universal truths that rarely change.
-  For initiative-specific principles, use the constitution (memory/constitution.md).
+  For initiative-specific principles, use the Engineering Charter (memory/charter.md).
 -->
 <!-- ARCHITECTURE END -->
 

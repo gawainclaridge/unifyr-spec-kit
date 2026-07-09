@@ -100,28 +100,28 @@ With `--force`, it skips the confirmation and proceeds immediately.
 
 ## ⚠️ Important Warnings
 
-### 1. Constitution file will be overwritten
+### 1. Engineering Charter file will be overwritten
 
-**Known issue:** `specify init --here --force` currently overwrites `.specify/memory/constitution.md` with the default template, erasing any customizations you made.
+**Known issue:** `specify init --here --force` currently overwrites `.specify/memory/charter.md` with the default template, erasing any customizations you made.
 
 **Workaround:**
 
 ```bash
-# 1. Back up your constitution before upgrading
-cp .specify/memory/constitution.md .specify/memory/constitution-backup.md
+# 1. Back up your charter before upgrading
+cp .specify/memory/charter.md .specify/memory/charter-backup.md
 
 # 2. Run the upgrade
 specify init --here --force --ai copilot
 
-# 3. Restore your customized constitution
-mv .specify/memory/constitution-backup.md .specify/memory/constitution.md
+# 3. Restore your customized charter
+mv .specify/memory/charter-backup.md .specify/memory/charter.md
 ```
 
 Or use git to restore it:
 
 ```bash
 # After upgrade, restore from git history
-git restore .specify/memory/constitution.md
+git restore .specify/memory/charter.md
 ```
 
 ### 2. Custom template modifications
@@ -170,15 +170,15 @@ uv tool install specify-cli --force --from git+https://github.com/gawainclaridge
 # Update project files to get new commands
 specify init --here --force --ai copilot
 
-# Restore your constitution if customized
-git restore .specify/memory/constitution.md
+# Restore your charter if customized
+git restore .specify/memory/charter.md
 ```
 
-### Scenario 2: "I customized templates and constitution"
+### Scenario 2: "I customized templates and charter"
 
 ```bash
 # 1. Back up customizations
-cp .specify/memory/constitution.md /tmp/constitution-backup.md
+cp .specify/memory/charter.md /tmp/charter-backup.md
 cp -r .specify/templates /tmp/templates-backup
 
 # 2. Upgrade CLI
@@ -188,7 +188,7 @@ uv tool install specify-cli --force --from git+https://github.com/gawainclaridge
 specify init --here --force --ai copilot
 
 # 4. Restore customizations
-mv /tmp/constitution-backup.md .specify/memory/constitution.md
+mv /tmp/charter-backup.md .specify/memory/charter.md
 # Manually merge template changes if needed
 ```
 
@@ -215,13 +215,13 @@ If you initialized your project with `--no-git`, you can still upgrade:
 
 ```bash
 # Manually back up files you customized
-cp .specify/memory/constitution.md /tmp/constitution-backup.md
+cp .specify/memory/charter.md /tmp/charter-backup.md
 
 # Run upgrade
 specify init --here --force --ai copilot --no-git
 
 # Restore customizations
-mv /tmp/constitution-backup.md .specify/memory/constitution.md
+mv /tmp/charter-backup.md .specify/memory/charter.md
 ```
 
 The `--no-git` flag skips git initialization but doesn't affect file updates.
@@ -297,19 +297,19 @@ This tells Unifyr Spec Kit which feature directory to use when creating specs, p
    - Codex requires `CODEX_HOME` environment variable
    - Some agents need workspace restart or cache clearing
 
-### "I lost my constitution customizations"
+### "I lost my charter customizations"
 
 **Fix:** Restore from git or backup:
 
 ```bash
 # If you committed before upgrading
-git restore .specify/memory/constitution.md
+git restore .specify/memory/charter.md
 
 # If you backed up manually
-cp /tmp/constitution-backup.md .specify/memory/constitution.md
+cp /tmp/charter-backup.md .specify/memory/charter.md
 ```
 
-**Prevention:** Always commit or back up `constitution.md` before upgrading.
+**Prevention:** Always commit or back up `charter.md` before upgrading.
 
 ### "Warning: Current directory is not empty"
 
@@ -336,7 +336,7 @@ Only Unifyr Spec Kit infrastructure files:
 - Agent command files (`.claude/commands/`, `.github/prompts/`, etc.)
 - Scripts in `.specify/scripts/`
 - Templates in `.specify/templates/`
-- Memory files in `.specify/memory/` (including constitution)
+- Memory files in `.specify/memory/` (including charter)
 
 **What stays untouched:**
 
@@ -361,7 +361,7 @@ Only Unifyr Spec Kit infrastructure files:
 - ✅ **Expected** when adding Unifyr Spec Kit to an existing codebase
 - ⚠️ **Unexpected** if you thought you were creating a new project in an empty directory
 
-**Prevention tip:** Before upgrading, commit or back up your `.specify/memory/constitution.md` if you customized it.
+**Prevention tip:** Before upgrading, commit or back up your `.specify/memory/charter.md` if you customized it.
 
 ### "CLI upgrade doesn't seem to work"
 
@@ -438,7 +438,7 @@ Unifyr Spec Kit follows semantic versioning for major releases. The CLI and proj
 
 After upgrading:
 
-- **Test new slash commands:** Run `/speckit.constitution` or another command to verify everything works
+- **Test new slash commands:** Run `/speckit.charter` or another command to verify everything works
 - **Review release notes:** Check [GitHub Releases](https://github.com/gawainclaridge/spec-kit/releases) for new features and breaking changes
 - **Update workflows:** If new commands were added, update your team's development workflows
 - **Check documentation:** Visit [github.io/spec-kit](https://gawainclaridge.github.io/spec-kit/) for updated guides
