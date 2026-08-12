@@ -125,7 +125,7 @@ Stories created in the issue tracker should be **demo-able vertical slices**, no
 ### Rules
 
 - Each story MUST be independently demonstrable to QA/Product
-- Story description deep-links to the relevant spec.md section for acceptance criteria (see the **Building Artifact Links** section); do NOT duplicate full AC in the ticket
+- Story description deep-links to the relevant spec.md section for acceptance criteria **and cites the spec version** (see the **Building Artifact Links** section); do NOT duplicate full AC in the ticket
 - Story description includes brief **Demo Criteria**: 1-2 sentences describing what can be shown when complete
 - Stories should represent user-visible value, not technical layers
 
@@ -170,13 +170,18 @@ Parse it, auto-detecting the host (strip a trailing `.git` and any `user@` crede
 
 **4. Section anchor (optional)**: for a Story that points at one user-story section, find that heading's 1-based line number in spec.md and append the host-specific line anchor from step 1.
 
-Worked examples (project `acme`, branch `project-acme`, US2 heading on line 88):
+**5. Spec version (pin)**: read the artifact's current version — the `**Version**:` header, or the latest row of its `## Changelog` table — and include it in the reference text as a stable, human-meaningful pin, e.g. `spec.md v2.6 → User Story 2`. The deep-link targets the **live project branch** (so a reader always sees the current spec), while the version records which revision the ticket's acceptance criteria were written against. When the spec's changelog later advances past the pinned version, that mismatch is the signal to re-check the ticket against the newer AC. A line anchor (step 4) drifts as the spec is edited; the version does not, so always pair the two.
 
-- Cloud: `https://bitbucket.org/unifyr/platform/src/project-acme/specs/project-acme/spec.md#lines-88`
-- Server: `https://bitbucket.example.com/projects/UNI/repos/platform/browse/specs/project-acme/spec.md?at=refs/heads/project-acme#88`
+Worked examples (project `acme`, branch `project-acme`, spec v2.6, US2 heading on line 88):
+
+- Cloud: `[spec.md v2.6 → User Story 2](https://bitbucket.org/unifyr/platform/src/project-acme/specs/project-acme/spec.md#lines-88)`
+- Server: `[spec.md v2.6 → User Story 2](https://bitbucket.example.com/projects/UNI/repos/platform/browse/specs/project-acme/spec.md?at=refs/heads/project-acme#88)`
 
 > [!NOTE]
 > A link only resolves once the branch and files are pushed to the remote. Ensure the project branch (with its spec.md/plan.md/tasks.md) is pushed before creating tickets; if it isn't, warn the user and push first, or fall back to bare paths.
+
+> [!NOTE]
+> The deep-link tracks the **live project branch**, which is correct while the feature is in flight and the spec is still being clarified — the ticket always resolves to the current AC. The **version pin (step 5)** is what makes that safe: it records the revision the ticket was written against, so drift is detectable. Once the feature merges and the spec stops moving, the link MAY be repointed to the merge-commit permalink for a frozen historical record; until then, prefer the branch link, never a mutable default branch (`master`/`main`) URL, which silently drifts with no version to detect it.
 
 ---
 
@@ -203,7 +208,7 @@ Epic (Feature)
 2. **For each User Story phase**:
    - Create Story ticket linked to Epic
    - Title: User Story title from spec.md
-   - Description: A **deep-link** to the relevant section in spec.md (see the **Building Artifact Links** section — include the section's line anchor) + Demo Criteria (1-2 sentences describing what can be demonstrated when complete). Do NOT duplicate full acceptance criteria in the ticket.
+   - Description: A **deep-link** to the relevant section in spec.md (see the **Building Artifact Links** section — include the section's line anchor **and the spec version pin, step 5**) + Demo Criteria (1-2 sentences describing what can be demonstrated when complete). Do NOT duplicate full acceptance criteria in the ticket.
    - Story Points: Set using the standard Jira `Story Points` estimate field with the Fibonacci score from the Complexity Scoring step
 
 3. **Task breakdown (no Jira sub-tasks — we never go below Story)**: embed the story's tasks (T0xx from tasks.md) as a **checklist in the Story description** so the breakdown stays visible and trackable on the Story itself:
