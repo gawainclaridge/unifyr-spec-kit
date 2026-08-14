@@ -1,5 +1,5 @@
 ---
-description: Execute the implementation planning workflow using the plan template to generate design artifacts.
+description: Run the planning workflow, using the plan template to produce the design documents.
 handoffs:
   - label: Create Tasks (Stage 5)
     agent: speckit.tasks
@@ -24,6 +24,17 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
+## Voice & Audience
+
+Everything you say to the user and write into the generated files is read by a **mixed team**: engineers, product owners, and QA. Write plainly:
+
+- Short, direct sentences. One point per sentence.
+- No waffle, filler, or flowery prose. Cut any word that does not change the meaning.
+- No metaphors or grand phrasing ("engineering DNA", "foundational technical direction", "guardrails"). State the plain fact.
+- Be unambiguous: each sentence should have one possible reading.
+- When a technical term is unavoidable, say what it means the first time you use it.
+- Keep the content itself precise. This is about wording, not about dropping detail.
+
 ### Workflow Context (Unifyr Process)
 
 This is **Stage 4 (Planning)** of the Unifyr process:
@@ -31,8 +42,8 @@ This is **Stage 4 (Planning)** of the Unifyr process:
 - **Team**: Engineering only
 - **Prerequisites**:
   - spec.md exists and ideally clarified (Stage 2)
-  - A finalized charter.md is required before this command can produce a plan. Run `/speckit.charter` first (Stage 3) for a thorough result, or let this command create one inline (Phase -1) if it's missing or incomplete — see step 2. The Engineering Charter provides architectural decisions and implementation principles that actively drive the plan's technology choices, architecture, and migration approach.
-- **Output**: plan.md with technical architecture, testing scenarios, design documents — all shaped by the charter
+  - A finalized charter.md is required before this command can produce a plan. Run `/speckit.charter` first (Stage 3) for a thorough result, or let this command create one inline (Phase -1) if it's missing or incomplete — see step 2. The Engineering Charter holds the architecture decisions and implementation rules. The plan must follow them for its technology choices, architecture, and migration approach.
+- **Output**: plan.md with the technical architecture, testing scenarios, and design documents, all based on the charter
 - **Next step**: `/speckit.tasks` (Stage 5 - Engineering)
 
 ## Outline
@@ -69,7 +80,7 @@ This is **Stage 4 (Planning)** of the Unifyr process:
 
 3. **Load context**: Read FEATURE_SPEC and the charter at `CHARTER`. Load IMPL_PLAN template (already copied).
 
-3b. **Apply the charter to plan decisions**: The charter contains high-level architectural decisions and overarching implementation principles that MUST actively drive the plan — not just serve as a compliance gate. As you fill each plan section, use the charter to:
+3b. **Apply the charter to plan decisions**: The charter contains the architecture decisions and implementation rules. These MUST drive the plan, not just act as a compliance gate. As you fill each plan section, use the charter to:
 
 - **Technical Context**: Inherit technology choices, framework preferences, and constraints from the charter. If it specifies storage decisions, reflect those in the Storage field. (Testing is not a charter concern — see Testing Scenarios below.)
 - **Project Structure**: Follow the charter's architecture and modularity decisions (e.g., "Library-First", "microservices", "monolith") when choosing the project layout.
@@ -77,7 +88,7 @@ This is **Stage 4 (Planning)** of the Unifyr process:
 - **Migration Plan**: Follow the charter's versioning and migration decisions (e.g., "reversible migrations required", "API version coexistence period").
 - **Phase structure**: If the charter defines observability, security, or UX/design requirements, ensure the plan includes tasks that address them.
 
-   The charter goes beyond the agent file (universal product truths) — it captures initiative-specific decisions that the plan must actively incorporate, not just validate against.
+   The charter goes beyond the agent file (which holds product facts that apply to everything). It records decisions specific to this initiative that the plan must incorporate, not just validate against.
 
 4. **Scope alignment check**: Before proceeding with planning:
    - Extract all user stories from spec.md
@@ -89,11 +100,11 @@ This is **Stage 4 (Planning)** of the Unifyr process:
      - Allow user to confirm they want to proceed anyway
 
 5. **Execute plan workflow**: Follow the structure in IMPL_PLAN template to:
-   - Fill Technical Context — actively driven by charter decisions (see step 3b), mark genuine unknowns as "NEEDS CLARIFICATION"
+   - Fill Technical Context — based on charter decisions (see step 3b), mark genuine unknowns as "NEEDS CLARIFICATION"
    - Fill Charter Check section from the charter (both compliance gates AND decisions that shaped the plan)
    - Evaluate gates (ERROR if violations unjustified)
    - Phase 0: Generate research.md (resolve all NEEDS CLARIFICATION)
-   - Phase 1: Generate data-model.md, contracts/, quickstart.md, migration plan — all shaped by the charter's architectural decisions and implementation principles
+   - Phase 1: Generate data-model.md, contracts/, quickstart.md, migration plan — all based on the charter's decisions and rules
    - Phase 1: Update agent context by running the agent script
    - Re-evaluate Charter Check post-design — verify the design still aligns with charter decisions
 
@@ -119,7 +130,7 @@ This is **Stage 4 (Planning)** of the Unifyr process:
 
 ### Phase -1: Charter Creation (auto-triggered, optional)
 
-This phase executes a condensed version of `/speckit.charter` inline when no charter exists or when it is incomplete. It enables planning to proceed without a separate command invocation. The resulting charter provides architectural decisions and implementation principles that actively drive the plan — not just compliance gates.
+This phase runs a shorter version of `/speckit.charter` inline when no charter exists or the charter is incomplete. It lets planning continue without running a separate command. The charter it produces holds the architecture decisions and implementation rules that the plan must follow, not just check against.
 
 1. Load the seed template at `memory/charter.md`
 2. **Codebase scan**: Scan repo root for technical signals across the 10-category taxonomy (Code Quality, Architecture, Observability, CI/CD, Security, Versioning, Simplicity, Migration, i18n, UX & Design Inputs). Classify each as Detected / Partial / No Signal. **Testing is not a charter category** — strict TDD is a pipeline invariant, so never scan for or ask about it. **UX & Design Inputs is optional** — classify No Signal and skip for API/backend/infra work with no user-facing surface.

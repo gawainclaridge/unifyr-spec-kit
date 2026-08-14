@@ -24,6 +24,17 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
+## Voice & Audience
+
+Everything you say to the user and write into the generated files is read by a **mixed team**: engineers, product owners, and QA. Write plainly:
+
+- Short, direct sentences. One point per sentence.
+- No waffle, filler, or flowery prose. Cut any word that does not change the meaning.
+- No metaphors or grand phrasing ("engineering DNA", "foundational technical direction", "guardrails"). State the plain fact.
+- Be unambiguous: each sentence should have one possible reading.
+- When a technical term is unavoidable, say what it means the first time you use it.
+- Keep the content itself precise. This is about wording, not about dropping detail.
+
 ## Outline
 
 The text the user typed after `/speckit.specify` in the triggering message **is** the feature description. Assume you always have it available in this conversation even if `{ARGS}` appears literally below. Do not ask the user to repeat it unless they provided an empty command.
@@ -123,8 +134,8 @@ Given that feature description, do this:
        - **LIMIT: Maximum 3 [NEEDS CLARIFICATION] markers total**
        - Prioritize clarifications by impact: scope > security/privacy > user experience > technical details
     4. Write Experience Vision section
-       A short narrative paragraph (3-5 sentences) describing what success feels like from the customer's perspective.
-       Not acceptance criteria, not user stories — plain language that both engineering and Product can hold up at sprint review.
+       A short narrative paragraph (3-5 sentences) describing what success looks like from the customer's perspective.
+       Not acceptance criteria, not user stories — plain language that both engineering and Product can read at sprint review.
        If no clear user experience can be articulated: ERROR "Cannot determine experience vision"
     5. Fill User Scenarios & Testing section
        If no clear user flow: ERROR "Cannot determine user scenarios"
@@ -143,7 +154,7 @@ Given that feature description, do this:
          `> See [project.md](../project.md) for project-level exclusions`
        - Only add feature-specific non-goals that are not already covered at project level
     10. Fill Adoption & Rollout section
-       - Decide, on purpose, how EXISTING customers move onto this feature — not just how it behaves for new customers going forward.
+       - Decide how EXISTING customers move onto this feature — not just how it behaves for new customers going forward.
        - Draft a best-guess adoption path across the buckets (Existing cohort / Adoption path / One-time migration / Transition & comms) using informed defaults; /speckit.clarify will challenge and refine it with the team.
        - This is the PRODUCT decision (who gets what, when); do NOT put technical breaking-change/schema-migration mechanics here — those belong to the plan's Migration Plan.
        - If the feature genuinely has no existing-customer surface (net-new product with no current users, internal refactor, doc-only change), replace the bullets with a single line: "No existing-customer impact — <reason>."

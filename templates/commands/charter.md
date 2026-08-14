@@ -1,5 +1,5 @@
 ---
-description: Establish high-level architectural decisions and overarching implementation principles through interactive codebase scanning and guided Q&A. These directly drive `/speckit.plan` and `/speckit.implement`.
+description: Agree the big technical decisions for this piece of work, so `/speckit.plan` and `/speckit.implement` follow them. It scans your codebase, then asks a few guided questions to fill the gaps.
 handoffs:
   - label: Build Specification (Stage 1)
     agent: speckit.specify
@@ -23,6 +23,17 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
+## Voice & Audience
+
+Everything you say to the user and write into the charter is read by a **mixed team**: engineers, product owners, and QA. Write plainly:
+
+- Short, direct sentences. One point per sentence.
+- No waffle, filler, or flowery prose. Cut any word that does not change the meaning.
+- No metaphors or grand phrasing ("engineering DNA", "foundational technical direction", "guardrails"). State the plain fact.
+- Be unambiguous: each sentence should have one possible reading.
+- When a technical term is unavoidable, say what it means the first time you use it.
+- Keep the decisions themselves precise. This is about wording, not about dropping detail.
+
 ## Outline
 
 You are creating or updating the Engineering Charter. The charter is stored **beside `project.md`** at `specs/project-<name>/charter.md` when the work is part of a project; for a standalone feature it lives in the feature directory at `specs/<###-feature>/charter.md`. The exact target path is resolved for you by the setup script and exposed as the `CHARTER` field (see step 1) — never hardcode it. New charters are seeded from the read-only template at `memory/charter.md`, which is never overwritten.
@@ -44,19 +55,19 @@ A finalized charter is required before `/speckit.plan` can produce a plan. Runni
 
 ### What is an Engineering Charter?
 
-The charter captures **high-level architectural decisions and overarching implementation principles** for a specific initiative. It is engineering-managed and provides the foundational technical direction that `/speckit.plan` and `/speckit.implement` use as guardrails. Think of it as the engineering DNA — not code standards, but the big decisions and principles that shape everything downstream. It goes beyond the agent file (universal product truths) to capture initiative-specific guidance that the plan and implementation phases actively rely on.
+The charter records the **big technical decisions** for this piece of work — for example, "store data in PostgreSQL" or "every API gets a version number". It is not a code style guide. It is the small set of choices that the plan and the build must follow. Both `/speckit.plan` and `/speckit.implement` read it and stick to it. It covers only decisions specific to *this* work. Product-wide facts that rarely change live in the agent file (CLAUDE.md), not here.
 
 | Aspect | Engineering Charter | Agent File (CLAUDE.md etc.) | Project.md |
 |--------|-------------|---------------------------|------------|
 | **Scope** | Project/epic set | Entire product/repo | Multi-feature project |
 | **Owner** | Engineering | Engineering | Product |
-| **About** | Architectural decisions & implementation principles that drive plan & implement | Universal product truths | Universal constraints that bound specifications |
+| **About** | The big technical decisions the plan and build follow | Facts about the product that rarely change | Limits every spec has to stay inside |
 | **Changes** | Per initiative, updated as principles evolve | Rarely, auto-regenerated from plans | Stable after creation |
 
 **Key distinctions**:
 
-- The **agent file** captures universal product architecture that rarely changes (e.g., "We deploy to AWS", "All APIs are REST"). The charter captures initiative-specific **architectural decisions AND overarching implementation principles** that go beyond those universals to directly shape planning and implementation (e.g., "Library-First architecture", "Integration tests preferred over mocks", "All APIs versioned", "Microservices with event-driven communication").
-- **Project.md** captures universal constraints that bound what specifications can include (out-of-scope exclusions, shared constraints, feature list). It is Product-managed and constrains the WHAT. The charter captures the engineering HOW — the big decisions and principles that `/speckit.plan` translates into concrete technology choices and phase structure.
+- The **agent file** holds product-wide facts that rarely change (e.g., "We deploy to AWS", "All APIs are REST"). The charter holds the decisions specific to *this* work that go beyond those (e.g., "Library-First architecture", "Prefer integration tests over mocks", "All APIs versioned", "Microservices talking over events").
+- **Project.md** lists the limits every spec has to stay inside (what's out of scope, shared constraints, the feature list). Product owns it, and it shapes *what* gets built. The charter covers the engineering side — *how* it gets built — which `/speckit.plan` then turns into concrete technology choices and a phase plan.
 
 **Testing is deliberately NOT a charter concern.** Strict TDD is a **pipeline invariant** enforced by `/speckit.tasks` and `/speckit.implement` (test tasks ordered first; red-green-refactor), independent of the charter. Do NOT add testing principles or ask testing questions here. Test type/coverage emphasis, where it matters, is applied as a sensible default at plan/tasks time or surfaced through `/speckit.clarify`.
 
@@ -98,17 +109,17 @@ Follow this execution flow:
    Present results to the user:
 
    ```markdown
-   ## Codebase Scan Results
+   ## What I found in your codebase
 
-   I scanned your repository for existing architectural patterns, implementation conventions, and technical decisions. Here's what I found:
+   I looked through your code for decisions you've already made. Here's what I found:
 
-   | Category | Status | Architectural Decision Inferred |
+   | Area | Status | What I found (or what's missing) |
    |----------|--------|-------------------------------|
-   | Code Quality & Standards | [status] | [decision inferred or gap identified] |
-   | Architecture & Modularity | [status] | [decision inferred or gap identified] |
+   | Code Quality & Standards | [status] | [what I found, or the gap] |
+   | Architecture & Modularity | [status] | [what I found, or the gap] |
    | ... | ... | ... |
 
-   I'll ask questions to surface the architectural decisions and implementation principles that aren't clear yet.
+   Where something isn't clear yet, I'll ask you about it.
    ```
 
 3. **Interactive Q&A loop**: Generate and ask targeted questions to surface architectural decisions and implementation principles that haven't been established yet. The goal is to produce concrete decisions and principles that `/speckit.plan` actively uses to drive technology choices, architecture patterns, and migration approach — not abstract guidance, but specific technical direction (e.g., "PostgreSQL for all persistent storage", "Library-First with max 3 projects", "Integration tests preferred over mocks", "Design system: internal component library is the source of truth").
@@ -153,17 +164,15 @@ Follow this execution flow:
    **3c. Free-text additions prompt** (always offered, even if Q&A stopped early):
 
    ```markdown
-   ## Additional Principles
+   ## Anything to add?
 
-   The guided questions covered the core categories. Do you have any additional
-   principles, rules, or constraints you want to add to the charter?
+   That covers the main areas. Anything else to add — a rule, a limit, or a principle?
 
-   You can:
-   - Type one or more principles in your own words (I'll integrate them)
-   - Say "none" or "done" to proceed with what we have
+   - Type one or more in your own words and I'll include them.
+   - Say "none" or "done" to move on.
 
    Examples: "All database migrations must be reversible",
-   "No third-party analytics SDKs", "Every PR requires senior approval"
+   "No third-party analytics SDKs", "Every PR needs a senior review"
    ```
 
    Classify each free-text principle into the best-fit charter section (Core Principles for non-negotiables, Section 2/3 for constraints or workflow rules, Governance for procedural rules).
@@ -236,8 +245,8 @@ Follow this execution flow:
     - Any files flagged for manual follow-up.
     - Sign-Off status (all Pending for new charters)
     - If Outstanding or Deferred remain, recommend running `/speckit.charter` again.
-    - Reminder: Charter must be signed off before `/speckit.plan` can proceed — the plan actively uses these architectural decisions and implementation principles to drive technology choices, architecture patterns, and migration approach.
-    - Suggested next command: `/speckit.plan` (Stage 4) — will use the charter to actively drive the plan, not just check compliance.
+    - Reminder: the charter needs sign-off before `/speckit.plan` can run — the plan reads these decisions to choose the technology, shape the architecture, and plan any migration.
+    - Suggested next command: `/speckit.plan` (Stage 4) — it builds the plan around the charter, not just a compliance check against it.
     - Suggested commit message (e.g., `docs: amend charter to vX.Y.Z (principle additions + governance update)`).
 
 Formatting & Style Requirements:

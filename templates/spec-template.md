@@ -1,6 +1,6 @@
 <!--
   ARTIFACT STABILITY: Very Stable
-  This specification is the source of truth for what to build and why.
+  This specification defines what to build and why.
   Post sign-off changes require re-approval from all teams.
 -->
 
@@ -16,12 +16,12 @@
 ## Experience Vision *(mandatory)*
 
 <!--
-  Write a short narrative paragraph (3-5 sentences) that describes what success
-  feels like from the customer's perspective. Not acceptance criteria, not user
-  stories — a plain-language picture of the ideal experience.
+  Write 3-5 sentences describing what success feels like for the customer.
+  This is not acceptance criteria or user stories. Describe the ideal
+  experience in plain language.
 
-  This is the north star. At sprint review, both engineering and Product hold
-  this up and ask: "does what we built serve this?"
+  Use this to judge the work. At sprint review, engineering and Product
+  check whether what they built serves this vision.
 
   Example (gamification feature):
   "A partner rep opens the portal on Monday morning, immediately sees they're
@@ -170,15 +170,15 @@
 ## Adoption & Rollout *(mandatory)*
 
 <!--
-  How do EXISTING customers move onto this feature — not just how it behaves for
-  new customers signing up going forward? A new feature is rarely "new-only";
-  decide, on purpose, what happens to the cohort that already exists.
+  How do EXISTING customers move onto this feature? Do not only cover how it
+  behaves for new customers who sign up later. Most features affect customers
+  who already exist. Decide, on purpose, what happens to them.
 
   This is a PRODUCT decision (who gets what, when). The TECHNICAL mechanics of any
   breaking change or schema migration live in the plan's Migration Plan, not here.
 
-  Draft your best answer at spec time; /speckit.clarify will challenge and refine
-  it with the team. If the feature genuinely has no existing-customer surface
+  Draft your best answer at spec time; /speckit.clarify will refine it with the
+  team. If the feature does not affect any existing customers
   (net-new product with no current users, internal refactor, doc-only change),
   replace the bullets with the single line:
   "No existing-customer impact — <reason>." and omit the rest.

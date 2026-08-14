@@ -1,8 +1,8 @@
 <!--
   ARTIFACT STABILITY: Very Stable
-  This project definition provides universal constraints that bound all feature specifications.
+  This project definition sets constraints that apply to every feature specification.
   Out-of-scope exclusions and shared constraints apply to ALL specs under this project.
-  Changes affect all linked specifications — amend with care.
+  Changes affect all linked specifications. Edit carefully.
 -->
 
 # Project: [PROJECT NAME]
@@ -14,7 +14,7 @@
 
 ## Project Overview
 
-[High-level description of the project encompassing multiple features. Explain the business context and overall goals.]
+[High-level description of the project and the features it covers. State the business context and goals.]
 
 ## Target Users
 
