@@ -1,5 +1,5 @@
 ---
-description: Perform a non-destructive cross-artifact consistency and quality analysis across spec.md, plan.md, and tasks.md after task generation.
+description: Read-only cross-artifact check of spec.md, plan.md, and tasks.md for consistency and quality, run after tasks are generated.
 scripts:
   sh: scripts/bash/check-prerequisites.sh --json --require-tasks --include-tasks
   ps: scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks
@@ -13,6 +13,17 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
+## Voice & Audience
+
+Everything you say to the user and write into the generated files is read by a **mixed team**: engineers, product owners, and QA. Write plainly:
+
+- Short, direct sentences. One point per sentence.
+- No waffle, filler, or flowery prose. Cut any word that does not change the meaning.
+- No metaphors or grand phrasing ("engineering DNA", "foundational technical direction", "guardrails"). State the plain fact.
+- Be unambiguous: each sentence should have one possible reading.
+- When a technical term is unavoidable, say what it means the first time you use it.
+- Keep the content itself precise. This is about wording, not about dropping detail.
+
 ## Goal
 
 Identify inconsistencies, duplications, ambiguities, and underspecified items across the three core artifacts (`spec.md`, `plan.md`, `tasks.md`) before implementation. This command MUST run only after `/speckit.tasks` has successfully produced a complete `tasks.md`.
@@ -21,7 +32,7 @@ Identify inconsistencies, duplications, ambiguities, and underspecified items ac
 
 **STRICTLY READ-ONLY**: Do **not** modify any files. Output a structured analysis report. Offer an optional remediation plan (user must explicitly approve before any follow-up editing commands would be invoked manually).
 
-**Engineering Charter Authority**: The project charter (resolved via the `CHARTER` path from step 1 — beside project.md when in a project, else in the feature dir) is **non-negotiable** within this analysis scope. Charter conflicts are automatically CRITICAL and require adjustment of the spec, plan, or tasks—not dilution, reinterpretation, or silent ignoring of the principle. If a principle itself needs to change, that must occur in a separate, explicit charter update outside `/speckit.analyze`.
+**Engineering Charter Authority**: The project charter (resolved via the `CHARTER` path from step 1 — beside project.md when in a project, else in the feature dir) must be followed within this analysis scope. Charter conflicts are automatically CRITICAL and require a change to the spec, plan, or tasks—do not weaken, reinterpret, or quietly ignore the principle. If a principle itself needs to change, do that in a separate charter update outside `/speckit.analyze`.
 
 ## Execution Steps
 

@@ -5,7 +5,7 @@
 <!-- ARCHITECTURE START -->
 <!--
   This section is manually maintained and preserved across auto-regenerations.
-  Document your high-level product architecture and universal engineering truths here.
+  Document your high-level product architecture and the engineering facts that rarely change here.
 
   Examples:
   - "We use a microservices architecture deployed on AWS ECS"
@@ -13,7 +13,7 @@
   - "PostgreSQL for persistent storage, Redis for caching"
   - "Authentication via OAuth2 / OIDC through our identity provider"
 
-  This is the product's architectural identity - universal truths that rarely change.
+  This describes the product's architecture. List facts that rarely change.
   For initiative-specific principles, use the Engineering Charter (memory/charter.md).
 -->
 <!-- ARCHITECTURE END -->

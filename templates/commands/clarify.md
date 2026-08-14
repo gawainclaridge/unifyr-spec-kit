@@ -1,5 +1,5 @@
 ---
-description: Identify underspecified areas in the current feature spec by asking up to 5 highly targeted clarification questions and encoding answers back into the spec.
+description: Find gaps in the current feature spec by asking up to 5 focused clarification questions and writing the answers back into the spec.
 handoffs:
   - label: Create Engineering Charter (Stage 3)
     agent: speckit.charter
@@ -19,6 +19,17 @@ $ARGUMENTS
 ```
 
 You **MUST** consider the user input before proceeding (if not empty).
+
+## Voice & Audience
+
+Everything you say to the user and write into the generated files is read by a **mixed team**: engineers, product owners, and QA. Write plainly:
+
+- Short, direct sentences. One point per sentence.
+- No waffle, filler, or flowery prose. Cut any word that does not change the meaning.
+- No metaphors or grand phrasing ("engineering DNA", "foundational technical direction", "guardrails"). State the plain fact.
+- Be unambiguous: each sentence should have one possible reading.
+- When a technical term is unavoidable, say what it means the first time you use it.
+- Keep the content itself precise. This is about wording, not about dropping detail.
 
 ### Workflow Context (Unifyr Process)
 
@@ -57,7 +68,7 @@ Execution steps:
 3. Load the current spec file. Perform a structured ambiguity & coverage scan using this taxonomy. For each category, mark status: Clear / Partial / Missing. Produce an internal coverage map used for prioritization (do not output raw map unless no questions will be asked).
    - **Experience Vision gate (BLOCKING)**: Check that the spec contains a completed `## Experience Vision` section with a narrative paragraph (not placeholder text). If missing or still contains placeholder text like "[Write the experience vision here":
      - Do NOT proceed with the ambiguity scan.
-     - Inform the user: "Experience Vision is missing. This is the north star that both engineering and Product hold up at sprint review — without it, clarification has no anchor. Please describe what success feels like from the customer's perspective (3-5 sentences, plain language, not AC or user stories)."
+     - Inform the user: "Experience Vision is missing. Both Engineering and Product refer to it at sprint review, and clarification needs it to work from. Please describe what success looks like from the customer's perspective (3-5 sentences, plain language, not acceptance criteria or user stories)."
      - Wait for the user's response.
      - Write their response into the `## Experience Vision` section of the spec, replacing the placeholder.
      - Then proceed with the rest of the clarify workflow.

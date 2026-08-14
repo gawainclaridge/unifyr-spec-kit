@@ -35,8 +35,7 @@
 
 <!--
   ACTION REQUIRED: Replace the content in this section with the technical details
-  for the project. The structure here is presented in advisory capacity to guide
-  the iteration process.
+  for the project. The structure below is only a guide.
 -->
 
 **Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
@@ -52,13 +51,13 @@
 ## Charter Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
-*The Engineering Charter actively drives this plan's decisions — not just compliance gates.*
+*The Engineering Charter shapes this plan's decisions, not just its compliance gates.*
 
 ### Decisions That Shaped This Plan
 
-<!-- List architectural decisions and implementation principles from the charter
-     that actively influenced technology choices, architecture, and
-     migration approach in this plan. Show how each decision mapped to a plan choice. -->
+<!-- List the architectural decisions and implementation principles from the charter
+     that influenced this plan's technology choices, architecture, and
+     migration approach. For each one, show which plan choice it led to. -->
 
 | Charter Decision | How It Shaped This Plan |
 |-----------------------|------------------------|

@@ -1,5 +1,5 @@
 ---
-description: Execute the implementation plan by processing and executing all tasks defined in tasks.md
+description: Run every task listed in tasks.md to build the feature
 scripts:
   sh: scripts/bash/check-prerequisites.sh --json --require-tasks --include-tasks
   ps: scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks
@@ -12,6 +12,17 @@ $ARGUMENTS
 ```
 
 You **MUST** consider the user input before proceeding (if not empty).
+
+## Voice & Audience
+
+Everything you say to the user and write into the generated files is read by a **mixed team**: engineers, product owners, and QA. Write plainly:
+
+- Short, direct sentences. One point per sentence.
+- No waffle, filler, or flowery prose. Cut any word that does not change the meaning.
+- No metaphors or grand phrasing ("engineering DNA", "foundational technical direction", "guardrails"). State the plain fact.
+- Be unambiguous: each sentence should have one possible reading.
+- When a technical term is unavoidable, say what it means the first time you use it.
+- Keep the content itself precise. This is about wording, not about dropping detail.
 
 ### Workflow Context (Unifyr Process)
 

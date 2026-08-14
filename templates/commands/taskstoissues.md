@@ -14,6 +14,17 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
+## Voice & Audience
+
+Everything you say to the user and write into the generated files is read by a **mixed team**: engineers, product owners, and QA. Write plainly:
+
+- Short, direct sentences. One point per sentence.
+- No waffle, filler, or flowery prose. Cut any word that does not change the meaning.
+- No metaphors or grand phrasing ("engineering DNA", "foundational technical direction", "guardrails"). State the plain fact.
+- Be unambiguous: each sentence should have one possible reading.
+- When a technical term is unavoidable, say what it means the first time you use it.
+- Keep the content itself precise. This is about wording, not about dropping detail.
+
 ### Workflow Context (Unifyr Process)
 
 This is **Stage 5 (Tasks)** - Issue Creation phase:
@@ -67,7 +78,7 @@ Check for optional flags in the user input:
 
 ## Complexity Scoring
 
-Before creating tickets, evaluate each user story's complexity using a Fibonacci scale. This gives teams a shared sizing language without requiring velocity tracking.
+Before creating tickets, evaluate each user story's complexity using a Fibonacci scale. This gives teams a common way to size work without tracking velocity.
 
 ### Scale
 
@@ -100,7 +111,7 @@ For each story, evaluate these factors and take the median:
 
 ### Feature Sizing Guidance
 
-Teams report a quality cliff when features exceed approximately 5 days of traditional engineering effort (~8 story points). If the total story points across all stories suggest the feature exceeds this threshold, recommend breaking the feature into multiple specs using `/speckit.project` and the `--project` flag on `/speckit.specify`. This guidance is advisory, not blocking.
+Quality tends to drop when features exceed approximately 5 days of traditional engineering effort (~8 story points). If the total story points across all stories suggest the feature exceeds this threshold, recommend breaking the feature into multiple specs using `/speckit.project` and the `--project` flag on `/speckit.specify`. This guidance is advisory, not blocking.
 
 ### Output
 
@@ -146,7 +157,7 @@ Stories created in the issue tracker should be **demo-able vertical slices**, no
 
 ## Building Artifact Links (deep-link to source)
 
-Ticket descriptions reference repo artifacts (spec.md, plan.md, tasks.md, charter.md). Emit these as **clickable deep-links to the source host on the correct branch** — Jira and GitHub render bare paths as dead text.
+Ticket descriptions reference repo artifacts (spec.md, plan.md, tasks.md, charter.md). Emit these as **clickable deep-links to the source host on the correct branch** — Jira and GitHub render bare paths as plain text you cannot click.
 
 **1. Resolve the repo web base** from the origin remote:
 
@@ -170,7 +181,7 @@ Parse it, auto-detecting the host (strip a trailing `.git` and any `user@` crede
 
 **4. Section anchor (optional)**: for a Story that points at one user-story section, find that heading's 1-based line number in spec.md and append the host-specific line anchor from step 1.
 
-**5. Spec version (pin)**: read the artifact's current version — the `**Version**:` header, or the latest row of its `## Changelog` table — and include it in the reference text as a stable, human-meaningful pin, e.g. `spec.md v2.6 → User Story 2`. The deep-link targets the **live project branch** (so a reader always sees the current spec), while the version records which revision the ticket's acceptance criteria were written against. When the spec's changelog later advances past the pinned version, that mismatch is the signal to re-check the ticket against the newer AC. A line anchor (step 4) drifts as the spec is edited; the version does not, so always pair the two.
+**5. Spec version (pin)**: read the artifact's current version — the `**Version**:` header, or the latest row of its `## Changelog` table — and include it in the reference text as a stable version pin, e.g. `spec.md v2.6 → User Story 2`. The deep-link targets the **live project branch** (so a reader always sees the current spec), while the version records which revision the ticket's acceptance criteria were written against. When the spec's changelog later advances past the pinned version, that mismatch is the signal to re-check the ticket against the newer AC. A line anchor (step 4) drifts as the spec is edited; the version does not, so always pair the two.
 
 Worked examples (project `acme`, branch `project-acme`, spec v2.6, US2 heading on line 88):
 
@@ -179,9 +190,8 @@ Worked examples (project `acme`, branch `project-acme`, spec v2.6, US2 heading o
 
 > [!NOTE]
 > A link only resolves once the branch and files are pushed to the remote. Ensure the project branch (with its spec.md/plan.md/tasks.md) is pushed before creating tickets; if it isn't, warn the user and push first, or fall back to bare paths.
-
-> [!NOTE]
-> The deep-link tracks the **live project branch**, which is correct while the feature is in flight and the spec is still being clarified — the ticket always resolves to the current AC. The **version pin (step 5)** is what makes that safe: it records the revision the ticket was written against, so drift is detectable. Once the feature merges and the spec stops moving, the link MAY be repointed to the merge-commit permalink for a frozen historical record; until then, prefer the branch link, never a mutable default branch (`master`/`main`) URL, which silently drifts with no version to detect it.
+>
+> The deep-link tracks the **live project branch**, which is correct while the feature is still in progress and the spec is still being clarified — the ticket always resolves to the current AC. The **version pin (step 5)** is what makes that safe: it records the revision the ticket was written against, so drift is detectable. Once the feature merges and the spec stops moving, the link MAY be repointed to the merge-commit permalink for a frozen historical record; until then, prefer the branch link, never a mutable default branch (`master`/`main`) URL, which silently drifts with no version to detect it.
 
 ---
 
@@ -202,7 +212,7 @@ Epic (Feature)
 
 1. **Create Epic** (if not exists):
    - Title: Feature name from tasks.md
-   - Description: Start with the **Experience Vision** paragraph from spec.md (the full text, not a link), followed by **deep-links** to spec.md and plan.md (see the **Building Artifact Links** section). This ensures the north star is visible directly on the epic without navigating to other documents.
+   - Description: Start with the **Experience Vision** paragraph from spec.md (the full text, not a link), followed by **deep-links** to spec.md and plan.md (see the **Building Artifact Links** section). This puts the feature's goal directly on the epic, so readers do not have to open other documents.
    - Note: If Epic already exists, use existing key
 
 2. **For each User Story phase**:

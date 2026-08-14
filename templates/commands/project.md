@@ -20,19 +20,30 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
+## Voice & Audience
+
+Everything you say to the user and write into the generated files is read by a **mixed team**: engineers, product owners, and QA. Write plainly:
+
+- Short, direct sentences. One point per sentence.
+- No waffle, filler, or flowery prose. Cut any word that does not change the meaning.
+- No metaphors or grand phrasing ("engineering DNA", "foundational technical direction", "guardrails"). State the plain fact.
+- Be unambiguous: each sentence should have one possible reading.
+- When a technical term is unavoidable, say what it means the first time you use it.
+- Keep the content itself precise. This is about wording, not about dropping detail.
+
 ### Workflow Context (Unifyr Process)
 
 This is **Stage 1 (Specification)** of the Unifyr process:
 
 - **Team**: Product
-- **Purpose**: Create universal constraints and shared context that bound all feature specifications in a multi-feature project
+- **Purpose**: Define the shared constraints and context that every feature specification in a multi-feature project must follow
 - **Prerequisites**: None
-- **Output**: project.md with out-of-scope exclusions, shared constraints, features table — these act as universal boundaries for all specifications
+- **Output**: project.md with out-of-scope exclusions, shared constraints, and a features table. Every specification must stay within these.
 - **Next step**: `/speckit.specify --project <name>` to add features (specs must stay within project boundaries)
 
 ## Outline
 
-This command creates or manages a project.md file for multi-feature projects. A project provides **universal constraints that bound what specifications can include** — out-of-scope exclusions, shared constraints, and common context. All feature specs created under a project must respect these boundaries.
+This command creates or manages a project.md file for multi-feature projects. A project sets the **limits that every specification must follow** — out-of-scope exclusions, shared constraints, and common context. All feature specs created under a project must respect these limits.
 
 ### When to Use Projects
 
@@ -129,7 +140,7 @@ specs/
 
 ### Project vs Spec Scope
 
-Project.md provides **universal constraints** that bound all specifications. Feature specs must stay within these boundaries.
+Project.md sets the **constraints that every specification must follow**. Feature specs must stay within them.
 
 | Aspect | Project (project.md) — bounds specs | Feature (spec.md) — within project bounds |
 |--------|-------------------------------------|------------------------------------------|

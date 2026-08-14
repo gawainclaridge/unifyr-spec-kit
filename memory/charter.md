@@ -1,10 +1,10 @@
 # [PROJECT_NAME] Engineering Charter
-<!-- The Engineering Charter captures high-level architectural decisions and overarching
-     implementation principles for this initiative. These directly drive how
-     /speckit.plan structures the implementation and how /speckit.implement executes it.
-     It goes beyond the agent file (universal product truths) to capture initiative-specific
-     engineering guidance. Focus on concrete, actionable decisions and principles
-     that constrain downstream technical choices — not abstract best practices.
+<!-- The Engineering Charter records the main architectural decisions and implementation
+     principles for this initiative. These decisions drive how /speckit.plan structures the
+     implementation and how /speckit.implement executes it.
+     The agent file covers product truths that apply everywhere; this charter covers
+     engineering guidance specific to this initiative. Write concrete, actionable decisions
+     that constrain later technical choices. Do not write abstract best practices.
 
      TESTING IS NOT A CHARTER CONCERN. Strict TDD is a pipeline invariant enforced by
      /speckit.tasks and /speckit.implement (test tasks ordered first; red-green-refactor),
