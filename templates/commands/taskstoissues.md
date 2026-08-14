@@ -190,8 +190,7 @@ Worked examples (project `acme`, branch `project-acme`, spec v2.6, US2 heading o
 
 > [!NOTE]
 > A link only resolves once the branch and files are pushed to the remote. Ensure the project branch (with its spec.md/plan.md/tasks.md) is pushed before creating tickets; if it isn't, warn the user and push first, or fall back to bare paths.
-
-> [!NOTE]
+>
 > The deep-link tracks the **live project branch**, which is correct while the feature is still in progress and the spec is still being clarified — the ticket always resolves to the current AC. The **version pin (step 5)** is what makes that safe: it records the revision the ticket was written against, so drift is detectable. Once the feature merges and the spec stops moving, the link MAY be repointed to the merge-commit permalink for a frozen historical record; until then, prefer the branch link, never a mutable default branch (`master`/`main`) URL, which silently drifts with no version to detect it.
 
 ---
