@@ -31,7 +31,7 @@ This is **Stage 5 (Tasks)** - Issue Creation phase:
 
 - **Team**: Engineering only
 - **Prerequisites**: tasks.md MUST exist
-- **Output**: GitHub issues or Jira tickets (Epic → Story; no sub-tasks)
+- **Output**: GitHub issues or Jira tickets (Epic → Story; no sub-tasks); `--sync` refreshes already-created Jira tickets in place instead of creating duplicates
 - **Next step**: `/speckit.implement`
 
 ## Outline
@@ -43,6 +43,12 @@ Check for optional flags in the user input:
 - `--jira <PROJECT-KEY>`: Create Jira tickets instead of GitHub issues
   - Example: `/speckit.taskstoissues --jira PROJ`
 - `--github` (default): Create GitHub issues
+- `--sync`: Refresh already-created tickets' acceptance criteria, task checklist, and spec version
+  pin from the current spec.md/tasks.md, instead of creating new ones. Stories with no existing
+  ticket are still created fresh. **Jira only for now** — combining `--sync` with `--github` (or
+  the default) is an ERROR: stop and tell the user sync is not yet supported for GitHub issues, use
+  `--jira`.
+  - Example: `/speckit.taskstoissues --jira PROJ --sync`
 
 1. Run `{SCRIPT}` from repo root and parse FEATURE_DIR and AVAILABLE_DOCS list. All paths must be absolute. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
 
@@ -54,6 +60,7 @@ Check for optional flags in the user input:
    - Use Jira integration (see Jira Workflow below)
 
    **If `--github` flag or no flag (default)**:
+   - If `--sync` was also passed, ERROR: "Sync is not yet supported for GitHub issues — use `--jira`." and stop.
    - Get the Git remote by running:
 
      ```bash
@@ -63,14 +70,14 @@ Check for optional flags in the user input:
    > [!CAUTION]
    > ONLY PROCEED TO GITHUB STEPS IF THE REMOTE IS A GITHUB URL
 
-4. **For GitHub**: For each task in the list, use the GitHub MCP server to create a new issue in the repository that is representative of the Git remote. Reference artifacts as **deep-links** (see the **Building Artifact Links** section), not bare paths.
+4. **For GitHub**: For each task in the list, use the GitHub MCP server to create a new issue in the repository that is representative of the Git remote. Reference artifacts as **deep-links** (see the **Building Artifact Links** section), not bare paths. Issue bodies embed the full Acceptance Scenarios text per the **Story Design Principles** section below, same as Jira.
 
    > [!CAUTION]
    > UNDER NO CIRCUMSTANCES EVER CREATE ISSUES IN REPOSITORIES THAT DO NOT MATCH THE REMOTE URL
 
-5. **For Jira**: See Jira Workflow section below.
+5. **For Jira**: See Jira Workflow section below — including **Keeping Tickets Current (`--sync`)** if that flag was passed.
 
-6. **Update task files**: After creating tickets, update the task files:
+6. **Update task files**: After creating (not syncing) tickets, update the task files:
    - Replace `[JIRA-EPIC-KEY]` and `[JIRA-STORY-KEY]` placeholders with actual ticket keys
    - Update status columns if present
 
@@ -136,9 +143,10 @@ Stories created in the issue tracker should be **demo-able vertical slices**, no
 ### Rules
 
 - Each story MUST be independently demonstrable to QA/Product
-- Story description deep-links to the relevant spec.md section for acceptance criteria **and cites the spec version** (see the **Building Artifact Links** section); do NOT duplicate full AC in the ticket
+- Story description embeds that user story's **full Acceptance Scenarios text, copied verbatim from spec.md** (not paraphrased), so QA can work entirely inside the issue tracker — plus a deep-link to the source section **and the spec version pin** (see the **Building Artifact Links** section) for provenance and drift detection
 - Story description includes brief **Demo Criteria**: 1-2 sentences describing what can be shown when complete
 - Stories should represent user-visible value, not technical layers
+- Embedding AC is a deliberate duplication, accepted for QA usability; the version pin is what makes the duplication safe — it is the signal that a story's embedded AC is stale and due for a `/speckit.taskstoissues --jira <KEY> --sync` run (Jira only for now; see **Keeping Tickets Current** in the Jira Workflow section)
 
 ### Anti-Patterns (avoid these story titles)
 
@@ -218,7 +226,7 @@ Epic (Feature)
 2. **For each User Story phase**:
    - Create Story ticket linked to Epic
    - Title: User Story title from spec.md
-   - Description: A **deep-link** to the relevant section in spec.md (see the **Building Artifact Links** section — include the section's line anchor **and the spec version pin, step 5**) + Demo Criteria (1-2 sentences describing what can be demonstrated when complete). Do NOT duplicate full acceptance criteria in the ticket.
+   - Description: the user story's **full Acceptance Scenarios, copied verbatim from spec.md** + Demo Criteria (1-2 sentences describing what can be demonstrated when complete) + a **deep-link** to the source section in spec.md (see the **Building Artifact Links** section — include the section's line anchor **and the spec version pin, step 5**), so the embedded copy is always traceable back to its source and revision.
    - Story Points: Set using the standard Jira `Story Points` estimate field with the Fibonacci score from the Complexity Scoring step
 
 3. **Task breakdown (no Jira sub-tasks — we never go below Story)**: embed the story's tasks (T0xx from tasks.md) as a **checklist in the Story description** so the breakdown stays visible and trackable on the Story itself:
@@ -228,6 +236,37 @@ Epic (Feature)
 4. **If per-story mode (tasks-us*.md files exist)**:
    - Process each story task file as a single Story ticket (its tasks become that Story's checklist, per step 3)
    - Update the `[JIRA-STORY-KEY]` placeholder in each file with the created Story key
+
+### Keeping Tickets Current (`--sync`)
+
+`--sync` re-runs ticket generation against the same tasks.md/spec.md, but **updates existing Story
+tickets in place instead of creating duplicates.**
+
+1. **Detect existing tickets**: for each User Story phase, check whether its `[JIRA-STORY-KEY]`
+   placeholder in tasks.md (or the relevant tasks-us*.md, per-story mode) already holds a real ticket
+   key from a prior run.
+   - No key found (still the literal placeholder) → this story was never created. Create it fresh,
+     following the normal Execution Steps above, exactly as a non-sync run would.
+   - Key found → this story already has a ticket. Update it (next step) instead of creating a new one.
+
+2. **Update an existing Story's description**: replace its acceptance-criteria block, its task
+   checklist, and its deep-link + version pin with freshly generated content from the *current*
+   spec.md/tasks.md — the same content a fresh creation would produce. Do not touch: the ticket's
+   status, assignee, sprint, comments, or Story Points (re-score only if the user explicitly asks for
+   a rescope; a plain `--sync` never silently changes an estimate).
+
+   > [!CAUTION]
+   > This overwrites the Story description's acceptance criteria, checklist, and version pin
+   > unconditionally. Any manual edits made directly in Jira to those sections (e.g. QA annotating
+   > the AC in place) are lost. Fields outside the description, and the description's own
+   > Demo Criteria line if it wasn't regenerated, are untouched. Warn the user of this before running
+   > `--sync` if this is the first time it's being used on a feature.
+
+3. **Report a sync summary** after the run: for each story, whether it was **created** (no prior
+   key), **updated** (prior key found, version pin advanced), or **already current** (prior key
+   found, but its embedded version pin already matches the spec's current version — update anyway if
+   content changed without a version bump, e.g. a typo fix, but note it as "refreshed, same version"
+   rather than counting it as a real revision).
 
 ### Required Information
 
@@ -241,6 +280,9 @@ For Jira integration, you need:
 ```bash
 # Create Jira tickets in PROJ project
 /speckit.taskstoissues --jira PROJ
+
+# Refresh already-created tickets after spec.md changed (creates any still-missing ones too)
+/speckit.taskstoissues --jira PROJ --sync
 ```
 
 > [!CAUTION]
