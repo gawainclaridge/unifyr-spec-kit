@@ -297,7 +297,7 @@ Unifyr Spec Kit includes Jira placeholders in generated artifacts:
 | tasks.md | `[JIRA-STORY-KEY]` | Story |
 | tasks-us*.md | `[JIRA-STORY-KEY]` | Story |
 
-Use `/speckit.taskstoissues --jira PROJ` to create actual tickets and update placeholders with real keys.
+Use `/speckit.taskstoissues --jira PROJ` to create actual tickets and update placeholders with real keys. Story tickets embed that story's acceptance criteria directly (not just a link), so QA can work entirely in Jira. When spec.md changes after tickets already exist, re-run with `--sync` (Jira only) to refresh each ticket's acceptance criteria, checklist, and version pin in place — it will not create duplicates for stories that already have a ticket, and it will still create tickets for any story that doesn't yet have one.
 
 ## Key Principles
 

@@ -24,7 +24,7 @@
 > | **5-stage process** | Specification → Review → Charter → Planning → Tasks with explicit team ownership (Product, Engineering, QA) | Maps directly to our sprint ceremonies and handoff points |
 > | **Multi-feature projects** | `/speckit.project` command and `--project` flag group related specs under a shared project context | Supports epic-level planning where multiple features share constraints, users, and scope boundaries |
 > | **Charter enforcement** | `/speckit.plan` cannot produce a plan without a finalized charter — created either as a separate Stage 3 step or inline via the plan's auto-triggered Phase -1 | Architectural decisions are locked in before the plan is generated, without forcing a separate up-front step |
-> | **Jira integration** | `--jira` flag on `/speckit.taskstoissues` creates an Epic → Story hierarchy with Fibonacci story points; ticket descriptions deep-link spec.md/plan.md to the Bitbucket branch | Tickets flow into our Jira boards with correct hierarchy, sizing, and clickable source links |
+> | **Jira integration** | `--jira` flag on `/speckit.taskstoissues` creates an Epic → Story hierarchy with Fibonacci story points, embedded acceptance criteria, and version-pinned deep-links to spec.md/plan.md on the Bitbucket branch; `--sync` refreshes existing tickets from a changed spec instead of duplicating them | Tickets flow into our Jira boards with correct hierarchy, sizing, AC where QA already works, and a way to keep that AC current |
 > | **Per-story task files** | `--per-story` flag on `/speckit.tasks` generates separate task files per user story | Enables parallel story assignment across team members in a sprint |
 > | **Enforced TDD (with escape hatch)** | Strict test-first (red-green-refactor) is the pipeline default; `--spike` / `--no-tdd` waives it for throwaway/exploratory work | A robust validation path on production code, without blocking spikes |
 > | **Complexity scoring** | Fibonacci-based story point estimates with calibration (8 pts ≈ 5 days) and split advisory at 20+ pts | Right-sizes features before sprint commitment; flags over-scoped work early |
@@ -317,7 +317,7 @@ Commands for managing multi-feature projects:
 | Command                  | Description                                                              |
 | ------------------------ | ------------------------------------------------------------------------ |
 | `/speckit.project`       | Create or manage a project definition for multi-feature projects         |
-| `/speckit.taskstoissues` | Convert tasks to GitHub issues or Jira tickets with complexity scoring   |
+| `/speckit.taskstoissues` | Convert tasks to GitHub issues or Jira tickets with complexity scoring; `--sync` keeps existing tickets current |
 
 #### Optional Commands
 
@@ -342,6 +342,7 @@ Key flags for commonly used commands:
 | `/speckit.project`       | `--add-spec`           | Add current spec to the project                          |
 | `/speckit.taskstoissues` | `--jira <PROJECT-KEY>` | Create Jira tickets (Epic → Story hierarchy)  |
 | `/speckit.taskstoissues` | `--github`             | Create GitHub issues (default)                           |
+| `/speckit.taskstoissues` | `--sync`               | Refresh already-created tickets' AC/checklist/version pin instead of creating duplicates (Jira only) |
 
 ### Environment Variables
 
@@ -796,9 +797,12 @@ After generating tasks, you can automatically create GitHub issues or Jira ticke
 
 # Create Jira tickets
 /speckit.taskstoissues --jira PROJ
+
+# Refresh already-created Jira tickets after spec.md changes (Jira only)
+/speckit.taskstoissues --jira PROJ --sync
 ```
 
-This will create tickets for each task and update the task files with actual ticket keys. Jira Story tickets include Fibonacci-based story point estimates in the standard Story Points field. Each story is created as a demo-able vertical slice linking to spec.md for acceptance criteria.
+This will create tickets for each task and update the task files with actual ticket keys. Jira Story tickets include Fibonacci-based story point estimates in the standard Story Points field. Each story is created as a demo-able vertical slice, with that story's full acceptance criteria copied into the ticket description (not just linked) so QA can work entirely inside the tracker — plus a version-pinned deep-link back to spec.md for provenance. When spec.md changes after tickets exist, re-run with `--sync` to refresh each ticket's acceptance criteria, task checklist, and version pin in place, instead of creating duplicates; anything you edited directly on the ticket's description in Jira is overwritten by a sync, so use it deliberately, not as a background habit.
 
 #### Implementation (`/speckit.implement`)
 
