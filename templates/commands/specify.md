@@ -140,7 +140,7 @@ Given that feature description, do this:
     5. Fill User Scenarios & Testing section
        If no clear user flow: ERROR "Cannot determine user scenarios"
        Write Acceptance Scenarios and the Independent Test so a QA engineer can check them **in the product** without reading code: name the screen, setting or result they would look at, in product terms.
-       /speckit.taskstoissues copies Acceptance Scenarios word for word into tickets, so they must read well there.
+       /speckit.taskstoissues turns each Acceptance Scenario into a QA test step on the ticket, so write them as things QA can do and see.
        Build or startup checks ("every service builds") are engineering checks, not acceptance scenarios; put them in plan.md or tasks.md.
        Include the "still works" checks QA would run (existing behaviour that must not change), not only the change itself.
     6. Generate Functional Requirements

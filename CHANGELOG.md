@@ -7,6 +7,20 @@ All notable changes to the Specify CLI and templates are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.11] - 2026-09-24
+
+### Changed
+
+- `/speckit.taskstoissues`: tickets are written for QA and Product and built from the whole spec (What this is / Why now / How to test / Risk, plus customer, admin, release and Support notes when the spec has them). How to test is the ticket's acceptance criteria: the spec's acceptance scenarios rewritten as QA steps, each tagged with the scenario it checks, with every scenario covered. The spec's scenarios are no longer copied onto the ticket.
+- `/speckit.taskstoissues`: checks the Jira project first: proposes an issue type such as Tech Debt for internal work (asks first), finds the right story points field, uses the Engineering Notes and Feature Flag fields when present. Task checklists show done and dropped tasks.
+- `/speckit.taskstoissues --sync`: refreshes only the task checklist, spec link and version pin. When the spec has changed, it lists the test steps that cite a changed scenario and asks before changing them.
+- `/speckit.clarify`: every question must include a plain-language `**Question**:` line before the recommendation.
+- `/speckit.specify` and `/speckit.clarify`: acceptance scenarios must be checkable by QA in the product; build checks belong in plan.md or tasks.md.
+
+### Fixed
+
+- `specify init --here --force` no longer overwrites existing files in `.specify/memory/` (such as `charter.md`) when upgrading a project.
+
 ## [0.0.22] - 2025-11-07
 
 - Support for VS Code/Copilot agents, and moving away from prompts to proper agents with hand-offs.

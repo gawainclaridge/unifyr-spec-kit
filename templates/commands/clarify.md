@@ -137,7 +137,7 @@ Execution steps:
 
    Completion Signals:
    - Acceptance criteria testability
-   - Acceptance scenarios QA can check in the product (not build or code checks), including "still works" checks. These are copied word for word into tickets by /speckit.taskstoissues
+   - Acceptance scenarios QA can check in the product (not build or code checks), including "still works" checks. /speckit.taskstoissues turns these into the ticket's test steps
    - Measurable Definition of Done style indicators
 
    Misc / Placeholders:
