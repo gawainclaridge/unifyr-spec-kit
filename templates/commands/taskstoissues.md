@@ -43,9 +43,11 @@ Check for optional flags in the user input:
 - `--jira <PROJECT-KEY>`: Create Jira tickets instead of GitHub issues
   - Example: `/speckit.taskstoissues --jira PROJ`
 - `--github` (default): Create GitHub issues
-- `--sync`: Refresh already-created tickets' acceptance criteria, task checklist, and spec version
-  pin from the current spec.md/tasks.md, instead of creating new ones. Stories with no existing
-  ticket are still created fresh. **Jira only for now** — combining `--sync` with `--github` (or
+- `--sync`: Refresh the generated parts of already-created tickets (acceptance criteria and the
+  Engineering section) from the current spec.md/tasks.md, instead of creating new ones. Sections
+  people write by hand are never touched, and hand edits to generated parts are shown and asked
+  about, not overwritten. Stories with no existing ticket are still created fresh. **Jira only for
+  now** — combining `--sync` with `--github` (or
   the default) is an ERROR: stop and tell the user sync is not yet supported for GitHub issues, use
   `--jira`.
   - Example: `/speckit.taskstoissues --jira PROJ --sync`
@@ -70,7 +72,7 @@ Check for optional flags in the user input:
    > [!CAUTION]
    > ONLY PROCEED TO GITHUB STEPS IF THE REMOTE IS A GITHUB URL
 
-4. **For GitHub**: For each task in the list, use the GitHub MCP server to create a new issue in the repository that is representative of the Git remote. Reference artifacts as **deep-links** (see the **Building Artifact Links** section), not bare paths. Issue bodies embed the full Acceptance Scenarios text per the **Story Design Principles** section below, same as Jira.
+4. **For GitHub**: For each task in the list, use the GitHub MCP server to create a new issue in the repository that is representative of the Git remote. Reference artifacts as **deep-links** (see the **Building Artifact Links** section), not bare paths. Issue titles and bodies follow the **Story Ticket Format** section below, same as Jira (GitHub has no Acceptance Criteria field, so the AC always goes in the body).
 
    > [!CAUTION]
    > UNDER NO CIRCUMSTANCES EVER CREATE ISSUES IN REPOSITORIES THAT DO NOT MATCH THE REMOTE URL
@@ -143,10 +145,11 @@ Stories created in the issue tracker should be **demo-able vertical slices**, no
 ### Rules
 
 - Each story MUST be independently demonstrable to QA/Product
-- Story description embeds that user story's **full Acceptance Scenarios text, copied verbatim from spec.md** (not paraphrased), so QA can work entirely inside the issue tracker — plus a deep-link to the source section **and the spec version pin** (see the **Building Artifact Links** section) for provenance and drift detection
-- Story description includes brief **Demo Criteria**: 1-2 sentences describing what can be shown when complete
+- The ticket is written **for QA and Product first, engineers second**. Someone who has never opened spec.md must be able to test the story from the ticket alone. The layout is set by the **Story Ticket Format** section below.
+- The ticket carries that user story's **full Acceptance Scenarios text, copied verbatim from spec.md** (not paraphrased), plus a deep-link to the source section **and the spec version pin** (see the **Building Artifact Links** section) for provenance and drift detection
 - Stories should represent user-visible value, not technical layers
-- Embedding AC is a deliberate duplication, accepted for QA usability; the version pin is what makes the duplication safe — it is the signal that a story's embedded AC is stale and due for a `/speckit.taskstoissues --jira <KEY> --sync` run (Jira only for now; see **Keeping Tickets Current** in the Jira Workflow section)
+- Copying AC into the ticket is a deliberate duplication, accepted for QA usability. The version pin is what makes it safe: it signals that a story's copied AC is stale and due for a `/speckit.taskstoissues --jira <KEY> --sync` run (Jira only for now; see **Keeping Tickets Current** in the Jira Workflow section)
+- **If the spec's AC is too thin to test from, fix the spec, not the ticket.** Do not rewrite or add scenarios on the ticket only; the ticket and spec would then disagree, and the next `--sync` would have to choose between them. Tell the user which stories look thin and suggest `/speckit.clarify` to strengthen spec.md (bumping its version), then re-run `--sync`.
 
 ### Anti-Patterns (avoid these story titles)
 
@@ -160,6 +163,69 @@ Stories created in the issue tracker should be **demo-able vertical slices**, no
 - "User can register and log in" (demo-able: show the registration flow)
 - "User can create and view projects" (demo-able: create a project, see it listed)
 - "User can drag tasks between board columns" (demo-able: drag and drop a card)
+
+---
+
+## Story Ticket Format
+
+Every Story ticket (Jira Story or GitHub issue) uses this layout. It applies to fresh creation and to stories created during a `--sync` run.
+
+### Title
+
+Write a plain-language title that **names the specific thing being changed**, so a QA engineer knows what the story is about from the board alone.
+
+- Start from the spec.md user story heading, but do not copy it if it is vague. Add the missing specifics: which feature, flag, screen, or report.
+- Use the names people see in the product (display names, screen labels), not code identifiers.
+- ❌ "Remove flags that are already superseded" (which flags?)
+- ✅ "Retire the Analytics IQ and Collateral IQ - Asset Enrichment feature flags"
+
+### Naming things
+
+Everywhere except the Engineering section, refer to features, flags, settings, and screens by the **name users see in the product**. The first time you mention one, put its code name (enum, constant, config key, as it appears in tasks.md) in brackets after it, e.g. "Analytics IQ (`ANALYTICS_IQ_ENABLED`)". After that, use the display name only. If you cannot find the display name in spec.md, plan.md, or the codebase, use the code name and say so in the run output so the user can fix it.
+
+### Acceptance criteria: where they go
+
+Before creating any Jira Story, check whether the project's Story issue type has an **Acceptance Criteria field**: fetch the Story type's field metadata for the project and look for a field whose name is "Acceptance Criteria" (ignore case).
+
+- **Field exists** → write the verbatim Acceptance Scenarios into that field. Leave the `### Acceptance criteria` heading out of the description.
+- **No such field** (or GitHub) → put them in the description under `### Acceptance criteria`, as shown below.
+
+State which one you used in the run output.
+
+### Description layout
+
+Write the sections in this order, with these exact headings. The headings matter: `--sync` uses them to tell generated sections from hand-written ones.
+
+```markdown
+### What this is
+[1-3 plain sentences: what changes for the user, taken from the spec.md user story narrative.]
+
+### Why now
+[1-2 sentences, from the story's "Why this priority" line in spec.md.]
+
+### How to test
+[Steps a QA engineer can follow, from the story's "Independent Test" line in spec.md. End with the
+Demo Criteria: 1-2 sentences on what can be shown in sprint review when the story is done.]
+
+### Risk
+[What could break or who could be affected, from spec.md Edge Cases and plan.md. If nothing
+material, write "Low: [one-line reason]". Do not leave this out.]
+
+### Acceptance criteria
+[Only when the project has no Acceptance Criteria field. Acceptance Scenarios copied verbatim from spec.md.]
+
+### Engineering
+Source: [spec.md vX.Y → User Story N](deep-link)
+
+- [ ] T0xx [task description] ([deep-link to artifact/section])
+- [ ] T0xx ...
+```
+
+**Hand-written sections**: What this is, Why now, How to test, Risk. Generate them at creation, then treat them as belonging to the team. `--sync` never changes them.
+
+**Generated sections**: Acceptance criteria (in the field or in the description) and Engineering. These always mirror spec.md/tasks.md, and `--sync` keeps them current.
+
+Apply the **Voice & Audience** rules to the hand-written sections. The acceptance criteria stay verbatim, even where their wording is technical; if they are hard to read, that is a spec fix (see the last rule under **Story Design Principles**).
 
 ---
 
@@ -225,12 +291,12 @@ Epic (Feature)
 
 2. **For each User Story phase**:
    - Create Story ticket linked to Epic
-   - Title: User Story title from spec.md
-   - Description: the user story's **full Acceptance Scenarios, copied verbatim from spec.md** + Demo Criteria (1-2 sentences describing what can be demonstrated when complete) + a **deep-link** to the source section in spec.md (see the **Building Artifact Links** section — include the section's line anchor **and the spec version pin, step 5**), so the embedded copy is always traceable back to its source and revision.
+   - Title and description: follow the **Story Ticket Format** section, including the Acceptance Criteria field check. The `Source:` line in the Engineering section is a **deep-link** to the story's section in spec.md (see the **Building Artifact Links** section — include the section's line anchor **and the spec version pin, step 5**), so the copied AC is always traceable back to its source and revision.
    - Story Points: Set using the standard Jira `Story Points` estimate field with the Fibonacci score from the Complexity Scoring step
 
-3. **Task breakdown (no Jira sub-tasks — we never go below Story)**: embed the story's tasks (T0xx from tasks.md) as a **checklist in the Story description** so the breakdown stays visible and trackable on the Story itself:
+3. **Task breakdown (no Jira sub-tasks — we never go below Story)**: list the story's tasks (T0xx from tasks.md) as a **checklist in the Engineering section** of the Story description, so the breakdown stays visible and trackable on the Story itself:
    - Render each as a checklist item — `- [ ] T0xx <description>` — with a **deep-link** to the relevant artifact/section (see the **Building Artifact Links** section).
+   - Task descriptions stay as written in tasks.md. Code names are fine here, because this section is for engineers.
    - Do NOT create Sub-task issues.
 
 4. **If per-story mode (tasks-us*.md files exist)**:
@@ -249,24 +315,41 @@ tickets in place instead of creating duplicates.**
      following the normal Execution Steps above, exactly as a non-sync run would.
    - Key found → this story already has a ticket. Update it (next step) instead of creating a new one.
 
-2. **Update an existing Story's description**: replace its acceptance-criteria block, its task
-   checklist, and its deep-link + version pin with freshly generated content from the *current*
-   spec.md/tasks.md — the same content a fresh creation would produce. Do not touch: the ticket's
-   status, assignee, sprint, comments, or Story Points (re-score only if the user explicitly asks for
-   a rescope; a plain `--sync` never silently changes an estimate).
+2. **Update only the generated sections** (see **Story Ticket Format**): the acceptance criteria
+   (in the Acceptance Criteria field, or under `### Acceptance criteria` in the description) and the
+   `### Engineering` section (Source link, version pin, task checklist). Everything else stays as it
+   is on the ticket:
+   - Never change the hand-written sections (What this is, Why now, How to test, Risk), any other
+     section or text a person added to the description, or the title.
+   - Never change the ticket's status, assignee, sprint, comments, or Story Points (re-score only if
+     the user explicitly asks for a rescope; a plain `--sync` never silently changes an estimate).
+   - **Tickets in the old layout** (created before these headings existed, or with the headings
+     renamed or removed): do not rewrite them. List them in the summary as "not synced: old layout"
+     and tell the user to either add the headings by hand or confirm, per ticket, that sync may
+     replace the description with the current layout.
 
-   > [!CAUTION]
-   > This overwrites the Story description's acceptance criteria, checklist, and version pin
-   > unconditionally. Any manual edits made directly in Jira to those sections (e.g. QA annotating
-   > the AC in place) are lost. Fields outside the description, and the description's own
-   > Demo Criteria line if it wasn't regenerated, are untouched. Warn the user of this before running
-   > `--sync` if this is the first time it's being used on a feature.
+3. **Check for hand edits before replacing a generated section.** For each generated section:
+   1. Read the ticket's current content and its version pin (from the Engineering `Source:` line).
+   2. Rebuild what that section *should* say at the pinned version: find the pinned spec.md
+      revision in git history (the commit where `**Version**:` or the changelog reached that version)
+      and generate the section from it, the same way a fresh creation would.
+   3. **Ticket matches the pinned version** → nobody edited it. Replace it with content from the
+      current spec.md/tasks.md.
+   4. **Ticket differs from the pinned version, or the pinned revision cannot be found** → someone
+      may have edited it by hand. Do not overwrite. Show the user the ticket's current text next to
+      the new text, and ask per section: **replace** (lose the hand edit), **keep** (leave the
+      section as it is; move the version pin forward only if the user confirms the edited text
+      already covers the new spec), or **skip** (change nothing on this ticket). If a hand edit added something the
+      spec lacks, suggest moving it into spec.md (see the last rule under **Story Design
+      Principles**).
+   5. Ticking a checklist box (`- [ ]` → `- [x]`) is not a hand edit. Carry the ticks over to the
+      new checklist for tasks that still exist.
 
-3. **Report a sync summary** after the run: for each story, whether it was **created** (no prior
-   key), **updated** (prior key found, version pin advanced), or **already current** (prior key
-   found, but its embedded version pin already matches the spec's current version — update anyway if
-   content changed without a version bump, e.g. a typo fix, but note it as "refreshed, same version"
-   rather than counting it as a real revision).
+4. **Report a sync summary** after the run: for each story, whether it was **created** (no prior
+   key), **updated** (prior key found, version pin advanced), **already current** (prior key found,
+   version pin already matches — update anyway if content changed without a version bump, e.g. a
+   typo fix, but note it as "refreshed, same version"), **kept by user**, **skipped**, or **not
+   synced: old layout**.
 
 ### Required Information
 
