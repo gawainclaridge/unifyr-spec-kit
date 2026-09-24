@@ -828,6 +828,11 @@ def download_and_extract_template(project_path: Path, ai_assistant: str, script_
                                     if sub_item.is_file():
                                         rel_path = sub_item.relative_to(item)
                                         dest_file = dest_path / rel_path
+                                        # Keep the project's own memory files (e.g. charter.md) on upgrade
+                                        if item.name == ".specify" and rel_path.parts[0] == "memory" and dest_file.exists():
+                                            if verbose and not tracker:
+                                                console.print(f"[cyan]Keeping existing:[/cyan] .specify/{rel_path.as_posix()}")
+                                            continue
                                         dest_file.parent.mkdir(parents=True, exist_ok=True)
                                         # Special handling for .vscode/settings.json - merge instead of overwrite
                                         if dest_file.name == "settings.json" and dest_file.parent.name == ".vscode":

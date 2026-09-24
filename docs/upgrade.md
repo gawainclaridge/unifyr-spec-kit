@@ -53,7 +53,7 @@ Running `specify init --here --force` will update:
 - ✅ **Slash command files** (`.claude/commands/`, `.github/prompts/`, etc.)
 - ✅ **Script files** (`.specify/scripts/`)
 - ✅ **Template files** (`.specify/templates/`)
-- ✅ **Shared memory files** (`.specify/memory/`) - **⚠️ See warnings below**
+- ✅ **Shared memory files** (`.specify/memory/`): new files are added; files you already have (such as `charter.md`) are kept
 
 ### What stays safe?
 
@@ -100,27 +100,11 @@ With `--force`, it skips the confirmation and proceeds immediately.
 
 ## ⚠️ Important Warnings
 
-### 1. Engineering Charter file will be overwritten
+### 1. Engineering Charter is kept (from v1.1.11)
 
-**Known issue:** `specify init --here --force` currently overwrites `.specify/memory/charter.md` with the default template, erasing any customizations you made.
-
-**Workaround:**
+From v1.1.11, `specify init --here --force` keeps any file that already exists in `.specify/memory/`, including `charter.md`. The upgrade prints "Keeping existing" for each one. On older CLI versions the charter was overwritten; if you upgraded with an older version, restore it from git:
 
 ```bash
-# 1. Back up your charter before upgrading
-cp .specify/memory/charter.md .specify/memory/charter-backup.md
-
-# 2. Run the upgrade
-specify init --here --force --ai copilot
-
-# 3. Restore your customized charter
-mv .specify/memory/charter-backup.md .specify/memory/charter.md
-```
-
-Or use git to restore it:
-
-```bash
-# After upgrade, restore from git history
 git restore .specify/memory/charter.md
 ```
 
@@ -309,7 +293,7 @@ git restore .specify/memory/charter.md
 cp /tmp/charter-backup.md .specify/memory/charter.md
 ```
 
-**Prevention:** Always commit or back up `charter.md` before upgrading.
+**Prevention:** Upgrade the CLI to v1.1.11 or later before updating the project; from v1.1.11 the upgrade keeps your existing `charter.md`. Committing before any upgrade is still good practice, and the backup steps above are only needed on older CLI versions.
 
 ### "Warning: Current directory is not empty"
 

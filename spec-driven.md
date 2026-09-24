@@ -192,10 +192,11 @@ For multi-feature projects that share context, constraints, and out-of-scope ite
 Converts tasks into issue tracker tickets with complexity scoring and demo-able story design:
 
 1. **Complexity Scoring**: Evaluates each story using Fibonacci points (1-20) before creating tickets. Stories include Story Points in the standard Jira estimate field.
-2. **Demo-able Stories**: Each story is created as a vertical slice that can be independently demonstrated to QA/Product. Story descriptions link to spec.md for acceptance criteria rather than duplicating them.
-3. **GitHub Issues** (default): Creates issues in the repository matching the Git remote
-4. **Jira Tickets**: Creates Epic → Story hierarchy when `--jira <PROJECT-KEY>` is provided
-5. **Placeholder Updates**: Replaces `[JIRA-EPIC-KEY]`/`[JIRA-STORY-KEY]` placeholders with actual ticket keys
+2. **Demo-able Stories**: Each story is created as a vertical slice that can be independently demonstrated to QA/Product. Tickets are written for QA and Product first (What this is / Why now / How to test / Risk, plus customer, admin, release and Support notes drawn from the whole spec). How to test turns the acceptance scenarios into QA steps tagged with the scenario each one checks. An Engineering section holds the task checklist and a version-pinned link back to spec.md.
+3. **Keeping Tickets Current**: `--sync` (Jira only) refreshes the task checklist and version pin of existing tickets after spec.md changes, lists the test steps that cite a changed scenario, and asks before changing them.
+4. **GitHub Issues** (default): Creates issues in the repository matching the Git remote
+5. **Jira Tickets**: Creates Epic → Story hierarchy when `--jira <PROJECT-KEY>` is provided
+6. **Placeholder Updates**: Replaces `[JIRA-EPIC-KEY]`/`[JIRA-STORY-KEY]` placeholders with actual ticket keys
 
 ```bash
 # Create GitHub issues (default)
@@ -205,6 +206,9 @@ Converts tasks into issue tracker tickets with complexity scoring and demo-able 
 
 # Create Jira tickets
 /speckit.taskstoissues --jira PROJ
+
+# Refresh existing Jira tickets after spec.md changed
+/speckit.taskstoissues --jira PROJ --sync
 ```
 
 ### Example: Building a Chat Feature
