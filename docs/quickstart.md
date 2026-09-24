@@ -313,4 +313,4 @@ Use `/speckit.taskstoissues --jira PROJ` to create actual tickets and update pla
 
 - Read the [complete methodology](../spec-driven.md) for in-depth guidance
 - Check out [more examples](../templates) in the repository
-- Explore the [source code on GitHub](https://github.com/gawainclaridge/spec-kit)
+- Explore the [source code on GitHub](https://github.com/gawainclaridge/unifyr-spec-kit)
