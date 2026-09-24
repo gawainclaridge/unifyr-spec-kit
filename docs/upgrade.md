@@ -102,7 +102,7 @@ With `--force`, it skips the confirmation and proceeds immediately.
 
 ### 1. Engineering Charter is kept (from v1.1.11)
 
-From v1.1.11, `specify init --here --force` keeps any file that already exists in `.specify/memory/`, including `charter.md`. The upgrade prints "Keeping existing" for each one. On older CLI versions the charter was overwritten; if you upgraded with an older version, restore it from git:
+From v1.1.11, `specify init --here --force` keeps any file that already exists in `.specify/memory/`, including `charter.md`. On older CLI versions the charter was overwritten; if you upgraded with an older version, restore it from git:
 
 ```bash
 git restore .specify/memory/charter.md
@@ -154,7 +154,7 @@ uv tool install specify-cli --force --from git+https://github.com/gawainclaridge
 # Update project files to get new commands
 specify init --here --force --ai copilot
 
-# Restore your charter if customized
+# Only needed on CLI versions before v1.1.11: restore your charter
 git restore .specify/memory/charter.md
 ```
 
@@ -423,6 +423,6 @@ Unifyr Spec Kit follows semantic versioning for major releases. The CLI and proj
 After upgrading:
 
 - **Test new slash commands:** Run `/speckit.charter` or another command to verify everything works
-- **Review release notes:** Check [GitHub Releases](https://github.com/gawainclaridge/spec-kit/releases) for new features and breaking changes
+- **Review release notes:** Check [GitHub Releases](https://github.com/gawainclaridge/unifyr-spec-kit/releases) for new features and breaking changes
 - **Update workflows:** If new commands were added, update your team's development workflows
-- **Check documentation:** Visit [github.io/spec-kit](https://gawainclaridge.github.io/spec-kit/) for updated guides
+- **Check documentation:** Visit [github.io/unifyr-spec-kit](https://gawainclaridge.github.io/unifyr-spec-kit/) for updated guides
