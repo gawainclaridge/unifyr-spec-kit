@@ -226,7 +226,7 @@ Execution steps:
 
 5. Sequential questioning loop (interactive):
     - Present EXACTLY ONE question at a time.
-    - **Every question MUST actually ask something.** Open each one with this block, in this order, before any recommendation or options:
+    - **Every question MUST actually ask something.** Open each one with this block, in this order, before the options and the recommendation:
 
        ```markdown
        ## Question [N]: <short topic label>
@@ -241,16 +241,14 @@ Execution steps:
        - The question must fit the answers. If the options are "spec it now" vs "defer it", ask "Should we … now, or … later?", not "What about claim windows?".
        - ❌ `## Question 1: Claim window / XTRM dependency (FR-034)` followed straight by the recommendation.
        - ✅ `**Question**: Should the spec define claim windows and automatic forfeit now, before we know XTRM supports them (FR-034)?`
-       - Only after this block, show the recommendation/suggestion and the options below.
-    - For multiple‑choice questions:
+       - After this block, show the options, and only then your recommendation. The team should see every option before your view of which is best.
+    - For multiple‑choice questions, in this order:
        - **Analyze all options** and determine the **most suitable option** based on:
           - Best practices for the project type
           - Common patterns in similar implementations
           - Risk reduction (security, performance, maintainability)
           - Alignment with any explicit project goals or constraints visible in the spec
-       - Present your **recommended option prominently** at the top with clear reasoning (1-2 sentences explaining why this is the best choice).
-       - Format as: `**Recommended:** Option [X] - <reasoning>`
-       - Then render all options as a Markdown table:
+       - First render all options as a Markdown table:
 
        | Option | Description |
        |--------|-------------|
@@ -259,7 +257,8 @@ Execution steps:
        | C | <Option C description> (add D/E as needed up to 5) |
        | Short | Provide a different short answer (<=5 words) (Include only if free-form alternative is appropriate) |
 
-       - After the table, add: `You can reply with the option letter (e.g., "A"), accept the recommendation by saying "yes" or "recommended", or provide your own short answer.`
+       - Then, below the table, give your recommendation with clear reasoning (1-2 sentences explaining why this is the best choice). Format as: `**Recommended:** Option [X] - <reasoning>`
+       - Finally, add: `You can reply with the option letter (e.g., "A"), accept the recommendation by saying "yes" or "recommended", or provide your own short answer.`
     - For short‑answer style (no meaningful discrete options):
        - Provide your **suggested answer** based on best practices and context.
        - Format as: `**Suggested:** <your proposed answer> - <brief reasoning>`
