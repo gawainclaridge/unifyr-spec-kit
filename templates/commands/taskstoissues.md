@@ -168,7 +168,21 @@ Stories created in the issue tracker should be **demo-able vertical slices**, no
 
 ## Story Ticket Format
 
-Every Story ticket (Jira Story or GitHub issue) uses this layout. It applies to fresh creation and to stories created during a `--sync` run.
+Every story ticket (Jira or GitHub) uses this layout. It applies to fresh creation and to stories created during a `--sync` run.
+
+The ticket is built from **the whole spec**, not just the user story's own fields. Much of what QA and Product need (why the change matters, who notices it, what Support must know) lives in the Experience Vision, Non-Goals, Edge Cases, and Adoption & Rollout sections. Read all of them, plus plan.md and tasks.md, before writing a ticket.
+
+### Check the Jira project first
+
+Before creating any ticket, read the project's issue types and each candidate type's field metadata once. Decide, and state in the run output:
+
+- **Issue type**: default to Story. If the feature is internal work with no user-facing change (the spec's Experience Vision or Non-Goals say customers notice nothing, e.g. refactors, flag retirements, dependency upgrades) **and** the project has a type such as "Tech Debt", propose that type and confirm with the user before creating anything. Use the chosen type's fields for every check below.
+- **Story points field**: find the estimate field by name. Prefer "Story point estimate" (team-managed projects) or "Story Points" (company-managed). Never use a field marked "Legacy". If more than one candidate remains, ask the user which one.
+- **Acceptance Criteria field**: a field whose name is "Acceptance Criteria" (ignore case).
+- **Engineering Notes field**: a field whose name is "Engineering Notes" or "Dev Notes" (ignore case).
+- **Feature flag field**: a field whose name starts with "Feature Flag" (ignore case). If the story adds, changes, or removes feature flags, list their code names there, comma-separated.
+
+GitHub has none of these fields: everything goes in the issue body.
 
 ### Title
 
@@ -178,52 +192,70 @@ Write a plain-language title that **names the specific thing being changed**, so
 - Use the names people see in the product (display names, screen labels), not code identifiers.
 - ❌ "Remove flags that are already superseded" (which flags?)
 - ✅ "Retire the Analytics IQ and Collateral IQ - Asset Enrichment feature flags"
+- When you had to rewrite a vague heading, list the heading and your title in the run output and suggest updating spec.md to match, so the spec and the ticket use the same name.
 
 ### Naming things
 
-Everywhere except the Engineering section, refer to features, flags, settings, and screens by the **name users see in the product**. The first time you mention one, put its code name (enum, constant, config key, as it appears in tasks.md) in brackets after it, e.g. "Analytics IQ (`ANALYTICS_IQ_ENABLED`)". After that, use the display name only. If you cannot find the display name in spec.md, plan.md, or the codebase, use the code name and say so in the run output so the user can fix it.
+Everywhere except the Engineering section, refer to features, flags, settings, and screens by the **name users see in the product**. The first time you mention one, put its code name in brackets after it, e.g. "Analytics IQ (`ANALYTICS_IQ`)". After that, use the display name only.
 
-### Acceptance criteria: where they go
-
-Before creating any Jira Story, check whether the project's Story issue type has an **Acceptance Criteria field**: fetch the Story type's field metadata for the project and look for a field whose name is "Acceptance Criteria" (ignore case).
-
-- **Field exists** → write the verbatim Acceptance Scenarios into that field. Leave the `### Acceptance criteria` heading out of the description.
-- **No such field** (or GitHub) → put them in the description under `### Acceptance criteria`, as shown below.
-
-State which one you used in the run output.
+Take display names only from a real source: spec.md, plan.md, or the codebase (UI labels, translation files, flag metadata files such as a `feature-flag-metadata.ts`). **Never make one up.** If you cannot find it, use the code name and list it in the run output so the user can fix it.
 
 ### Description layout
 
-Write the sections in this order, with these exact headings. The headings matter: `--sync` uses them to tell generated sections from hand-written ones.
+Write the sections in this order, with these exact headings. The headings matter: `--sync` uses them to tell generated sections from hand-written ones. Sections marked *optional* are included only when the spec has something real to say; leave them out rather than writing "N/A".
 
 ```markdown
 ### What this is
-[1-3 plain sentences: what changes for the user, taken from the spec.md user story narrative.]
+[1-3 plain sentences: what is changing, in product terms. Source: the user story narrative.]
 
 ### Why now
-[1-2 sentences, from the story's "Why this priority" line in spec.md.]
+[1-2 sentences on why this change matters. Source: the Experience Vision and the user story
+narrative. Not the "Why this priority" line: that explains the order of the work, which belongs
+in Risk if anywhere.]
+
+### What customers will notice
+[Optional. What changes for customers, or "Nothing." with a one-line reason. Source: Experience
+Vision, Non-Goals, Adoption & Rollout.]
+
+### What changes for admins
+[Optional. What changes in admin or internal screens. Source: Experience Vision, Functional
+Requirements.]
 
 ### How to test
-[Steps a QA engineer can follow, from the story's "Independent Test" line in spec.md. End with the
-Demo Criteria: 1-2 sentences on what can be shown in sprint review when the story is done.]
+[Numbered steps a QA engineer can follow in the product. Build them from the Acceptance Scenarios,
+the Functional Requirements this story covers, the Independent Test line, and any
+characterization or verification tasks in tasks.md. Cover the "still works" checks as well as the
+change itself. End with the Demo Criteria: 1-2 sentences on what can be shown in sprint review.]
 
 ### Risk
-[What could break or who could be affected, from spec.md Edge Cases and plan.md. If nothing
-material, write "Low: [one-line reason]". Do not leave this out.]
+[What could break or who could be affected, and how to recover. Source: Edge Cases, the "Why this
+priority" line, plan.md. If nothing material, write "Low: [one-line reason]". Never leave this out.]
+
+### Note for Support and CSM
+[Optional. Anything customer-facing teams must know or must not promise. Source: Adoption &
+Rollout (Transition & comms, and any stated consequences), Non-Goals.]
 
 ### Acceptance criteria
-[Only when the project has no Acceptance Criteria field. Acceptance Scenarios copied verbatim from spec.md.]
+[Only when the chosen issue type has no Acceptance Criteria field. Acceptance Scenarios copied
+verbatim from spec.md.]
 
 ### Engineering
+[Only when the chosen issue type has no Engineering Notes field; otherwise put this content in
+that field, without the heading.]
 Source: [spec.md vX.Y → User Story N](deep-link)
 
-- [ ] T0xx [task description] ([deep-link to artifact/section])
-- [ ] T0xx ...
+- [x] T0xx [done task] ([deep-link])
+- [ ] T0xx [open task] ([deep-link])
+- ~~T0xx [dropped task]~~ (dropped: [reason from tasks.md])
 ```
 
-**Hand-written sections**: What this is, Why now, How to test, Risk. Generate them at creation, then treat them as belonging to the team. `--sync` never changes them.
+**Hand-written sections**: What this is, Why now, What customers will notice, What changes for admins, How to test, Risk, Note for Support and CSM. Generate them at creation, then treat them as belonging to the team. `--sync` never changes them.
 
-**Generated sections**: Acceptance criteria (in the field or in the description) and Engineering. These always mirror spec.md/tasks.md, and `--sync` keeps them current.
+**Generated sections**: Acceptance criteria (in the field or the description) and Engineering (in the field or the description). These always mirror spec.md/tasks.md, and `--sync` keeps them current.
+
+**Task status**: copy each task's state from tasks.md. `[X]`/`[x]` → ticked. Marked DROPPED or NOT DONE with a reason → struck through with the reason, not an open checkbox, so nobody picks up work the team decided against.
+
+**Spec and ticket disagree**: if the Independent Test says no functional test is needed but the Acceptance Scenarios describe something a user can observe (a setting, a screen, a result), still write QA steps for what users can observe, and tell the user about the mismatch so they can fix the spec.
 
 Apply the **Voice & Audience** rules to the hand-written sections. The acceptance criteria stay verbatim, even where their wording is technical; if they are hard to read, that is a spec fix (see the last rule under **Story Design Principles**).
 
@@ -290,12 +322,12 @@ Epic (Feature)
    - Note: If Epic already exists, use existing key
 
 2. **For each User Story phase**:
-   - Create Story ticket linked to Epic
-   - Title and description: follow the **Story Ticket Format** section, including the Acceptance Criteria field check. The `Source:` line in the Engineering section is a **deep-link** to the story's section in spec.md (see the **Building Artifact Links** section — include the section's line anchor **and the spec version pin, step 5**), so the copied AC is always traceable back to its source and revision.
-   - Story Points: Set using the standard Jira `Story Points` estimate field with the Fibonacci score from the Complexity Scoring step
+   - Create the ticket, using the issue type chosen in **Check the Jira project first**, linked to the Epic
+   - Title, description and fields: follow the **Story Ticket Format** section. The `Source:` line in the Engineering section is a **deep-link** to the story's section in spec.md (see the **Building Artifact Links** section — include the section's line anchor **and the spec version pin, step 5**), so the copied AC is always traceable back to its source and revision.
+   - Story Points: write the Fibonacci score from the Complexity Scoring step into the estimate field found in **Check the Jira project first**
 
-3. **Task breakdown (no Jira sub-tasks — we never go below Story)**: list the story's tasks (T0xx from tasks.md) as a **checklist in the Engineering section** of the Story description, so the breakdown stays visible and trackable on the Story itself:
-   - Render each as a checklist item — `- [ ] T0xx <description>` — with a **deep-link** to the relevant artifact/section (see the **Building Artifact Links** section).
+3. **Task breakdown (no Jira sub-tasks — we never go below Story)**: list the story's tasks (T0xx from tasks.md) as a **checklist in the Engineering section** (the Engineering Notes field, or the description if there is no such field), so the breakdown stays visible and trackable on the ticket itself:
+   - Render each as a checklist item with a **deep-link** to the relevant artifact/section (see the **Building Artifact Links** section), showing its status from tasks.md (see **Task status** under **Story Ticket Format**).
    - Task descriptions stay as written in tasks.md. Code names are fine here, because this section is for engineers.
    - Do NOT create Sub-task issues.
 
@@ -317,10 +349,10 @@ tickets in place instead of creating duplicates.**
 
 2. **Update only the generated sections** (see **Story Ticket Format**): the acceptance criteria
    (in the Acceptance Criteria field, or under `### Acceptance criteria` in the description) and the
-   `### Engineering` section (Source link, version pin, task checklist). Everything else stays as it
-   is on the ticket:
-   - Never change the hand-written sections (What this is, Why now, How to test, Risk), any other
-     section or text a person added to the description, or the title.
+   Engineering content (in the Engineering Notes field, or under `### Engineering`: Source link,
+   version pin, task checklist). Everything else stays as it is on the ticket:
+   - Never change the hand-written sections (see **Story Ticket Format**), any other section or text
+     a person added to the description, the title, the issue type, or the feature flag field.
    - Never change the ticket's status, assignee, sprint, comments, or Story Points (re-score only if
      the user explicitly asks for a rescope; a plain `--sync` never silently changes an estimate).
    - **Tickets in the old layout** (created before these headings existed, or with the headings
@@ -333,17 +365,21 @@ tickets in place instead of creating duplicates.**
    2. Rebuild what that section *should* say at the pinned version: find the pinned spec.md
       revision in git history (the commit where `**Version**:` or the changelog reached that version)
       and generate the section from it, the same way a fresh creation would.
-   3. **Ticket matches the pinned version** → nobody edited it. Replace it with content from the
+   3. **Compare as plain text.** Jira stores rich text, so what you wrote will not come back
+      byte-for-byte. Before comparing, reduce both sides to their words: drop formatting (bold,
+      links, heading and list markers), checkbox state, and differences in whitespace and line
+      breaks. Only a difference in the words counts as an edit.
+   4. **Ticket matches the pinned version** → nobody edited it. Replace it with content from the
       current spec.md/tasks.md.
-   4. **Ticket differs from the pinned version, or the pinned revision cannot be found** → someone
+   5. **Ticket differs from the pinned version, or the pinned revision cannot be found** → someone
       may have edited it by hand. Do not overwrite. Show the user the ticket's current text next to
       the new text, and ask per section: **replace** (lose the hand edit), **keep** (leave the
       section as it is; move the version pin forward only if the user confirms the edited text
       already covers the new spec), or **skip** (change nothing on this ticket). If a hand edit added something the
       spec lacks, suggest moving it into spec.md (see the last rule under **Story Design
       Principles**).
-   5. Ticking a checklist box (`- [ ]` → `- [x]`) is not a hand edit. Carry the ticks over to the
-      new checklist for tasks that still exist.
+   6. Ticking a checklist box (`- [ ]` → `- [x]`) is not a hand edit. Carry the ticks over to the
+      new checklist for tasks that still exist, unless tasks.md now marks the task dropped.
 
 4. **Report a sync summary** after the run: for each story, whether it was **created** (no prior
    key), **updated** (prior key found, version pin advanced), **already current** (prior key found,

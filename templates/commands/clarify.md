@@ -137,6 +137,7 @@ Execution steps:
 
    Completion Signals:
    - Acceptance criteria testability
+   - Acceptance scenarios QA can check in the product (not build or code checks), including "still works" checks. These are copied word for word into tickets by /speckit.taskstoissues
    - Measurable Definition of Done style indicators
 
    Misc / Placeholders:
@@ -176,6 +177,8 @@ Execution steps:
     ```markdown
     ## Question [N]: Observability & Telemetry
 
+    **Question**: What does this feature need to record that we don't already capture: events, logs, metrics, or none?
+
     **Why we're asking**: This is easy to overlook and expensive to retrofit. The goal is to capture what is *new for this feature* — not project-wide conventions (those live in the charter).
 
     Below are likely feature-specific telemetry items. Which apply? What's missing? What should be removed? You can also answer **"none — this feature doesn't need a telemetry section"** if appropriate.
@@ -199,6 +202,8 @@ Execution steps:
     ```markdown
     ## Question [N]: Adoption & Rollout
 
+    **Question**: What happens to customers who already exist when this feature ships?
+
     **Why we're asking**: A new feature is rarely "new customers only, going forward" — the team should decide, on purpose, what happens to customers who already exist. This is easy to leave implicit and expensive to retrofit.
 
     Below is a likely adoption path for this feature. Which applies? What's missing? You can also answer **"none — this feature has no existing-customer impact"** if appropriate.
@@ -221,6 +226,22 @@ Execution steps:
 
 5. Sequential questioning loop (interactive):
     - Present EXACTLY ONE question at a time.
+    - **Every question MUST actually ask something.** Open each one with this block, in this order, before any recommendation or options:
+
+       ```markdown
+       ## Question [N]: <short topic label>
+
+       **Question**: <one plain-language sentence that ends with "?" and that the options below answer directly>
+
+       **Why we're asking**: <1-2 sentences: what is unclear in the spec and what it blocks>
+       ```
+
+       - The heading is only a label ("Claim window / XTRM dependency"). It is not the question. The `**Question**:` line is required every time.
+       - Write the question so someone who has not read the spec can tell what is being decided. Name the thing in product terms; put requirement IDs (FR-034) in brackets, not in place of the words.
+       - The question must fit the answers. If the options are "spec it now" vs "defer it", ask "Should we … now, or … later?", not "What about claim windows?".
+       - ❌ `## Question 1: Claim window / XTRM dependency (FR-034)` followed straight by the recommendation.
+       - ✅ `**Question**: Should the spec define claim windows and automatic forfeit now, before we know XTRM supports them (FR-034)?`
+       - Only after this block, show the recommendation/suggestion and the options below.
     - For multiple‑choice questions:
        - **Analyze all options** and determine the **most suitable option** based on:
           - Best practices for the project type
@@ -260,7 +281,7 @@ Execution steps:
     - For the first integrated answer in this session:
        - Ensure a `## Clarifications` section exists (create it just after the highest-level contextual/overview section per the spec template if missing).
        - Under it, create (if not present) a `### Session YYYY-MM-DD` subheading for today.
-    - Append a bullet line immediately after acceptance: `- Q: <question> → A: <final answer>`.
+    - Append a bullet line immediately after acceptance: `- Q: <question> → A: <final answer>`. Use the `**Question**:` sentence as asked, not the topic label, so the record reads as a question and its answer.
     - Then immediately apply the clarification to the most appropriate section(s):
        - Functional ambiguity → Update or add a bullet in Functional Requirements.
        - User interaction / actor distinction → Update User Stories or Actors subsection (if present) with clarified role, constraint, or scenario.

@@ -192,7 +192,7 @@ For multi-feature projects that share context, constraints, and out-of-scope ite
 Converts tasks into issue tracker tickets with complexity scoring and demo-able story design:
 
 1. **Complexity Scoring**: Evaluates each story using Fibonacci points (1-20) before creating tickets. Stories include Story Points in the standard Jira estimate field.
-2. **Demo-able Stories**: Each story is created as a vertical slice that can be independently demonstrated to QA/Product. Tickets are written for QA and Product first (What this is / Why now / How to test / Risk) and carry the story's acceptance criteria word for word from spec.md, in Jira's Acceptance Criteria field when the project has one. An Engineering section holds the task checklist and a version-pinned link back to spec.md.
+2. **Demo-able Stories**: Each story is created as a vertical slice that can be independently demonstrated to QA/Product. Tickets are written for QA and Product first (What this is / Why now / How to test / Risk, plus customer, admin and Support notes drawn from the whole spec) and carry the story's acceptance criteria word for word from spec.md, in Jira's Acceptance Criteria field when the project has one. An Engineering section holds the task checklist and a version-pinned link back to spec.md.
 3. **Keeping Tickets Current**: `--sync` (Jira only) refreshes the acceptance criteria and Engineering section of existing tickets after spec.md changes. It never touches hand-written sections and asks before replacing anything edited by hand.
 4. **GitHub Issues** (default): Creates issues in the repository matching the Git remote
 5. **Jira Tickets**: Creates Epic → Story hierarchy when `--jira <PROJECT-KEY>` is provided
