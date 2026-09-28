@@ -78,6 +78,7 @@ Given that feature description, do this:
    - Create a 2-4 word short name that captures the essence of the feature
    - Use action-noun format when possible (e.g., "add-user-auth", "fix-payment-bug")
    - Preserve technical terms and acronyms (OAuth2, API, JWT, etc.)
+   - If the feature has a Jira Epic key (e.g. `RED-6543`), start the short name with it, in uppercase: `RED-6543-multi-currency`. Jira only links branches whose key is uppercase. Use the Epic key only, never a Story key.
    - Keep it concise but descriptive enough to understand the feature at a glance
    - Examples:
      - "I want to add user authentication" → "user-auth"

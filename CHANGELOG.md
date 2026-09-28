@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Jira keys keep their uppercase in branch and folder names. `/speckit.specify` with a short name like `RED-6543 multi currency` now creates `004-RED-6543-multi-currency`, which Jira links to the issue (a lowercase key is not linked). Only keys typed in uppercase are affected. `/speckit.specify` also asks the agent to start the short name with the feature's Epic key.
+
+## [1.1.13] - 2026-09-28
+
 ### Added
 
 - Specs can live in a separate specs-only repository. New features and projects are created in `SPECIFY_SPECS_DIR` when set, otherwise in a sibling `unifyr-specs` clone when present, otherwise in `specs/` of the current repo (unchanged behaviour). Feature branches are created in the repository that holds the specs, and when that is a separate repo its branch identifies the current feature.

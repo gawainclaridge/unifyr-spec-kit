@@ -86,6 +86,8 @@ if [ -n "$SPECS_GIT_ROOT" ]; then HAS_GIT=true; else HAS_GIT=false; fi
 
 # Clean project name for branch
 CLEAN_PROJECT_NAME=$(clean_branch_name "$PROJECT_NAME")
+# Keep Jira keys uppercase so Jira links the branch
+CLEAN_PROJECT_NAME=$(restore_jira_key_case "$CLEAN_PROJECT_NAME" "$PROJECT_NAME")
 BRANCH_NAME="project-${CLEAN_PROJECT_NAME}"
 PROJECT_DIR="$SPECS_DIR/$BRANCH_NAME"
 

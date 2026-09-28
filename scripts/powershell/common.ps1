@@ -105,6 +105,20 @@ function Find-FeatureDir {
     return $null
 }
 
+function Restore-JiraKeyCase {
+    # Branch names are lowercased, but Jira only links a branch to an issue when the
+    # key is uppercase. Any key typed in uppercase in $Source (e.g. RED-6543) is put
+    # back in uppercase in $Name.
+    param([string]$Name, [string]$Source)
+    if (-not $Name -or -not $Source) { return $Name }
+    foreach ($m in [regex]::Matches($Source, '(?<![A-Za-z0-9])[A-Z][A-Z0-9]+-[0-9]+(?![0-9])')) {
+        $key = $m.Value
+        $pattern = '(^|-)' + [regex]::Escape($key.ToLower()) + '(?=-|$)'
+        $Name = [regex]::Replace($Name, $pattern, { param($x) $x.Groups[1].Value + $key })
+    }
+    return $Name
+}
+
 function Get-CurrentBranch {
     # First check if SPECIFY_FEATURE environment variable is set
     if ($env:SPECIFY_FEATURE) {
