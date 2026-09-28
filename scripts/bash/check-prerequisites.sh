@@ -92,10 +92,11 @@ fi
 if $PATHS_ONLY; then
     if $JSON_MODE; then
         # Minimal JSON paths payload (no validation performed)
-        printf '{"REPO_ROOT":"%s","BRANCH":"%s","FEATURE_DIR":"%s","FEATURE_SPEC":"%s","IMPL_PLAN":"%s","TASKS":"%s","CHARTER":"%s","CONSTITUTION":"%s"}\n' \
-            "$REPO_ROOT" "$CURRENT_BRANCH" "$FEATURE_DIR" "$FEATURE_SPEC" "$IMPL_PLAN" "$TASKS" "$CHARTER" "$CONSTITUTION"
+        printf '{"REPO_ROOT":"%s","SPECS_REPO_ROOT":"%s","BRANCH":"%s","FEATURE_DIR":"%s","FEATURE_SPEC":"%s","IMPL_PLAN":"%s","TASKS":"%s","CHARTER":"%s","CONSTITUTION":"%s"}\n' \
+            "$REPO_ROOT" "$SPECS_REPO_ROOT" "$CURRENT_BRANCH" "$FEATURE_DIR" "$FEATURE_SPEC" "$IMPL_PLAN" "$TASKS" "$CHARTER" "$CONSTITUTION"
     else
         echo "REPO_ROOT: $REPO_ROOT"
+        echo "SPECS_REPO_ROOT: $SPECS_REPO_ROOT"
         echo "BRANCH: $CURRENT_BRANCH"
         echo "FEATURE_DIR: $FEATURE_DIR"
         echo "FEATURE_SPEC: $FEATURE_SPEC"

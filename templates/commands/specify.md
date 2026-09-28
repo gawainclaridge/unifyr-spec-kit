@@ -93,6 +93,8 @@ Given that feature description, do this:
       git fetch --all --prune
       ```
 
+   **Where to look**: specs may live outside the current repo — in `$SPECIFY_SPECS_DIR` when set, otherwise in a sibling `unifyr-specs` clone (`<parent of repo root>/unifyr-specs`) when present, otherwise in `specs/` of the current repo. When they live outside, run the git commands below with `git -C <that path>` and look for directories directly under that path instead of under `specs/`.
+
    b. Find the highest feature number across all sources for the short-name:
       - Remote branches: `git ls-remote --heads origin | grep -E 'refs/heads/[0-9]+-<short-name>$'`
       - Local branches: `git branch | grep -E '^[* ]*[0-9]+-<short-name>$'`

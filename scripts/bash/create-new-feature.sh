@@ -105,7 +105,7 @@ get_highest_from_branches() {
     local highest=0
     
     # Get all branches (local and remote)
-    branches=$(git branch -a 2>/dev/null || echo "")
+    branches=$(git -C "$SPECS_GIT_ROOT" branch -a 2>/dev/null || echo "")
     
     if [ -n "$branches" ]; then
         while IFS= read -r branch; do
@@ -131,7 +131,7 @@ check_existing_branches() {
     local specs_dir="$1"
 
     # Fetch all remotes to get latest branch info (suppress errors if no remotes)
-    git fetch --all --prune 2>/dev/null || true
+    git -C "$SPECS_GIT_ROOT" fetch --all --prune 2>/dev/null || true
 
     # Get highest number from ALL branches (not just matching short name)
     local highest_branch=$(get_highest_from_branches)
@@ -174,8 +174,16 @@ fi
 
 cd "$REPO_ROOT"
 
-SPECS_DIR="$REPO_ROOT/specs"
+# Shared path helpers (specs dir resolution)
+source "$SCRIPT_DIR/common.sh"
+
+# New features go in the specs dir (SPECIFY_SPECS_DIR, a sibling unifyr-specs
+# clone, or <repo>/specs). Branches are created in the git repo that holds it.
+SPECS_DIR="$(get_specs_dir "$REPO_ROOT")"
 mkdir -p "$SPECS_DIR"
+SPECS_GIT_ROOT="$(get_git_root "$SPECS_DIR")"
+if [ -n "$SPECS_GIT_ROOT" ]; then HAS_GIT=true; else HAS_GIT=false; fi
+SPECS_REPO_ROOT="${SPECS_GIT_ROOT:-$SPECS_DIR}"
 
 # Function to generate branch name with stop word filtering and length filtering
 generate_branch_name() {
@@ -272,7 +280,7 @@ if [ ${#BRANCH_NAME} -gt $MAX_BRANCH_LENGTH ]; then
 fi
 
 if [ "$HAS_GIT" = true ]; then
-    git checkout -b "$BRANCH_NAME"
+    git -C "$SPECS_GIT_ROOT" checkout -b "$BRANCH_NAME"
 else
     >&2 echo "[specify] Warning: Git repository not detected; skipped branch creation for $BRANCH_NAME"
 fi
@@ -288,10 +296,12 @@ if [ -f "$TEMPLATE" ]; then cp "$TEMPLATE" "$SPEC_FILE"; else touch "$SPEC_FILE"
 export SPECIFY_FEATURE="$BRANCH_NAME"
 
 if $JSON_MODE; then
-    printf '{"BRANCH_NAME":"%s","SPEC_FILE":"%s","FEATURE_NUM":"%s"}\n' "$BRANCH_NAME" "$SPEC_FILE" "$FEATURE_NUM"
+    printf '{"BRANCH_NAME":"%s","SPEC_FILE":"%s","FEATURE_NUM":"%s","HAS_GIT":%s,"SPECS_REPO_ROOT":"%s"}\n' "$BRANCH_NAME" "$SPEC_FILE" "$FEATURE_NUM" "$HAS_GIT" "$SPECS_REPO_ROOT"
 else
     echo "BRANCH_NAME: $BRANCH_NAME"
     echo "SPEC_FILE: $SPEC_FILE"
     echo "FEATURE_NUM: $FEATURE_NUM"
+    echo "HAS_GIT: $HAS_GIT"
+    echo "SPECS_REPO_ROOT: $SPECS_REPO_ROOT"
     echo "SPECIFY_FEATURE environment variable set to: $BRANCH_NAME"
 fi

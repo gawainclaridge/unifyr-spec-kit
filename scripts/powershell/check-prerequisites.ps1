@@ -73,6 +73,7 @@ if ($PathsOnly) {
     if ($Json) {
         [PSCustomObject]@{
             REPO_ROOT    = $paths.REPO_ROOT
+            SPECS_REPO_ROOT = $paths.SPECS_REPO_ROOT
             BRANCH       = $paths.CURRENT_BRANCH
             FEATURE_DIR  = $paths.FEATURE_DIR
             FEATURE_SPEC = $paths.FEATURE_SPEC
@@ -83,6 +84,7 @@ if ($PathsOnly) {
         } | ConvertTo-Json -Compress
     } else {
         Write-Output "REPO_ROOT: $($paths.REPO_ROOT)"
+        Write-Output "SPECS_REPO_ROOT: $($paths.SPECS_REPO_ROOT)"
         Write-Output "BRANCH: $($paths.CURRENT_BRANCH)"
         Write-Output "FEATURE_DIR: $($paths.FEATURE_DIR)"
         Write-Output "FEATURE_SPEC: $($paths.FEATURE_SPEC)"
@@ -138,6 +140,7 @@ if ($Json) {
     # JSON output
     [PSCustomObject]@{
         FEATURE_DIR = $paths.FEATURE_DIR
+        SPECS_REPO_ROOT = $paths.SPECS_REPO_ROOT
         CHARTER = $paths.CHARTER
         CONSTITUTION = $paths.CONSTITUTION
         AVAILABLE_DOCS = $docs
@@ -145,6 +148,7 @@ if ($Json) {
 } else {
     # Text output
     Write-Output "FEATURE_DIR:$($paths.FEATURE_DIR)"
+    Write-Output "SPECS_REPO_ROOT:$($paths.SPECS_REPO_ROOT)"
     Write-Output "CHARTER:$($paths.CHARTER)"
     Write-Output "CONSTITUTION:$($paths.CONSTITUTION)"
     Write-Output "AVAILABLE_DOCS:"

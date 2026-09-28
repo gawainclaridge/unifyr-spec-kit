@@ -35,6 +35,9 @@ if (-not $FeatureDescription -or $FeatureDescription.Count -eq 0) {
 
 $featureDesc = ($FeatureDescription -join ' ').Trim()
 
+# Shared path helpers (specs dir resolution)
+. "$PSScriptRoot/common.ps1"
+
 # Resolve repository root. Prefer git information when available, but fall back
 # to searching for repository markers so the workflow still functions in repositories that
 # were initialized with --no-git.
@@ -75,11 +78,11 @@ function Get-HighestNumberFromSpecs {
 }
 
 function Get-HighestNumberFromBranches {
-    param()
+    param([string]$GitRoot)
     
     $highest = 0
     try {
-        $branches = git branch -a 2>$null
+        $branches = git -C $GitRoot branch -a 2>$null
         if ($LASTEXITCODE -eq 0) {
             foreach ($branch in $branches) {
                 # Clean branch name: remove leading markers and remote prefixes
@@ -101,18 +104,19 @@ function Get-HighestNumberFromBranches {
 
 function Get-NextBranchNumber {
     param(
-        [string]$SpecsDir
+        [string]$SpecsDir,
+        [string]$GitRoot
     )
 
     # Fetch all remotes to get latest branch info (suppress errors if no remotes)
     try {
-        git fetch --all --prune 2>$null | Out-Null
+        git -C $GitRoot fetch --all --prune 2>$null | Out-Null
     } catch {
         # Ignore fetch errors
     }
 
     # Get highest number from ALL branches (not just matching short name)
-    $highestBranch = Get-HighestNumberFromBranches
+    $highestBranch = Get-HighestNumberFromBranches -GitRoot $GitRoot
 
     # Get highest number from ALL specs (not just matching short name)
     $highestSpec = Get-HighestNumberFromSpecs -SpecsDir $SpecsDir
@@ -149,8 +153,12 @@ try {
 
 Set-Location $repoRoot
 
-$specsDir = Join-Path $repoRoot 'specs'
+# New features go in the specs dir (SPECIFY_SPECS_DIR, a sibling unifyr-specs
+# clone, or <repo>/specs). Branches are created in the git repo that holds it.
+$specsDir = Get-SpecsDir -RepoRoot $repoRoot
 New-Item -ItemType Directory -Path $specsDir -Force | Out-Null
+$specsGitRoot = Get-GitRoot $specsDir
+$hasGit = [bool]$specsGitRoot
 
 # Function to generate branch name with stop word filtering and length filtering
 function Get-BranchName {
@@ -210,7 +218,7 @@ if ($ShortName) {
 if ($Number -eq 0) {
     if ($hasGit) {
         # Check existing branches on remotes
-        $Number = Get-NextBranchNumber -SpecsDir $specsDir
+        $Number = Get-NextBranchNumber -SpecsDir $specsDir -GitRoot $specsGitRoot
     } else {
         # Fall back to local directory check
         $Number = (Get-HighestNumberFromSpecs -SpecsDir $specsDir) + 1
@@ -243,7 +251,7 @@ if ($branchName.Length -gt $maxBranchLength) {
 
 if ($hasGit) {
     try {
-        git checkout -b $branchName | Out-Null
+        git -C $specsGitRoot checkout -b $branchName | Out-Null
     } catch {
         Write-Warning "Failed to create git branch: $branchName"
     }
@@ -271,6 +279,7 @@ if ($Json) {
         SPEC_FILE = $specFile
         FEATURE_NUM = $featureNum
         HAS_GIT = $hasGit
+        SPECS_REPO_ROOT = $(if ($specsGitRoot) { $specsGitRoot } else { $specsDir })
     }
     $obj | ConvertTo-Json -Compress
 } else {
@@ -278,6 +287,7 @@ if ($Json) {
     Write-Output "SPEC_FILE: $specFile"
     Write-Output "FEATURE_NUM: $featureNum"
     Write-Output "HAS_GIT: $hasGit"
+    Write-Output "SPECS_REPO_ROOT: $(if ($specsGitRoot) { $specsGitRoot } else { $specsDir })"
     Write-Output "SPECIFY_FEATURE environment variable set to: $branchName"
 }
 
