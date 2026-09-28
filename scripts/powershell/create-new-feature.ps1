@@ -214,6 +214,9 @@ if ($ShortName) {
     $branchSuffix = Get-BranchName -Description $featureDesc
 }
 
+# Keep Jira keys uppercase so Jira links the branch (e.g. 004-RED-6543-multi-currency)
+$branchSuffix = Restore-JiraKeyCase -Name $branchSuffix -Source "$ShortName $featureDesc"
+
 # Determine branch number
 if ($Number -eq 0) {
     if ($hasGit) {

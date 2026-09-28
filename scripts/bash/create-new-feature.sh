@@ -242,6 +242,9 @@ else
     BRANCH_SUFFIX=$(generate_branch_name "$FEATURE_DESCRIPTION")
 fi
 
+# Keep Jira keys uppercase so Jira links the branch (e.g. 004-RED-6543-multi-currency)
+BRANCH_SUFFIX=$(restore_jira_key_case "$BRANCH_SUFFIX" "$SHORT_NAME $FEATURE_DESCRIPTION")
+
 # Determine branch number
 if [ -z "$BRANCH_NUMBER" ]; then
     if [ "$HAS_GIT" = true ]; then

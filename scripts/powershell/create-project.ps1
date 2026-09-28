@@ -94,6 +94,8 @@ $hasGit = [bool]$specsGitRoot
 
 # Clean project name for branch
 $cleanProjectName = ConvertTo-CleanBranchName -Name $projectNameInput
+# Keep Jira keys uppercase so Jira links the branch
+$cleanProjectName = Restore-JiraKeyCase -Name $cleanProjectName -Source $projectNameInput
 $branchName = "project-$cleanProjectName"
 $projectDir = Join-Path $specsDir $branchName
 

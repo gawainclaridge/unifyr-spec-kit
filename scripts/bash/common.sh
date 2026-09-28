@@ -100,6 +100,21 @@ find_feature_dir() {
     done < <(get_specs_search_dirs "$repo_root")
 }
 
+# Branch names are lowercased, but Jira only links a branch to an issue when the
+# key is uppercase. Any key typed in uppercase in $2 (e.g. RED-6543) is put back
+# in uppercase in $1.
+restore_jira_key_case() {
+    local name="$1"
+    local source="$2"
+    local key lower
+    while IFS= read -r key; do
+        [[ -n "$key" ]] || continue
+        lower="$(echo "$key" | tr '[:upper:]' '[:lower:]')"
+        name="$(echo "$name" | sed -E "s/(^|-)${lower}(-|\$)/\\1${key}\\2/g")"
+    done < <(echo "$source" | grep -oE '(^|[^A-Za-z0-9])[A-Z][A-Z0-9]+-[0-9]+' | grep -oE '[A-Z][A-Z0-9]+-[0-9]+' || true)
+    echo "$name"
+}
+
 # Get current branch, with fallback for non-git repositories
 get_current_branch() {
     # First check if SPECIFY_FEATURE environment variable is set
