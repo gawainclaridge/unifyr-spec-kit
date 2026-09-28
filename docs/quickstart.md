@@ -25,6 +25,18 @@ Unifyr Spec Kit follows a structured 5-stage workflow aligned with team collabor
 > [!TIP]
 > **Context Awareness**: Unifyr Spec Kit commands automatically detect the active feature based on your current Git branch (e.g., `001-feature-name`). For single-feature workflows, switch Git branches to switch between specifications. For multi-feature projects using `/speckit.project`, multiple specs live on the same project branch (e.g., `project-taskify`) and are managed through the project directory structure.
 
+### Keeping specs in a separate repository
+
+Specs don't have to live in the code repository. If a specs-only repository is cloned next to your code repositories as `unifyr-specs` (for example `C:\Repos\unifyr-specs` beside `C:\Repos\my-service`), Spec Kit uses it automatically. To use a clone with a different name or location, set `SPECIFY_SPECS_DIR` to its path.
+
+When specs live in a separate repository:
+
+- `/speckit.specify` and `/speckit.project` create the feature directory, and its branch, in the spec repository. Your code repository's branch is left alone.
+- The other commands identify the feature from the spec repository's branch, so your code branch can be named anything (for example `feature/RED-123-...`).
+- Features already in the code repository's `specs/` keep working where they are.
+
+With no `unifyr-specs` clone and no `SPECIFY_SPECS_DIR`, nothing changes: specs go in `specs/` of the current repository.
+
 ### Step 1: Install Specify
 
 **In your terminal**, run the `specify` CLI command to initialize your project:
