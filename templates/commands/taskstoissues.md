@@ -268,10 +268,10 @@ Apply the **Voice & Audience** rules to everything outside the Engineering conte
 
 Ticket descriptions reference repo artifacts (spec.md, plan.md, tasks.md, charter.md). Emit these as **clickable deep-links to the source host on the correct branch** — Jira and GitHub render bare paths as plain text you cannot click.
 
-**1. Resolve the repo web base** from the origin remote:
+**1. Resolve the repo web base** from the origin remote of the repo that holds the spec — `SPECS_REPO_ROOT` from the prerequisites script (the shared spec repo when specs live outside the current repo, otherwise REPO_ROOT):
 
 ```bash
-git remote get-url origin
+git -C "<SPECS_REPO_ROOT>" remote get-url origin
 ```
 
 Parse it, auto-detecting the host (strip a trailing `.git` and any `user@` credentials):
@@ -284,9 +284,9 @@ Parse it, auto-detecting the host (strip a trailing `.git` and any `user@` crede
 **2. Choose the branch** the artifacts live on:
 
 - If the artifacts are under `specs/project-<name>/` → use the project branch `project-<name>`.
-- Otherwise → use the current feature branch (`git rev-parse --abbrev-ref HEAD`).
+- Otherwise → use the current feature branch of that repo (`git -C "<SPECS_REPO_ROOT>" rev-parse --abbrev-ref HEAD`).
 
-**3. Build the repo-relative path** by stripping REPO_ROOT from the absolute artifact path (e.g. `specs/project-acme/spec.md`); URL-encode spaces as `%20`.
+**3. Build the repo-relative path** by stripping SPECS_REPO_ROOT from the absolute artifact path (e.g. `specs/project-acme/spec.md`); URL-encode spaces as `%20`.
 
 **4. Section anchor (optional)**: for a Story that points at one user-story section, find that heading's 1-based line number in spec.md and append the host-specific line anchor from step 1.
 

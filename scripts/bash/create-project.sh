@@ -74,31 +74,39 @@ fi
 
 cd "$REPO_ROOT"
 
-SPECS_DIR="$REPO_ROOT/specs"
+# Shared path helpers (specs dir resolution)
+source "$SCRIPT_DIR/common.sh"
+
+# New projects go in the specs dir (SPECIFY_SPECS_DIR, a sibling unifyr-specs
+# clone, or <repo>/specs). Branches are created in the git repo that holds it.
+SPECS_DIR="$(get_specs_dir "$REPO_ROOT")"
 mkdir -p "$SPECS_DIR"
+SPECS_GIT_ROOT="$(get_git_root "$SPECS_DIR")"
+if [ -n "$SPECS_GIT_ROOT" ]; then HAS_GIT=true; else HAS_GIT=false; fi
 
 # Clean project name for branch
 CLEAN_PROJECT_NAME=$(clean_branch_name "$PROJECT_NAME")
 BRANCH_NAME="project-${CLEAN_PROJECT_NAME}"
 PROJECT_DIR="$SPECS_DIR/$BRANCH_NAME"
 
-# Check if project already exists
-if [ -d "$PROJECT_DIR" ]; then
-    echo "Error: Project directory already exists: $PROJECT_DIR" >&2
+# Check if project already exists (in the specs dir or the repo-local specs/)
+EXISTING_PROJECT_DIR="$(find_feature_dir "$REPO_ROOT" "$BRANCH_NAME")"
+if [ -n "$EXISTING_PROJECT_DIR" ]; then
+    echo "Error: Project directory already exists: $EXISTING_PROJECT_DIR" >&2
     exit 1
 fi
 
 # Check if branch already exists
 if [ "$HAS_GIT" = true ]; then
-    if git show-ref --verify --quiet "refs/heads/$BRANCH_NAME" 2>/dev/null; then
+    if git -C "$SPECS_GIT_ROOT" show-ref --verify --quiet "refs/heads/$BRANCH_NAME" 2>/dev/null; then
         echo "Error: Branch already exists: $BRANCH_NAME" >&2
         exit 1
     fi
 
     # Fetch remotes to check for remote branches
-    git fetch --all --prune 2>/dev/null || true
+    git -C "$SPECS_GIT_ROOT" fetch --all --prune 2>/dev/null || true
 
-    if git show-ref --verify --quiet "refs/remotes/origin/$BRANCH_NAME" 2>/dev/null; then
+    if git -C "$SPECS_GIT_ROOT" show-ref --verify --quiet "refs/remotes/origin/$BRANCH_NAME" 2>/dev/null; then
         echo "Error: Remote branch already exists: origin/$BRANCH_NAME" >&2
         exit 1
     fi
@@ -109,17 +117,17 @@ if [ "$HAS_GIT" = true ]; then
     # Try to checkout from main, master, or current branch
     MAIN_BRANCH=""
     for branch in main master; do
-        if git show-ref --verify --quiet "refs/heads/$branch" 2>/dev/null || \
-           git show-ref --verify --quiet "refs/remotes/origin/$branch" 2>/dev/null; then
+        if git -C "$SPECS_GIT_ROOT" show-ref --verify --quiet "refs/heads/$branch" 2>/dev/null || \
+           git -C "$SPECS_GIT_ROOT" show-ref --verify --quiet "refs/remotes/origin/$branch" 2>/dev/null; then
             MAIN_BRANCH="$branch"
             break
         fi
     done
 
     if [ -n "$MAIN_BRANCH" ]; then
-        git checkout -b "$BRANCH_NAME" "$MAIN_BRANCH" 2>/dev/null || git checkout -b "$BRANCH_NAME"
+        git -C "$SPECS_GIT_ROOT" checkout -b "$BRANCH_NAME" "$MAIN_BRANCH" 2>/dev/null || git -C "$SPECS_GIT_ROOT" checkout -b "$BRANCH_NAME"
     else
-        git checkout -b "$BRANCH_NAME"
+        git -C "$SPECS_GIT_ROOT" checkout -b "$BRANCH_NAME"
     fi
 else
     >&2 echo "[project] Warning: Git repository not detected; skipped branch creation for $BRANCH_NAME"

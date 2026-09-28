@@ -33,6 +33,9 @@ if (-not $ProjectName -or $ProjectName.Count -eq 0) {
 
 $projectNameInput = ($ProjectName -join ' ').Trim()
 
+# Shared path helpers (specs dir resolution)
+. "$PSScriptRoot/common.ps1"
+
 # Function to find the repository root by searching for existing project markers
 function Find-RepositoryRoot {
     param(
@@ -82,24 +85,29 @@ try {
 
 Set-Location $repoRoot
 
-$specsDir = Join-Path $repoRoot 'specs'
+# New projects go in the specs dir (SPECIFY_SPECS_DIR, a sibling unifyr-specs
+# clone, or <repo>/specs). Branches are created in the git repo that holds it.
+$specsDir = Get-SpecsDir -RepoRoot $repoRoot
 New-Item -ItemType Directory -Path $specsDir -Force | Out-Null
+$specsGitRoot = Get-GitRoot $specsDir
+$hasGit = [bool]$specsGitRoot
 
 # Clean project name for branch
 $cleanProjectName = ConvertTo-CleanBranchName -Name $projectNameInput
 $branchName = "project-$cleanProjectName"
 $projectDir = Join-Path $specsDir $branchName
 
-# Check if project already exists
-if (Test-Path $projectDir) {
-    Write-Error "Error: Project directory already exists: $projectDir"
+# Check if project already exists (in the specs dir or the repo-local specs/)
+$existingProjectDir = Find-FeatureDir -RepoRoot $repoRoot -Name $branchName
+if ($existingProjectDir) {
+    Write-Error "Error: Project directory already exists: $existingProjectDir"
     exit 1
 }
 
 # Check if branch already exists
 if ($hasGit) {
     try {
-        $localBranch = git show-ref --verify "refs/heads/$branchName" 2>$null
+        $localBranch = git -C $specsGitRoot show-ref --verify "refs/heads/$branchName" 2>$null
         if ($LASTEXITCODE -eq 0) {
             Write-Error "Error: Branch already exists: $branchName"
             exit 1
@@ -110,13 +118,13 @@ if ($hasGit) {
 
     # Fetch remotes to check for remote branches
     try {
-        git fetch --all --prune 2>$null | Out-Null
+        git -C $specsGitRoot fetch --all --prune 2>$null | Out-Null
     } catch {
         # Ignore fetch errors
     }
 
     try {
-        $remoteBranch = git show-ref --verify "refs/remotes/origin/$branchName" 2>$null
+        $remoteBranch = git -C $specsGitRoot show-ref --verify "refs/remotes/origin/$branchName" 2>$null
         if ($LASTEXITCODE -eq 0) {
             Write-Error "Error: Remote branch already exists: origin/$branchName"
             exit 1
@@ -132,8 +140,8 @@ if ($hasGit) {
     $mainBranch = $null
     foreach ($branch in @('main', 'master')) {
         try {
-            $localRef = git show-ref --verify "refs/heads/$branch" 2>$null
-            $remoteRef = git show-ref --verify "refs/remotes/origin/$branch" 2>$null
+            $localRef = git -C $specsGitRoot show-ref --verify "refs/heads/$branch" 2>$null
+            $remoteRef = git -C $specsGitRoot show-ref --verify "refs/remotes/origin/$branch" 2>$null
             if ($LASTEXITCODE -eq 0 -or $localRef -or $remoteRef) {
                 $mainBranch = $branch
                 break
@@ -145,13 +153,13 @@ if ($hasGit) {
 
     try {
         if ($mainBranch) {
-            git checkout -b $branchName $mainBranch 2>$null | Out-Null
+            git -C $specsGitRoot checkout -b $branchName $mainBranch 2>$null | Out-Null
         } else {
-            git checkout -b $branchName 2>$null | Out-Null
+            git -C $specsGitRoot checkout -b $branchName 2>$null | Out-Null
         }
     } catch {
         try {
-            git checkout -b $branchName | Out-Null
+            git -C $specsGitRoot checkout -b $branchName | Out-Null
         } catch {
             Write-Warning "Failed to create git branch: $branchName"
         }

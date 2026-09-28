@@ -7,6 +7,15 @@ All notable changes to the Specify CLI and templates are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Specs can live in a separate specs-only repository. New features and projects are created in `SPECIFY_SPECS_DIR` when set, otherwise in a sibling `unifyr-specs` clone when present, otherwise in `specs/` of the current repo (unchanged behaviour). Feature branches are created in the repository that holds the specs, and when that is a separate repo its branch identifies the current feature.
+- Existing features are looked up in both the specs directory and the current repo's `specs/`, so work started in a code repo keeps resolving after a shared spec repo is cloned.
+- A feature whose directory exists is accepted by the prerequisite check even when its name has no `NNN-` prefix (e.g. `SPECIFY_FEATURE=RED-6543-multi-currency`).
+- `check-prerequisites` and `create-new-feature` report `SPECS_REPO_ROOT`; `/speckit.taskstoissues` builds spec deep links from that repo's remote.
+
 ## [1.1.12] - 2026-09-24
 
 ### Changed

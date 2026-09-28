@@ -350,6 +350,7 @@ Key flags for commonly used commands:
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `SPECIFY_FEATURE` | Override feature detection for non-Git repositories. Set to the feature directory name (e.g., `001-photo-albums`) to work on a specific feature when not using Git branches.<br/>**Must be set in the context of the agent you're working with prior to using `/speckit.plan` or follow-up commands. |
 | `SPECIFY_PROJECT` | Override project detection for multi-feature projects. Set to the project name (e.g., `taskify`) when working with project branches.                                                                                                                                                                 |
+| `SPECIFY_SPECS_DIR` | Directory where new features and projects are created, typically a clone of a shared specs-only repository. When unset, a sibling `unifyr-specs` clone (next to the current repo) is used if present, otherwise `specs/` in the current repo. Existing features are also found in the current repo's `specs/`, so work started there keeps resolving. Branches for new features are created in the repository that holds this directory. |
 
 ## 📚 Core Philosophy
 
