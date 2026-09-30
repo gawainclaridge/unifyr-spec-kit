@@ -764,7 +764,8 @@ This step creates a `tasks.md` file in your feature specification directory that
 - **Dependency management** - Tasks are ordered to respect dependencies between components (e.g., models before services, services before endpoints)
 - **Parallel execution markers** - Tasks that can run in parallel are marked with `[P]` to optimize development workflow
 - **File path specifications** - Each task includes the exact file paths where implementation should occur
-- **Strict TDD by default** - test tasks are authored first and must fail before implementation (red-green-refactor); test *timing* is a pipeline invariant (not a charter choice) and test *types*/coverage default sensibly for the stack. Waivable per feature with `/speckit.tasks --spike` for genuine throwaway/exploratory work
+- **Strict TDD by default** - test tasks are authored first and must fail before implementation (red-green-refactor); test *timing* is a pipeline invariant (not a charter choice) and test *types*/coverage default sensibly for the stack — and for whatever test-case guidance the repo's own CLAUDE.md/AGENTS.md documents; spec-kit doesn't restate framework-specific rules. Waivable per feature with `/speckit.tasks --spike` for genuine throwaway/exploratory work
+- **Failure-path and cross-boundary tasks** - a task that adds backend validation gets a paired task to wire the failure feedback into the UI; a task that changes a frontend call and its backend handler together gets an explicit contract/integration test task across that boundary, not two separately-mocked unit tests
 - **Checkpoint validation** - Each user story phase includes checkpoints to validate independent functionality
 - **Jira placeholders** - `[JIRA-EPIC-KEY]` and `[JIRA-STORY-KEY]` placeholders for issue tracking integration
 
@@ -821,6 +822,10 @@ The `/speckit.implement` command will:
 - Parse the task breakdown from `tasks.md`
 - Execute tasks in the correct order, respecting dependencies and parallel execution markers
 - Follow strict TDD by default (tests first, then red-green-refactor); honor a `Testing mode: Spike` marker in tasks.md when present (tests optional / may come after)
+- Diff-check every task before marking it done — a subagent's or parallel task's own "done" report is a claim, not evidence
+- Before extending existing code, check its current behavior against the latest spec (including clarifications) and flag any conflict before building on top of it
+- Before declaring a story done, walk every acceptance criterion against the real running system, not just a green test suite; if the running system can't be started, say exactly which criteria are unverified rather than implying full verification
+- Run a required adversarial review pass before completion — a fresh sub-agent or session, with no memory of the build, whose only job is to try to break each acceptance criterion against the actual diff; every finding must be fixed or explicitly accepted before the story is marked done
 - Provide progress updates and handle errors appropriately
 
 > [!IMPORTANT]
