@@ -178,6 +178,9 @@ Then, use the **`/speckit.implement`** slash command to execute the plan:
 /speckit.implement
 ```
 
+> [!NOTE]
+> Before marking a story done, `/speckit.implement` requires: a diff check against the actual code for every task (a "done" self-report from an agent is a claim, not evidence), every acceptance criterion walked against the real running system (or an explicit list of what couldn't be verified, if the system can't be started), a check that any pre-existing code being extended still matches the current spec, and a fresh adversarial review pass whose only job is to try to break the story against its own spec.
+
 ## Detailed Example: Building Taskify
 
 Here's a complete example of building a team productivity platform, following the 5-stage process:

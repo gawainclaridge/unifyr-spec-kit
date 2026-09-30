@@ -495,7 +495,7 @@ At the heart of SDD lies an Engineering Charter—a set of immutable principles 
 
 ### The Nine Articles of Development
 
-The charter defines nine articles that shape every aspect of the development process. (Note: in the Unifyr fork the two testing articles below — III and IX — are enforced as a **pipeline invariant** by `/speckit.tasks` and `/speckit.implement` rather than being asked as charter Q&A; strict TDD is always on and is never turned back into a per-initiative choice.)
+The charter defines nine articles that shape every aspect of the development process. (Note: in the Unifyr fork the two testing articles below — III and IX — are enforced as a **pipeline invariant** by `/speckit.tasks` and `/speckit.implement` rather than being asked as charter Q&A; strict TDD is always on and is never turned back into a per-initiative choice. Beyond test-first ordering, `/speckit.implement` also enforces: a diff check against the actual code before any task is marked done — a "done" self-report is a claim, not evidence; every acceptance criterion walked against the real running system before completion, not just a green test suite; a check that pre-existing code being extended still matches the current spec, not a stale assumption from before a later clarification; and a mandatory adversarial review pass — a fresh sub-agent or session, given only the spec and the diff, whose only job is to try to break it.)
 
 #### Article I: Library-First Principle
 
