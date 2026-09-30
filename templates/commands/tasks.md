@@ -145,7 +145,7 @@ The tasks.md should be immediately executable - each task must be specific enoug
 
 **CRITICAL**: Tasks MUST be organized by user story to enable independent implementation and testing.
 
-**Strict TDD is the default — test tasks come before their implementation tasks.** Test *timing* is a pipeline invariant, not a charter choice: by default every implementation task must be preceded by a test task that is authored first and expected to FAIL before the implementation makes it pass (red-green-refactor). Test *types* and emphasis (integration-first vs unit-first, mock vs real dependencies, coverage) default sensibly for the stack — never defer, reorder, or skip test-first ordering.
+**Strict TDD is the default — test tasks come before their implementation tasks.** Test *timing* is a pipeline invariant, not a charter choice: by default every implementation task must be preceded by a test task that is authored first and expected to FAIL before the implementation makes it pass (red-green-refactor). Test *types* and emphasis (integration-first vs unit-first, mock vs real dependencies, coverage) default sensibly for the stack — never defer, reorder, or skip test-first ordering. Check the repo's own agent guidance file (CLAUDE.md, AGENTS.md, or equivalent) for existing test-case guidance (e.g. a documented list of failure modes to cover) and generate test tasks that satisfy it — spec-kit does not restate framework-specific conventions.
 
 **Spike exception**: in spike mode (`--spike`/`--no-tdd`, or the user designates the feature exploratory/throwaway), test-first ordering is waived — tests may be omitted or placed after implementation. Record the testing mode near the top of tasks.md (just under the title) so `/speckit.implement` and `/speckit.analyze` honor it: write `Testing mode: Spike (TDD waived)` for a spike, otherwise `Testing mode: Strict TDD`.
 
@@ -190,11 +190,13 @@ Every task MUST strictly follow this format:
      - Services needed for that story
      - Endpoints/UI needed for that story
      - Tests for that story (strict TDD — test tasks authored first and ordered before implementation; omit only if the user explicitly says no tests)
+     - Failure-path UI feedback: whenever a task adds or changes backend validation or a business-rule check, generate a paired task to wire the corresponding failure feedback into the UI (error message, disabled state, etc.). Never assume this is included for free with the happy-path task — if it isn't itemized, it quietly doesn't get built.
    - Mark story dependencies (most stories should be independent)
 
 2. **From Contracts**:
    - Map each contract/endpoint → to the user story it serves
    - Each contract → a contract test task [P] ordered BEFORE its implementation task in that story's phase (strict TDD — the contract test must fail first)
+   - Whenever a task changes both a frontend call and its backend handler for the same interaction (a new parameter, a new error shape), generate an explicit contract/integration test task exercising the real call across that boundary. Two separately-mocked unit tests — one per side — do not satisfy this; the test must exercise the actual wire between them.
 
 3. **From Data Model**:
    - Map each entity to the user story(ies) that need it
