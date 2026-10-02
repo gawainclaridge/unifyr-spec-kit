@@ -521,7 +521,7 @@ After this prompt is entered, you should see Claude Code kick off the planning a
 
 Once this step is completed, you should have a new branch created (e.g., `001-create-taskify`), as well as a new specification in the `specs/001-create-taskify` directory.
 
-The produced specification should contain an **Experience Vision** (a short narrative describing what success feels like from the customer's perspective), user stories, functional requirements, and an **Adoption & Rollout** section (how existing customers move onto the feature — not just how it behaves for new customers going forward), as defined in the template.
+The produced specification should contain an **Experience Vision** (a short narrative describing what success feels like from the customer's perspective), user stories, functional requirements, and an **Adoption & Rollout** section (how existing customers move onto the feature — not just how it behaves for new customers going forward), and an **Existing Implementation / Prior Art** section (names any POC or existing code, so `/speckit.plan` can compare it against the spec), as defined in the template.
 
 #### Draft project principles (`/speckit.charter`) — optional
 

@@ -245,7 +245,7 @@ Total: ~12 hours of documentation work
 
 # This automatically:
 # - Creates branch "003-chat-system"
-# - Generates specs/003-chat-system/spec.md with Non-Goals, Adoption & Rollout, Sign-Off, Changelog
+# - Generates specs/003-chat-system/spec.md with Non-Goals, Existing Implementation / Prior Art, Adoption & Rollout, Sign-Off, Changelog
 # - Populates it with structured requirements
 
 # ============================================
@@ -253,7 +253,8 @@ Total: ~12 hours of documentation work
 # ============================================
 
 # Analyze spec for gaps and clarify requirements
-# (challenges the drafted Adoption & Rollout path — how existing customers get the feature)
+# (challenges the drafted Adoption & Rollout path — how existing customers get the feature —
+# and confirms whether a POC or existing code exists)
 /speckit.clarify
 
 # Manual review: Add acceptance criteria, edge cases
