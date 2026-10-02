@@ -560,7 +560,7 @@ At this stage, your project folder contents should resemble the following:
 
 With the baseline specification created, you can go ahead and clarify any of the requirements that were not captured properly within the first shot attempt.
 
-You should run the structured clarification workflow **before** creating a technical plan to reduce rework downstream. If the spec is missing an **Experience Vision**, clarify will block and ask you to write one before proceeding — this is the north star that anchors all downstream clarification. Clarify also **challenges the drafted Adoption & Rollout path** — confirming with the team how existing customers get the feature — so "new customers only, going forward" is a deliberate decision rather than an unreviewed default.
+You should run the structured clarification workflow **before** creating a technical plan to reduce rework downstream. If the spec is missing an **Experience Vision**, clarify will block and ask you to write one before proceeding — this is the north star that anchors all downstream clarification. Clarify also **challenges the drafted Adoption & Rollout path** — confirming with the team how existing customers get the feature — so "new customers only, going forward" is a deliberate decision rather than an unreviewed default. It also confirms whether a POC or other existing code covers the feature, so `/speckit.plan` knows to compare it against the spec.
 
 Preferred order:
 
