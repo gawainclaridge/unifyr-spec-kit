@@ -521,7 +521,7 @@ After this prompt is entered, you should see Claude Code kick off the planning a
 
 Once this step is completed, you should have a new branch created (e.g., `001-create-taskify`), as well as a new specification in the `specs/001-create-taskify` directory.
 
-The produced specification should contain an **Experience Vision** (a short narrative describing what success feels like from the customer's perspective), user stories, functional requirements, and an **Adoption & Rollout** section (how existing customers move onto the feature — not just how it behaves for new customers going forward), as defined in the template.
+The produced specification should contain an **Experience Vision** (a short narrative describing what success feels like from the customer's perspective), user stories, functional requirements, and an **Adoption & Rollout** section (how existing customers move onto the feature — not just how it behaves for new customers going forward), and an **Existing Implementation / Prior Art** section (names any POC or existing code, so `/speckit.plan` can compare it against the spec), as defined in the template.
 
 #### Draft project principles (`/speckit.charter`) — optional
 
@@ -560,7 +560,7 @@ At this stage, your project folder contents should resemble the following:
 
 With the baseline specification created, you can go ahead and clarify any of the requirements that were not captured properly within the first shot attempt.
 
-You should run the structured clarification workflow **before** creating a technical plan to reduce rework downstream. If the spec is missing an **Experience Vision**, clarify will block and ask you to write one before proceeding — this is the north star that anchors all downstream clarification. Clarify also **challenges the drafted Adoption & Rollout path** — confirming with the team how existing customers get the feature — so "new customers only, going forward" is a deliberate decision rather than an unreviewed default.
+You should run the structured clarification workflow **before** creating a technical plan to reduce rework downstream. If the spec is missing an **Experience Vision**, clarify will block and ask you to write one before proceeding — this is the north star that anchors all downstream clarification. Clarify also **challenges the drafted Adoption & Rollout path** — confirming with the team how existing customers get the feature — so "new customers only, going forward" is a deliberate decision rather than an unreviewed default. It also confirms whether a POC or other existing code covers the feature, so `/speckit.plan` knows to compare it against the spec.
 
 Preferred order:
 
@@ -671,6 +671,8 @@ We are going to generate this using .NET Aspire, using Postgres as the database.
 Blazor server with drag-and-drop task boards, real-time updates. There should be a REST API created with a projects API,
 tasks API, and a notifications API.
 ```
+
+If a proof of concept (POC) or other existing code already covers the feature, name it in the spec's "Existing Implementation / Prior Art" section (`/speckit.plan` asks if the section is blank). The plan then lists everything the code does, compares it to the spec, and asks you, one item at a time, to decide **Remove**, **Defer** or **Add to spec** for each extra or conflicting item. `/speckit.tasks` turns the "Remove" decisions into tasks, so the POC does not ship features Product never signed off.
 
 The output of this step will include a number of implementation detail documents, with your directory tree resembling this:
 

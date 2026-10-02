@@ -139,6 +139,17 @@
 - **NG-002**: This feature does NOT [explicit exclusion, e.g., "include administrative management UI"]
 - **NG-003**: This feature does NOT [explicit exclusion, e.g., "integrate with third-party analytics"]
 
+## Existing Implementation / Prior Art *(mandatory)*
+
+<!--
+  Name any POC, prototype, or existing code that already covers part of this feature
+  (repo, branch, or path, and who built it). Write "None" if there is nothing.
+  /speckit.plan reads this and compares that code against this spec: anything the code
+  does that this spec does not say gets an explicit Remove / Defer / Add-to-spec decision.
+-->
+
+- **Existing code**: [repo/branch/path and owner, or "None"]
+
 ## Sign-Off *(advisory)*
 
 <!--

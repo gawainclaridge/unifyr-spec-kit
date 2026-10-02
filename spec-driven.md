@@ -136,6 +136,7 @@ Once a feature specification exists, this command creates a comprehensive implem
 3. **Technical Translation**: Converts business requirements into technical architecture and implementation details
 4. **Detailed Documentation**: Generates supporting documents for data models, API contracts, and test scenarios
 5. **Quickstart Validation**: Produces a quickstart guide capturing key validation scenarios
+6. **Existing Implementation Reconciliation**: When a POC or existing code covers the feature, inventories what the code actually does and compares it to the spec. Anything the code does that the spec does not say (or says differently) gets an explicit Remove / Defer / Add-to-spec decision before tasks are generated
 
 ### The `/speckit.tasks` Command
 
@@ -244,7 +245,7 @@ Total: ~12 hours of documentation work
 
 # This automatically:
 # - Creates branch "003-chat-system"
-# - Generates specs/003-chat-system/spec.md with Non-Goals, Adoption & Rollout, Sign-Off, Changelog
+# - Generates specs/003-chat-system/spec.md with Non-Goals, Existing Implementation / Prior Art, Adoption & Rollout, Sign-Off, Changelog
 # - Populates it with structured requirements
 
 # ============================================
@@ -252,7 +253,8 @@ Total: ~12 hours of documentation work
 # ============================================
 
 # Analyze spec for gaps and clarify requirements
-# (challenges the drafted Adoption & Rollout path — how existing customers get the feature)
+# (challenges the drafted Adoption & Rollout path — how existing customers get the feature —
+# and confirms whether a POC or existing code exists)
 /speckit.clarify
 
 # Manual review: Add acceptance criteria, edge cases

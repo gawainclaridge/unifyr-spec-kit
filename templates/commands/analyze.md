@@ -119,6 +119,7 @@ Focus on high-signal findings. Limit to 50 findings total; aggregate remainder i
 - Requirements with zero associated tasks
 - Tasks with no mapped requirement/story
 - Non-functional requirements not reflected in tasks (e.g., performance, security)
+- **POC reconciliation** (only if plan.md's Existing Implementation Reconciliation section lists an existing implementation): a "Not in spec" or "Contradicts spec" row with no decision; a "Remove" row with no matching task in tasks.md; an "Add to spec" row where spec.md was not amended or has no Product sign-off; a "Keep" row that does not trace to a spec requirement. Treat a missing decision or missing Remove task as HIGH.
 
 #### F. Inconsistency
 

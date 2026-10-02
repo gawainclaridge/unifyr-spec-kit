@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `/speckit.plan` now reconciles any POC or existing code against the spec (step 4b). It reads the spec's new "Existing Implementation / Prior Art" section, or asks the engineer if there is a POC (it does not guess). It inventories what the code does, flags anything not in the spec or contradicting it, and asks the engineer for a Remove / Defer / Add-to-spec decision on each item, one at a time. Before this, the plan only checked that it did not exceed the spec, so POC extras outside the MLP were never questioned. The plan template has a new Existing Implementation Reconciliation section, and `/speckit.tasks` turns "Remove" rows into tasks and stops if any row is undecided, and `/speckit.analyze` flags undecided rows, Remove rows with no task, and Add-to-spec rows with no spec amendment.
+
 ### Changed
 
 - Jira keys keep their uppercase in branch and folder names. `/speckit.specify` with a short name like `RED-6543 multi currency` now creates `004-RED-6543-multi-currency`, which Jira links to the issue (a lowercase key is not linked). Only keys typed in uppercase are affected. `/speckit.specify` also asks the agent to start the short name with the feature's Epic key.

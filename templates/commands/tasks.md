@@ -84,6 +84,7 @@ Check for optional flags in the user input:
 3. **Execute task generation workflow**:
    - Load plan.md and extract tech stack, libraries, project structure
    - Load spec.md and extract user stories with their priorities (P1, P2, P3, etc.)
+   - If plan.md's Existing Implementation Reconciliation table has rows decided **Remove**: generate one removal task per row (test-first where behaviour is covered: a test proving the capability is gone, then the removal). If any "Not in spec" or "Contradicts spec" row has no decision, STOP and send the user back to `/speckit.plan`.
    - If data-model.md exists: Extract entities and map to user stories
    - If contracts/ exists: Map endpoints to user stories
    - If research.md exists: Extract decisions for setup tasks
