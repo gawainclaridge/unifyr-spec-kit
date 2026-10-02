@@ -160,6 +160,9 @@ Given that feature description, do this:
        - **If part of project**: Do NOT duplicate project.md "Out of Scope" items; instead add:
          `> See [project.md](../project.md) for project-level exclusions`
        - Only add feature-specific non-goals that are not already covered at project level
+    9b. Fill Existing Implementation / Prior Art section
+       - Name any POC, prototype, or existing code that covers part of this feature (repo/branch/path and owner) if the user input mentions one. Otherwise write "None" and leave it for `/speckit.plan` to confirm with the engineer.
+       - Do not describe what the code does here. `/speckit.plan` inventories it and compares it to this spec.
     10. Fill Adoption & Rollout section
        - Decide how EXISTING customers move onto this feature — not just how it behaves for new customers going forward.
        - Draft a best-guess adoption path across the buckets (Existing cohort / Adoption path / One-time migration / Transition & comms) using informed defaults; /speckit.clarify will challenge and refine it with the team.

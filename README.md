@@ -672,6 +672,8 @@ Blazor server with drag-and-drop task boards, real-time updates. There should be
 tasks API, and a notifications API.
 ```
 
+If a proof of concept (POC) or other existing code already covers the feature, name it in the spec's "Existing Implementation / Prior Art" section (`/speckit.plan` asks if the section is blank). The plan then lists everything the code does, compares it to the spec, and asks you, one item at a time, to decide **Remove**, **Defer** or **Add to spec** for each extra or conflicting item. `/speckit.tasks` turns the "Remove" decisions into tasks, so the POC does not ship features Product never signed off.
+
 The output of this step will include a number of implementation detail documents, with your directory tree resembling this:
 
 ```text

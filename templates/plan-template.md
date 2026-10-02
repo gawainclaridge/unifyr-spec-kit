@@ -27,6 +27,26 @@
 > **WARNING**: If this plan requires features not in the spec, STOP and update the spec first.
 > Get Product sign-off on spec changes before continuing with planning.
 
+## Existing Implementation Reconciliation
+
+<!--
+  Fill when a POC, prototype, or existing code covers this feature.
+  Otherwise write "No existing implementation" and delete the table.
+  Inventory the code itself, not the spec or the POC's README.
+-->
+
+**Existing implementation**: [path/repo/branch, or "No existing implementation"]
+
+| Capability in existing code | Spec requirement | Status | Decision | Reason |
+|-----------------------------|------------------|--------|----------|--------|
+| [e.g., Bulk CSV import] | [none] | Not in spec | Remove / Defer / Add to spec | [why] |
+| [e.g., Email sent at 48h] | [FR-004 says 24h] | Contradicts spec | Remove / Defer / Add to spec | [why] |
+| [e.g., Reward balance screen] | [FR-002] | In spec | Keep | |
+
+- [ ] Every "Not in spec" and "Contradicts spec" row has a decision
+- [ ] "Add to spec" rows: spec.md amended and Product sign-off recorded
+- [ ] "Remove" rows appear as tasks in tasks.md
+
 ## Summary
 
 [Extract from feature spec: primary requirement + technical approach from research]

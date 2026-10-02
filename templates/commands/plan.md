@@ -99,6 +99,23 @@ This is **Stage 4 (Planning)** of the Unifyr process:
      - Recommend: "Amend spec.md first and get Product sign-off before continuing"
      - Allow user to confirm they want to proceed anyway
 
+4b. **Existing implementation reconciliation (POC / prior art)**: The check in step 4 only catches the plan growing past the spec. This step catches the other direction: code that already exists and is bigger than, or different from, the spec. You cannot reliably detect a POC from the repo, so **ask**.
+   - **Find out if one exists (always)**: Read the spec's "Existing Implementation / Prior Art" section. If it names a POC, prototype, or existing code, use it. If it is blank or missing, ask the engineer: "Is there a POC, prototype, or existing code for this feature? Give me the repo, branch, or path, or say none." Record the answer in the plan, including "none". Never skip the question. You may suggest likely candidates you noticed (for example a recent branch or a folder named for the feature) but never assume one is the POC.
+   - **If none**: Write "No existing implementation" in the plan's Existing Implementation Reconciliation section and move on.
+   - **Inventory**: List every user-visible capability, endpoint, screen, field, rule, and integration in the existing code. Read the code. Do not rely on the spec, the POC's README, or the engineer's description.
+   - **Classify** each item against spec.md:
+     - **In spec**: traces to a numbered requirement or acceptance criterion. Name it.
+     - **Not in spec**: the code has it, the spec does not mention it.
+     - **Contradicts spec**: the code does it differently from the spec.
+     - **In spec, not built**: the spec requires it, the code lacks it. (Informational: this is normal build work, no decision needed.)
+   - **Ask the engineer, one item at a time**: For each **Not in spec** and **Contradicts spec** item, ask one question. Lead with what the POC actually does, in concrete terms (for example "The POC emails the user after 48 hours; the spec says 24"), then the options:
+     - **Remove**: strip it from the existing code. The plan and tasks include the removal.
+     - **Defer**: leave out of this release. Record it as out of scope.
+     - **Add to spec**: Product must amend spec.md and sign off first (same rule as step 4).
+
+     Give a recommended option with a one-line reason. Default recommendation is **Remove** unless the spec is the thing that is wrong. Never keep an extra by silence: "it already works" is not a reason to ship it. Wait for the answer before the next item. Do not finalize the plan with unresolved items.
+   - **Record**: Write the table and decisions into the plan's Existing Implementation Reconciliation section. Items marked **Remove** become explicit tasks in `/speckit.tasks`.
+
 5. **Execute plan workflow**: Follow the structure in IMPL_PLAN template to:
    - Fill Technical Context — based on charter decisions (see step 3b), mark genuine unknowns as "NEEDS CLARIFICATION"
    - Fill Charter Check section from the charter (both compliance gates AND decisions that shaped the plan)
