@@ -9,9 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.17] - 2026-10-14
+
 ### Added
 
-- `/speckit.plan` now reconciles any POC or existing code against the spec (step 4b). It reads the spec's new "Existing Implementation / Prior Art" section, or asks the engineer if there is a POC (it does not guess). It inventories what the code does, flags anything not in the spec or contradicting it, and asks the engineer for a Remove / Defer / Add-to-spec decision on each item, one at a time. Before this, the plan only checked that it did not exceed the spec, so POC extras outside the MLP were never questioned. The plan template has a new Existing Implementation Reconciliation section, and `/speckit.tasks` turns "Remove" rows into tasks and stops if any row is undecided, and `/speckit.analyze` flags undecided rows, Remove rows with no task, and Add-to-spec rows with no spec amendment.
 - `/speckit.plan` always runs a new **Existing Behaviour Check** (step 4c). It lists the spec's rules about things that already exist in the product (statuses, permissions, roles, money, visibility), searches the code and existing tests for today's behaviour, and asks the engineer to decide each conflict the spec does not intend: Change the code, Fix the spec (Product signs off) or Ask the team (back to `/speckit.clarify`). Before this, only a POC built for the feature was compared with the spec, so conflicts with older product code (e.g. an admin endpoint that can undo a status the spec calls permanent) surfaced only during `/speckit.implement`. The plan template has a new Existing Behaviour Check section, `/speckit.tasks` turns "Change the code" rows into test-first tasks and stops on undecided rows, `/speckit.analyze` flags missing or undecided rows, and `/speckit.implement` follows the recorded decisions instead of asking again.
 
 ### Changed
@@ -20,6 +21,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `/speckit.taskstoissues --sync`: moves pinned links to the newest pushed commit on every run, even when the spec version has not changed, and now also refreshes the Epic's spec and plan links. Links in comments are never updated, so spec links belong in the description.
 - `/speckit.clarify` now says plainly when to run it again. Its coverage table separates **Not reached** (important, but over this run's question limit) from **Outstanding** (low impact) and **Deferred to plan**. If anything is Not reached, it tells the team to run clarify again and no longer offers `/speckit.plan` as an equal choice. Each run records a `Still to clarify:` line in the spec's Clarifications session.
 - `/speckit.plan` warns (but does not stop) when the spec's latest `Still to clarify:` line lists topics, when clarify was never run, or when it cannot tell. The result is recorded as **Clarify Status** in plan.md and repeated in the final report.
+
+## [1.1.16] - 2026-10-02
+
+### Added
+
+- `/speckit.plan` now reconciles any POC or existing code against the spec (step 4b). It reads the spec's new "Existing Implementation / Prior Art" section, or asks the engineer if there is a POC (it does not guess). It inventories what the code does, flags anything not in the spec or contradicting it, and asks the engineer for a Remove / Defer / Add-to-spec decision on each item, one at a time. Before this, the plan only checked that it did not exceed the spec, so POC extras outside the MLP were never questioned. The plan template has a new Existing Implementation Reconciliation section, and `/speckit.tasks` turns "Remove" rows into tasks and stops if any row is undecided, and `/speckit.analyze` flags undecided rows, Remove rows with no task, and Add-to-spec rows with no spec amendment.
+
+## [1.1.15] - 2026-09-30
+
+### Added
+
+- `/speckit.implement`: reads the diff before marking any task done. A subagent's own "done" report is a claim, not evidence.
+- `/speckit.implement`: before extending existing code, compares it with the latest spec, including its Clarifications, and fixes any conflict before building on it.
+- `/speckit.implement`: before a story is done, walks every acceptance criterion against the real running system, not just the test suite. If the system cannot be started, the report lists which criteria were not checked.
+- `/speckit.implement`: a required adversarial review before completion, in a fresh context that sees only the spec, the charter and the diff. Every finding is fixed or accepted with a reason. Skipped in spike mode.
+- `/speckit.tasks`: a task that adds backend validation gets a paired task for the failure message in the UI. A task that changes a frontend call and its backend handler together gets a real contract or integration test across that boundary.
+
+### Changed
+
+- `/speckit.plan`, `/speckit.tasks` and `/speckit.implement` follow the test-case guidance in each touched repo's own CLAUDE.md or AGENTS.md instead of inventing conventions. `/speckit.implement` also requires a test for every acceptance criterion.
+
+## [1.1.14] - 2026-09-28
+
+### Changed
+
 - Jira keys keep their uppercase in branch and folder names. `/speckit.specify` with a short name like `RED-6543 multi currency` now creates `004-RED-6543-multi-currency`, which Jira links to the issue (a lowercase key is not linked). Only keys typed in uppercase are affected. `/speckit.specify` also asks the agent to start the short name with the feature's Epic key.
 
 ## [1.1.13] - 2026-09-28
