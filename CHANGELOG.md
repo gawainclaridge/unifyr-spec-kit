@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- `/speckit.taskstoissues`: spec links no longer 404 on Bitbucket Cloud when the branch name contains `/` (e.g. `feature/...`, `spec/WOW-5088-1`). Bitbucket Cloud cannot open a file by such a branch name, so each reference is now a pair: a **pinned link** to the pushed commit (`src/<commit>/<path>?at=<branch>`), labelled with the spec version, and a **latest link** to the branch page (`/branch/<branch>`, then View source). Section anchors now use the heading (`#markdown-header-...` on Bitbucket Cloud) instead of line numbers, which did nothing on formatted .md pages. Individual tasks no longer carry their own link; one `Tasks:` line links to the story's phase in tasks.md.
+- `/speckit.taskstoissues --sync`: moves pinned links to the newest pushed commit on every run, even when the spec version has not changed, and now also refreshes the Epic's spec and plan links. Links in comments are never updated, so spec links belong in the description.
 - Jira keys keep their uppercase in branch and folder names. `/speckit.specify` with a short name like `RED-6543 multi currency` now creates `004-RED-6543-multi-currency`, which Jira links to the issue (a lowercase key is not linked). Only keys typed in uppercase are affected. `/speckit.specify` also asks the agent to start the short name with the feature's Epic key.
 
 ## [1.1.13] - 2026-09-28

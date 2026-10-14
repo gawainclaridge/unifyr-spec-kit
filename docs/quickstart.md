@@ -170,7 +170,7 @@ Optionally, create Jira tickets or GitHub issues from your tasks:
 ```
 
 > [!NOTE]
-> Tickets created this way **deep-link** their spec.md/plan.md references to the source on your Bitbucket (or GitHub) branch — push the project branch first so the links resolve. Hierarchy stops at Story (no Jira sub-tasks); a story's tasks live as a checklist on the Story.
+> Tickets created this way link their spec.md/plan.md references to your Bitbucket (or GitHub) repo with two links: a **pinned link** to the exact commit (opens the right section in one click) and a **latest link** to the branch. Push your branch first so the links resolve. Re-run with `--sync` to move the pinned links to your newest pushed commit. Hierarchy stops at Story (no Jira sub-tasks); a story's tasks live as a checklist on the Story.
 
 Then, use the **`/speckit.implement`** slash command to execute the plan:
 
