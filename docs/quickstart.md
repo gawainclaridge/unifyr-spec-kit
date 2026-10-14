@@ -105,6 +105,8 @@ Use **`/speckit.clarify`** to identify and resolve ambiguities in your specifica
 /speckit.clarify Focus on security and performance requirements.
 ```
 
+Each run asks at most 5 questions. Run it again until it says no topics were **Not reached**. `/speckit.plan` warns if topics are still open.
+
 ### Step 4: Create Engineering Charter (Stage 3: Charter)
 
 Use **`/speckit.charter`** to establish high-level architectural decisions for this initiative. The command scans your codebase for existing patterns and runs an interactive Q&A to fill gaps — producing the architectural foundation that `/speckit.plan` and `/speckit.implement` use as guardrails:

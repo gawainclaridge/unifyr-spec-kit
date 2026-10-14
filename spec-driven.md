@@ -255,6 +255,8 @@ Total: ~12 hours of documentation work
 # Analyze spec for gaps and clarify requirements
 # (challenges the drafted Adoption & Rollout path — how existing customers get the feature —
 # and confirms whether a POC or existing code exists)
+# Run again until it reports no topics "Not reached" (max 5 questions per run);
+# /speckit.plan warns if the last run left topics open
 /speckit.clarify
 
 # Manual review: Add acceptance criteria, edge cases

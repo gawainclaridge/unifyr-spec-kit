@@ -39,7 +39,7 @@ This is **Stage 2 (Review)** of the Unifyr process:
 - **Purpose**: Analyze spec for gaps, add edge cases, clarify ambiguities
 - **Prerequisites**: Completed spec.md from Stage 1
 - **Output**: Clarified spec ready for planning
-- **Next step**: `/speckit.charter` (Stage 3 - Engineering) or `/speckit.plan` (Stage 4)
+- **Next step**: `/speckit.clarify` again while it reports topics **Not reached** (see step 9); then `/speckit.charter` (Stage 3 - Engineering) or `/speckit.plan` (Stage 4)
 
 ## Outline
 
@@ -160,7 +160,7 @@ Execution steps:
     - Favor clarifications that reduce downstream rework risk or prevent misaligned acceptance tests.
     - If more than 5 categories remain unresolved, select the top 5 by (Impact * Uncertainty) heuristic.
 
-4a. **Must-consider categories** (reserve a slot in the queue ahead of impact-ranked questions): some categories are easy for the team to overlook. Clarify must *consider* them every run — but the team can validly answer "nothing feature-specific to capture" and clarify moves on. Clarify is run iteratively, so a must-consider question that doesn't fit in this session will surface in the next run until either the section is populated or the team explicitly waives it.
+4a. **Must-consider categories** (reserve a slot in the queue ahead of impact-ranked questions): some categories are easy for the team to overlook. Clarify must *consider* them every run — but the team can validly answer "nothing feature-specific to capture" and clarify moves on. Clarify is run iteratively, so a must-consider question that doesn't fit in this session is reported as **Not reached** (step 9) and will surface in the next run until either the section is populated or the team explicitly waives it.
 
     Current must-consider categories:
 
@@ -275,7 +275,7 @@ Execution steps:
        - User signals completion ("done", "good", "no more"), OR
        - You reach 5 asked questions.
     - Never reveal future queued questions in advance.
-    - If no valid questions exist at start, immediately report no critical ambiguities.
+    - If no valid questions exist at start, immediately report no critical ambiguities. Still write the `Still to clarify: none` line (step 8a), so `/speckit.plan` can see that clarify ran and found nothing.
 
 6. Integration after EACH accepted answer (incremental update approach):
     - Maintain in-memory representation of the spec (loaded once at start) plus the raw file contents.
@@ -298,7 +298,7 @@ Execution steps:
     - Keep each inserted clarification minimal and testable (avoid narrative drift).
 
 7. Validation (performed after EACH write plus final pass):
-   - Clarifications session contains exactly one bullet per accepted answer (no duplicates).
+   - Clarifications session contains exactly one bullet per accepted answer (no duplicates), plus exactly one `Still to clarify:` line as its last bullet (step 8a).
    - Total asked (accepted) questions ≤ 5.
    - Updated sections contain no lingering vague placeholders the new answer was meant to resolve.
    - No contradictory earlier statement remains (scan for now-invalid alternative choices removed).
@@ -307,13 +307,33 @@ Execution steps:
 
 8. Write the updated spec back to `FEATURE_SPEC`.
 
+8a. **Record what is still to clarify.** As the last bullet of today's `### Session YYYY-MM-DD` subsection (create the `## Clarifications` section and the session subheading if this run added none), write one line listing every category with status **Not reached** (step 9):
+
+   ```markdown
+   - Still to clarify: Security & privacy; Adoption & Rollout
+   ```
+
+   or, when nothing is Not reached:
+
+   ```markdown
+   - Still to clarify: none
+   ```
+
+   If today's session already has a `Still to clarify:` line (an earlier run today), replace it instead of adding a second one. Keep it the last bullet. `/speckit.plan` reads the latest of these lines to decide whether to warn that clarification is unfinished.
+
 9. Report completion (after questioning loop ends or early termination):
    - Number of questions asked & answered.
    - Path to updated spec.
    - Sections touched (list names).
-   - Coverage summary table listing each taxonomy category with Status: Resolved (was Partial/Missing and addressed), Deferred (exceeds question quota or better suited for planning), Clear (already sufficient), Outstanding (still Partial/Missing but low impact).
-   - If any Outstanding or Deferred remain, recommend whether to proceed to `/speckit.plan` or run `/speckit.clarify` again later post-plan.
-   - Suggested next command.
+   - Coverage summary table listing each taxonomy category with one Status:
+     - **Resolved**: was Partial/Missing and was answered in this run.
+     - **Clear**: already sufficient.
+     - **Not reached**: still Partial/Missing, would change what gets built or tested, but did not fit in this run's question limit. Also any must-consider category (step 4a) that has not yet been answered or waived.
+     - **Deferred to plan**: better answered during planning (a technical choice, not a product decision).
+     - **Outstanding**: still Partial/Missing, but low impact. Fine to leave.
+   - **Next step**, said plainly:
+     - If any category is **Not reached**: tell the team to run `/speckit.clarify` again, and name the topics: "Run `/speckit.clarify` again. These topics were not reached: <list>." Do **not** offer `/speckit.plan` as an equal choice. If the team chooses to plan anyway, that is their call, but say that `/speckit.plan` will warn about the open topics and that questions skipped now tend to come back during analyze or implement, when they cost more to answer.
+     - If nothing is Not reached: suggest `/speckit.plan` (or `/speckit.charter` if there is no finalized charter yet). Mention any Outstanding topics in one line, as low impact.
 
 Behavior rules:
 

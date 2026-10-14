@@ -17,6 +17,7 @@
 **Source Specification**: `/specs/[###-feature-name]/spec.md`
 **Spec Version**: [Version from spec changelog]
 **Spec Sign-Off Date**: [Date spec was signed off, or "Pending"]
+**Clarify Status**: [Complete | Topics not reached: <list> | Not run | Unknown — from the spec's latest "Still to clarify" line]
 
 ### Scope Alignment Check
 

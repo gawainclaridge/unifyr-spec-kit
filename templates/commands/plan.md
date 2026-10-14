@@ -41,7 +41,7 @@ This is **Stage 4 (Planning)** of the Unifyr process:
 
 - **Team**: Engineering only
 - **Prerequisites**:
-  - spec.md exists and ideally clarified (Stage 2)
+  - spec.md exists and has been clarified until `/speckit.clarify` reports nothing **Not reached** (Stage 2). Not enforced: step 2 warns if it hasn't.
   - A finalized charter.md is required before this command can produce a plan. Run `/speckit.charter` first (Stage 3) for a thorough result, or let this command create one inline (Phase -1) if it's missing or incomplete — see step 2. The Engineering Charter holds the architecture decisions and implementation rules. The plan must follow them for its technology choices, architecture, and migration approach.
 - **Output**: plan.md with the technical architecture, testing scenarios, and design documents, all based on the charter
 - **Next step**: `/speckit.tasks` (Stage 5 - Engineering)
@@ -62,6 +62,12 @@ This is **Stage 4 (Planning)** of the Unifyr process:
      - If found but Sign-Off section shows "Pending": WARN "Charter not yet signed off - consider finalizing before proceeding"
    - **Spec sign-off check** (advisory): Check spec Sign-Off table status
      - If not signed off: WARN "Spec not yet signed off - plan may need revision after sign-off"
+   - **Clarify check** (advisory): read the spec's `## Clarifications` section and find the most recent `- Still to clarify:` line (the one under the latest `### Session` date).
+     - Line says `none`: proceed. Record `Complete` as the plan's **Clarify Status**.
+     - Line lists topics: WARN "The last `/speckit.clarify` run did not reach these topics: <list>. Run `/speckit.clarify` again before planning, so Product, Engineering and QA decide them together. Questions skipped now tend to come back during analyze or implement, when they cost more to answer." Record `Topics not reached: <list>` as the plan's **Clarify Status**.
+     - No `## Clarifications` section: WARN "This spec has not been through `/speckit.clarify`." Record `Not run`.
+     - A Clarifications section but no `Still to clarify:` line (clarified before this line existed): WARN "Cannot tell whether clarification is finished. Consider running `/speckit.clarify` once more; it will say if anything important is left." Record `Unknown`.
+     - This check does not stop the plan. After warning, continue. Repeat the warning in the final report so it is not lost.
    - **Check for project context**: Determine if feature is part of a project
      - Check if current directory is under `specs/project-<name>/`
      - If project.md exists, load and apply project context (see step 2b)
@@ -140,7 +146,7 @@ This is **Stage 4 (Planning)** of the Unifyr process:
    - Record spec version from changelog
    - Update Scope Alignment Check checkboxes
 
-9. **Stop and report**: Command ends after Phase 2 planning. Report branch, IMPL_PLAN path, and generated artifacts.
+9. **Stop and report**: Command ends after Phase 2 planning. Report branch, IMPL_PLAN path, and generated artifacts. If the Clarify Status is anything other than `Complete`, repeat the clarify warning from step 2 at the end of the report.
    - Include summary of Testing Scenarios generated
    - Note Sign-Off status (all Pending for new plans)
 
