@@ -133,7 +133,7 @@ Or provide principles directly:
 
 ### Step 5: Create Implementation Plan (Stage 4: Planning)
 
-Use the **`/speckit.plan`** slash command to provide your tech stack and architecture choices. A finalized Engineering Charter is required before the plan can be produced — if one doesn't exist, `/speckit.plan` offers to create it inline (Phase -1) before planning proceeds. If a POC or other existing code covers the feature, `/speckit.plan` asks you where it is, lists what it does, and asks you to decide Remove, Defer or Add to spec for anything the spec doesn't cover or contradicts.
+Use the **`/speckit.plan`** slash command to provide your tech stack and architecture choices. A finalized Engineering Charter is required before the plan can be produced — if one doesn't exist, `/speckit.plan` offers to create it inline (Phase -1) before planning proceeds. If a POC or other existing code covers the feature, `/speckit.plan` asks you where it is, lists what it does, and asks you to decide Remove, Defer or Add to spec for anything the spec doesn't cover or contradicts. It also checks the spec's rules about existing product behaviour (statuses, permissions, money, visibility) against today's code, and asks you to decide any conflict: Change the code, Fix the spec, or Ask the team.
 
 ```markdown
 /speckit.plan The application uses Vite with minimal number of libraries. Use vanilla HTML, CSS, and JavaScript as much as possible. Images are not uploaded anywhere and metadata is stored in a local SQLite database.

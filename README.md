@@ -676,6 +676,8 @@ tasks API, and a notifications API.
 
 If a proof of concept (POC) or other existing code already covers the feature, name it in the spec's "Existing Implementation / Prior Art" section (`/speckit.plan` asks if the section is blank). The plan then lists everything the code does, compares it to the spec, and asks you, one item at a time, to decide **Remove**, **Defer** or **Add to spec** for each extra or conflicting item. `/speckit.tasks` turns the "Remove" decisions into tasks, so the POC does not ship features Product never signed off.
 
+The plan also always runs an **Existing Behaviour Check**. It takes the spec's rules about things that already exist in the product (statuses, permissions, roles, money, who can see what) and searches the code for how they work today. For example, if the spec says "Withdrawn is permanent" but an existing admin endpoint lets an admin undo it, the plan shows both sides and asks you to decide: **Change the code**, **Fix the spec** (Product signs off) or **Ask the team** (back to `/speckit.clarify`). This catches conflicts at planning time instead of during `/speckit.implement`.
+
 The output of this step will include a number of implementation detail documents, with your directory tree resembling this:
 
 ```text
