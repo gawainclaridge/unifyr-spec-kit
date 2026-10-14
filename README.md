@@ -24,7 +24,7 @@
 > | **5-stage process** | Specification → Review → Charter → Planning → Tasks with explicit team ownership (Product, Engineering, QA) | Maps directly to our sprint ceremonies and handoff points |
 > | **Multi-feature projects** | `/speckit.project` command and `--project` flag group related specs under a shared project context | Supports epic-level planning where multiple features share constraints, users, and scope boundaries |
 > | **Charter enforcement** | `/speckit.plan` cannot produce a plan without a finalized charter — created either as a separate Stage 3 step or inline via the plan's auto-triggered Phase -1 | Architectural decisions are locked in before the plan is generated, without forcing a separate up-front step |
-> | **Jira integration** | `--jira` flag on `/speckit.taskstoissues` creates an Epic with one ticket per user story, Fibonacci story points, and plain-language tickets written for QA and Product (What this is / Why now / How to test / Risk, plus customer, admin, release and Support notes when the spec has them). How to test turns the spec's acceptance scenarios into QA steps, each tagged with the scenario it checks. `--sync` refreshes the task checklist and version pin, and flags test steps the spec has since changed | Tickets flow into our Jira boards with correct hierarchy and sizing, QA can test from the ticket alone, and spec changes are flagged without overwriting the team's edits |
+> | **Jira integration** | `--jira` flag on `/speckit.taskstoissues` creates an Epic with one ticket per user story, Fibonacci story points, and plain-language tickets written for QA and Product (What this is / Why now / How to test / Risk, plus customer, admin, release and Support notes when the spec has them). How to test turns the spec's acceptance scenarios into QA steps, each tagged with the scenario it checks. `--sync` refreshes the task checklist, spec links and version pin, and flags test steps the spec has since changed | Tickets flow into our Jira boards with correct hierarchy and sizing, QA can test from the ticket alone, and spec changes are flagged without overwriting the team's edits |
 > | **Per-story task files** | `--per-story` flag on `/speckit.tasks` generates separate task files per user story | Enables parallel story assignment across team members in a sprint |
 > | **Enforced TDD (with escape hatch)** | Strict test-first (red-green-refactor) is the pipeline default; `--spike` / `--no-tdd` waives it for throwaway/exploratory work | A robust validation path on production code, without blocking spikes |
 > | **Complexity scoring** | Fibonacci-based story point estimates with calibration (8 pts ≈ 5 days) and split advisory at 20+ pts | Right-sizes features before sprint commitment; flags over-scoped work early |
@@ -145,6 +145,8 @@ Use **`/speckit.clarify`** to identify and resolve ambiguities in your specifica
 ```bash
 /speckit.clarify Focus on security and performance requirements.
 ```
+
+Each run asks at most 5 questions, so expect to run it more than once. Keep running it until it reports no topics **Not reached**. `/speckit.plan` warns if the last run left topics open.
 
 ### 4. Create the Engineering Charter (Stage 3: Charter)
 
@@ -342,7 +344,7 @@ Key flags for commonly used commands:
 | `/speckit.project`       | `--add-spec`           | Add current spec to the project                          |
 | `/speckit.taskstoissues` | `--jira <PROJECT-KEY>` | Create Jira tickets (Epic → Story hierarchy)  |
 | `/speckit.taskstoissues` | `--github`             | Create GitHub issues (default)                           |
-| `/speckit.taskstoissues` | `--sync`               | Refresh existing tickets' task checklist and version pin; list test steps the spec has since changed (Jira only) |
+| `/speckit.taskstoissues` | `--sync`               | Refresh existing tickets' task checklist, spec links and version pin; list test steps the spec has since changed (Jira only) |
 
 ### Environment Variables
 
@@ -564,7 +566,7 @@ You should run the structured clarification workflow **before** creating a techn
 
 Preferred order:
 
-1. Use `/speckit.clarify` (structured) – sequential, coverage-based questioning that records answers in a Clarifications section.
+1. Use `/speckit.clarify` (structured) – sequential, coverage-based questioning that records answers in a Clarifications section. Each run asks at most 5 questions and ends by listing important topics it did not reach. Run it again until that list is empty: it then records `Still to clarify: none` in the spec. `/speckit.plan` reads that line and warns (but does not stop) if topics are still open, if clarify was never run, or if it cannot tell.
 2. Optionally follow up with ad-hoc free-form refinement if something still feels vague.
 
 If you intentionally want to skip clarification (e.g., spike or exploratory prototype), explicitly state that so the agent doesn't block on missing clarifications.
@@ -673,6 +675,8 @@ tasks API, and a notifications API.
 ```
 
 If a proof of concept (POC) or other existing code already covers the feature, name it in the spec's "Existing Implementation / Prior Art" section (`/speckit.plan` asks if the section is blank). The plan then lists everything the code does, compares it to the spec, and asks you, one item at a time, to decide **Remove**, **Defer** or **Add to spec** for each extra or conflicting item. `/speckit.tasks` turns the "Remove" decisions into tasks, so the POC does not ship features Product never signed off.
+
+The plan also always runs an **Existing Behaviour Check**. It takes the spec's rules about things that already exist in the product (statuses, permissions, roles, money, who can see what) and searches the code for how they work today. For example, if the spec says "Withdrawn is permanent" but an existing admin endpoint lets an admin undo it, the plan shows both sides and asks you to decide: **Change the code**, **Fix the spec** (Product signs off) or **Ask the team** (back to `/speckit.clarify`). This catches conflicts at planning time instead of during `/speckit.implement`.
 
 The output of this step will include a number of implementation detail documents, with your directory tree resembling this:
 
@@ -806,9 +810,9 @@ After generating tasks, you can automatically create GitHub issues or Jira ticke
 /speckit.taskstoissues --jira PROJ --sync
 ```
 
-This will create one ticket per user story and update the task files with the ticket keys. Before creating anything, it checks the Jira project: it proposes an issue type such as Tech Debt for internal work (and asks you first), finds the right story points field, and uses the Engineering Notes and Feature Flag fields when they exist. Each ticket is a demo-able vertical slice, written for QA and Product first: a title that names the specific thing being changed, product display names instead of code names, and **What this is / Why now / How to test / Risk** sections, plus **What customers will notice**, **What changes for admins**, **Release note** and **Note for Support and CSM** when the spec has something to say. These are drawn from the whole spec (Experience Vision, Non-Goals, Adoption & Rollout), not just the user story. **How to test is the ticket's acceptance criteria**: the spec's acceptance scenarios rewritten as steps QA can follow in the product, each tagged with the scenario it checks (e.g. "(AC 2)"), with every scenario covered. An **Engineering** section (or the Engineering Notes field) holds the task checklist, with done and dropped tasks marked, and a version-pinned deep-link back to spec.md.
+This will create one ticket per user story and update the task files with the ticket keys. Before creating anything, it checks the Jira project: it proposes an issue type such as Tech Debt for internal work (and asks you first), finds the right story points field, and uses the Engineering Notes and Feature Flag fields when they exist. Each ticket is a demo-able vertical slice, written for QA and Product first: a title that names the specific thing being changed, product display names instead of code names, and **What this is / Why now / How to test / Risk** sections, plus **What customers will notice**, **What changes for admins**, **Release note** and **Note for Support and CSM** when the spec has something to say. These are drawn from the whole spec (Experience Vision, Non-Goals, Adoption & Rollout), not just the user story. **How to test is the ticket's acceptance criteria**: the spec's acceptance scenarios rewritten as steps QA can follow in the product, each tagged with the scenario it checks (e.g. "(AC 2)"), with every scenario covered. An **Engineering** section (or the Engineering Notes field) holds the task checklist, with done and dropped tasks marked, and two links back to spec.md: a **pinned link** that opens the story's section exactly as it was when the ticket was written (labelled with the spec version), and a **latest link** to the branch. The pinned link uses a commit because Bitbucket Cloud cannot open a file by a branch name containing `/` (such as `feature/...`). Put spec links in the ticket description, not in comments: spec-kit never updates comments.
 
-When spec.md changes after tickets exist, re-run with `--sync`. It refreshes the task checklist and version pin, and never rewrites what was written for QA. Instead it compares the spec at the ticket's pinned version with the current one, shows which How to test steps cite a changed scenario (and any new scenario with no step yet), suggests new wording, and applies it only if you say yes. If the spec's acceptance scenarios are too thin or too technical to test from, strengthen them in spec.md (e.g. with `/speckit.clarify`).
+When spec.md changes after tickets exist, re-run with `--sync`. It refreshes the task checklist and version pin, moves the pinned links on the stories and the Epic to the newest pushed commit, and never rewrites what was written for QA. Instead it compares the spec at the ticket's pinned version with the current one, shows which How to test steps cite a changed scenario (and any new scenario with no step yet), suggests new wording, and applies it only if you say yes. If the spec's acceptance scenarios are too thin or too technical to test from, strengthen them in spec.md (e.g. with `/speckit.clarify`).
 
 #### Implementation (`/speckit.implement`)
 

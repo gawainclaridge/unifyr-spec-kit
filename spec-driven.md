@@ -137,6 +137,7 @@ Once a feature specification exists, this command creates a comprehensive implem
 4. **Detailed Documentation**: Generates supporting documents for data models, API contracts, and test scenarios
 5. **Quickstart Validation**: Produces a quickstart guide capturing key validation scenarios
 6. **Existing Implementation Reconciliation**: When a POC or existing code covers the feature, inventories what the code actually does and compares it to the spec. Anything the code does that the spec does not say (or says differently) gets an explicit Remove / Defer / Add-to-spec decision before tasks are generated
+7. **Existing Behaviour Check**: Always runs. Compares the spec's rules about things that already exist in the product (statuses, permissions, roles, money, visibility) with what today's code does. Each conflict the spec does not explicitly intend gets a Change the code / Fix the spec / Ask the team decision before tasks are generated
 
 ### The `/speckit.tasks` Command
 
@@ -193,8 +194,8 @@ For multi-feature projects that share context, constraints, and out-of-scope ite
 Converts tasks into issue tracker tickets with complexity scoring and demo-able story design:
 
 1. **Complexity Scoring**: Evaluates each story using Fibonacci points (1-20) before creating tickets. Stories include Story Points in the standard Jira estimate field.
-2. **Demo-able Stories**: Each story is created as a vertical slice that can be independently demonstrated to QA/Product. Tickets are written for QA and Product first (What this is / Why now / How to test / Risk, plus customer, admin, release and Support notes drawn from the whole spec). How to test turns the acceptance scenarios into QA steps tagged with the scenario each one checks. An Engineering section holds the task checklist and a version-pinned link back to spec.md.
-3. **Keeping Tickets Current**: `--sync` (Jira only) refreshes the task checklist and version pin of existing tickets after spec.md changes, lists the test steps that cite a changed scenario, and asks before changing them.
+2. **Demo-able Stories**: Each story is created as a vertical slice that can be independently demonstrated to QA/Product. Tickets are written for QA and Product first (What this is / Why now / How to test / Risk, plus customer, admin, release and Support notes drawn from the whole spec). How to test turns the acceptance scenarios into QA steps tagged with the scenario each one checks. An Engineering section holds the task checklist and two links back to spec.md: a pinned link to the exact commit the ticket was written against (labelled with the spec version) and a latest link to the branch.
+3. **Keeping Tickets Current**: `--sync` (Jira only) refreshes the task checklist and version pin of existing tickets after spec.md changes, moves the pinned links on the stories and the Epic to the newest pushed commit, lists the test steps that cite a changed scenario, and asks before changing them.
 4. **GitHub Issues** (default): Creates issues in the repository matching the Git remote
 5. **Jira Tickets**: Creates Epic → Story hierarchy when `--jira <PROJECT-KEY>` is provided
 6. **Placeholder Updates**: Replaces `[JIRA-EPIC-KEY]`/`[JIRA-STORY-KEY]` placeholders with actual ticket keys
@@ -255,6 +256,8 @@ Total: ~12 hours of documentation work
 # Analyze spec for gaps and clarify requirements
 # (challenges the drafted Adoption & Rollout path — how existing customers get the feature —
 # and confirms whether a POC or existing code exists)
+# Run again until it reports no topics "Not reached" (max 5 questions per run);
+# /speckit.plan warns if the last run left topics open
 /speckit.clarify
 
 # Manual review: Add acceptance criteria, edge cases

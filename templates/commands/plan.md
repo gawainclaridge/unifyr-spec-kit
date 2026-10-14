@@ -41,7 +41,7 @@ This is **Stage 4 (Planning)** of the Unifyr process:
 
 - **Team**: Engineering only
 - **Prerequisites**:
-  - spec.md exists and ideally clarified (Stage 2)
+  - spec.md exists and has been clarified until `/speckit.clarify` reports nothing **Not reached** (Stage 2). Not enforced: step 2 warns if it hasn't.
   - A finalized charter.md is required before this command can produce a plan. Run `/speckit.charter` first (Stage 3) for a thorough result, or let this command create one inline (Phase -1) if it's missing or incomplete — see step 2. The Engineering Charter holds the architecture decisions and implementation rules. The plan must follow them for its technology choices, architecture, and migration approach.
 - **Output**: plan.md with the technical architecture, testing scenarios, and design documents, all based on the charter
 - **Next step**: `/speckit.tasks` (Stage 5 - Engineering)
@@ -62,6 +62,12 @@ This is **Stage 4 (Planning)** of the Unifyr process:
      - If found but Sign-Off section shows "Pending": WARN "Charter not yet signed off - consider finalizing before proceeding"
    - **Spec sign-off check** (advisory): Check spec Sign-Off table status
      - If not signed off: WARN "Spec not yet signed off - plan may need revision after sign-off"
+   - **Clarify check** (advisory): read the spec's `## Clarifications` section and find the most recent `- Still to clarify:` line (the one under the latest `### Session` date).
+     - Line says `none`: proceed. Record `Complete` as the plan's **Clarify Status**.
+     - Line lists topics: WARN "The last `/speckit.clarify` run did not reach these topics: <list>. Run `/speckit.clarify` again before planning, so Product, Engineering and QA decide them together. Questions skipped now tend to come back during analyze or implement, when they cost more to answer." Record `Topics not reached: <list>` as the plan's **Clarify Status**.
+     - No `## Clarifications` section: WARN "This spec has not been through `/speckit.clarify`." Record `Not run`.
+     - A Clarifications section but no `Still to clarify:` line (clarified before this line existed): WARN "Cannot tell whether clarification is finished. Consider running `/speckit.clarify` once more; it will say if anything important is left." Record `Unknown`.
+     - This check does not stop the plan. After warning, continue. Repeat the warning in the final report so it is not lost.
    - **Check for project context**: Determine if feature is part of a project
      - Check if current directory is under `specs/project-<name>/`
      - If project.md exists, load and apply project context (see step 2b)
@@ -117,6 +123,24 @@ This is **Stage 4 (Planning)** of the Unifyr process:
   Give a recommended option with a one-line reason. Default recommendation is **Remove** unless the spec is the thing that is wrong. Never keep an extra by silence: "it already works" is not a reason to ship it. Wait for the answer before the next item. Do not finalize the plan with unresolved items.
 - **Record**: Write the table and decisions into the plan's Existing Implementation Reconciliation section. Items marked **Remove** become explicit tasks in `/speckit.tasks`.
 
+4c. **Existing behaviour check (always run)**: Step 4b covers code written *for* this feature. This step covers code that already exists in the product and that the spec makes rules about: statuses, permissions, roles, money, who can see what. If the spec says "Withdrawn is permanent" but an existing admin endpoint lets an admin change Withdrawn back to Opted in, that conflict must surface now, not during `/speckit.implement`. Unlike a POC, this code can be found by searching the repo, so search; do not ask whether it exists.
+
+- **List the spec's rules about existing things**: go through the Functional Requirements, Key Entities, Acceptance Scenarios and Edge Cases. Pick out each rule about something that already exists in the product (an entity, a status and its allowed changes, a role or permission, an endpoint, a screen, a calculation). Rules with words like *must*, *never*, *only*, *permanent*, *cannot* and *all* matter most. Start with rules about money, permissions and data visibility.
+- **Find the current behaviour**: search the code for each one (the entity or status name, the endpoint, the permission check). Read the code that enforces it. Also look for existing tests and QA scenarios that assume the current behaviour: they will break or need changing. Read the code; do not rely on docs, tickets or the engineer's memory.
+- **Classify** each rule:
+  - **Matches**: the code already behaves as the spec says.
+  - **Spec changes it on purpose**: the code differs, and the spec says plainly that this feature changes it. Normal build work, no decision needed.
+  - **Contradicts spec**: the code differs, and the spec does not say it is changing it.
+  - **Not found**: nothing in the code yet. Normal build work.
+- **Ask the engineer, one item at a time**: for each **Contradicts spec** row, lead with both sides in concrete terms, naming the code (for example "The spec says Withdrawn is permanent (Enrollment entity). The admin status endpoint allows Withdrawn → Opted in, and an existing test expects re-enrolment."), then the options:
+  - **Change the code**: the spec is right. The plan and tasks include the change and the tests that must be updated.
+  - **Fix the spec**: the current behaviour is right. Product must amend spec.md and sign off first (same rule as step 4).
+  - **Ask the team**: it is a product decision the engineer should not make alone. Stop planning this item and recommend `/speckit.clarify` so Product, Engineering and QA decide it together.
+
+  Give a recommended option with a one-line reason. Default to **Change the code** when the spec's rule protects money, permissions or data visibility. If existing customers or data depend on the current behaviour, say so: that is an Adoption & Rollout question too. Wait for the answer before the next item. Every **Contradicts spec** row needs one of the three decisions before the plan is finished. "Ask the team" is a valid decision for now, but `/speckit.tasks` will stop until the team has answered it and the row is re-decided here.
+- **Keep it bounded**: check the rules the spec makes, not the whole product. List the rules you checked, so a reviewer can see what was and was not covered.
+- **Record**: write the table and decisions into the plan's Existing Behaviour Check section. Rows decided **Change the code** become tasks in `/speckit.tasks`.
+
 5. **Execute plan workflow**: Follow the structure in IMPL_PLAN template to:
    - Fill Technical Context — based on charter decisions (see step 3b), mark genuine unknowns as "NEEDS CLARIFICATION"
    - Fill Charter Check section from the charter (both compliance gates AND decisions that shaped the plan)
@@ -140,7 +164,7 @@ This is **Stage 4 (Planning)** of the Unifyr process:
    - Record spec version from changelog
    - Update Scope Alignment Check checkboxes
 
-9. **Stop and report**: Command ends after Phase 2 planning. Report branch, IMPL_PLAN path, and generated artifacts.
+9. **Stop and report**: Command ends after Phase 2 planning. Report branch, IMPL_PLAN path, and generated artifacts. If the Clarify Status is anything other than `Complete`, repeat the clarify warning from step 2 at the end of the report.
    - Include summary of Testing Scenarios generated
    - Note Sign-Off status (all Pending for new plans)
 

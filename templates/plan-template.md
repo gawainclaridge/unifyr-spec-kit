@@ -17,6 +17,7 @@
 **Source Specification**: `/specs/[###-feature-name]/spec.md`
 **Spec Version**: [Version from spec changelog]
 **Spec Sign-Off Date**: [Date spec was signed off, or "Pending"]
+**Clarify Status**: [Complete | Topics not reached: <list> | Not run | Unknown — from the spec's latest "Still to clarify" line]
 
 ### Scope Alignment Check
 
@@ -46,6 +47,26 @@
 - [ ] Every "Not in spec" and "Contradicts spec" row has a decision
 - [ ] "Add to spec" rows: spec.md amended and Product sign-off recorded
 - [ ] "Remove" rows appear as tasks in tasks.md
+
+## Existing Behaviour Check
+
+<!--
+  Rules the spec makes about things that already exist in the product
+  (statuses, permissions, roles, money, visibility), compared with what
+  the code does today. Always filled. Read the code, not the docs.
+-->
+
+| Spec rule | Current behaviour (code / tests) | Status | Decision | Reason |
+|-----------|----------------------------------|--------|----------|--------|
+| [e.g., Enrollment: Withdrawn is permanent] | [Admin status endpoint allows Withdrawn → Opted in; an existing test expects re-enrolment] | Contradicts spec | Change the code / Fix the spec / Ask the team | [why] |
+| [e.g., FR-012: only approvers can Approve] | [Approve button hidden for non-approvers] | Matches | | |
+
+**Rules checked**: [list, so a reviewer can see what was and was not covered]
+
+- [ ] Every "Contradicts spec" row has a decision
+- [ ] "Fix the spec" rows: spec.md amended and Product sign-off recorded
+- [ ] "Ask the team" rows: resolved through `/speckit.clarify`, then re-decided here
+- [ ] "Change the code" rows appear as tasks in tasks.md, with the tests that must change
 
 ## Summary
 

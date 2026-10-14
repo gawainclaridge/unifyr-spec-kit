@@ -105,6 +105,8 @@ Use **`/speckit.clarify`** to identify and resolve ambiguities in your specifica
 /speckit.clarify Focus on security and performance requirements.
 ```
 
+Each run asks at most 5 questions. Run it again until it says no topics were **Not reached**. `/speckit.plan` warns if topics are still open.
+
 ### Step 4: Create Engineering Charter (Stage 3: Charter)
 
 Use **`/speckit.charter`** to establish high-level architectural decisions for this initiative. The command scans your codebase for existing patterns and runs an interactive Q&A to fill gaps — producing the architectural foundation that `/speckit.plan` and `/speckit.implement` use as guardrails:
@@ -131,7 +133,7 @@ Or provide principles directly:
 
 ### Step 5: Create Implementation Plan (Stage 4: Planning)
 
-Use the **`/speckit.plan`** slash command to provide your tech stack and architecture choices. A finalized Engineering Charter is required before the plan can be produced — if one doesn't exist, `/speckit.plan` offers to create it inline (Phase -1) before planning proceeds. If a POC or other existing code covers the feature, `/speckit.plan` asks you where it is, lists what it does, and asks you to decide Remove, Defer or Add to spec for anything the spec doesn't cover or contradicts.
+Use the **`/speckit.plan`** slash command to provide your tech stack and architecture choices. A finalized Engineering Charter is required before the plan can be produced — if one doesn't exist, `/speckit.plan` offers to create it inline (Phase -1) before planning proceeds. If a POC or other existing code covers the feature, `/speckit.plan` asks you where it is, lists what it does, and asks you to decide Remove, Defer or Add to spec for anything the spec doesn't cover or contradicts. It also checks the spec's rules about existing product behaviour (statuses, permissions, money, visibility) against today's code, and asks you to decide any conflict: Change the code, Fix the spec, or Ask the team.
 
 ```markdown
 /speckit.plan The application uses Vite with minimal number of libraries. Use vanilla HTML, CSS, and JavaScript as much as possible. Images are not uploaded anywhere and metadata is stored in a local SQLite database.
@@ -170,7 +172,7 @@ Optionally, create Jira tickets or GitHub issues from your tasks:
 ```
 
 > [!NOTE]
-> Tickets created this way **deep-link** their spec.md/plan.md references to the source on your Bitbucket (or GitHub) branch — push the project branch first so the links resolve. Hierarchy stops at Story (no Jira sub-tasks); a story's tasks live as a checklist on the Story.
+> Tickets created this way link their spec.md/plan.md references to your Bitbucket (or GitHub) repo with two links: a **pinned link** to the exact commit (opens the right section in one click) and a **latest link** to the branch. Push your branch first so the links resolve. Re-run with `--sync` to move the pinned links to your newest pushed commit. Hierarchy stops at Story (no Jira sub-tasks); a story's tasks live as a checklist on the Story.
 
 Then, use the **`/speckit.implement`** slash command to execute the plan:
 

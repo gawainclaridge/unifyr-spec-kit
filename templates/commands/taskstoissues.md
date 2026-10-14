@@ -44,7 +44,8 @@ Check for optional flags in the user input:
   - Example: `/speckit.taskstoissues --jira PROJ`
 - `--github` (default): Create GitHub issues
 - `--sync`: Update already-created tickets instead of creating new ones. Sync refreshes only the
-  Engineering part (task checklist, spec link and version pin). It never rewrites the text written
+  Engineering part (task checklist, spec links and version pin) and the Epic's spec and plan links.
+  It never rewrites the text written
   for QA; when the spec has changed, it lists which How to test steps may be out of date and asks a
   person to update them. Stories with no existing ticket are still created fresh. **Jira only for
   now** — combining `--sync` with `--github` (or the default) is an ERROR: stop and tell the user
@@ -249,12 +250,15 @@ Non-Goals.]
 ### Engineering
 [Only when there is no Engineering Notes field; otherwise put this in that field, without the
 heading.]
-Source: [spec.md vX.Y → User Story N](deep-link)
+Source: [spec.md vX.Y → User Story N](pinned link) · [latest on branch](latest link) (click **View source**, then `<folder path>`)
+Tasks: [tasks.md → Phase N: User Story N](pinned link)
 
-- [x] T0xx [done task] ([deep-link to the task's line in tasks.md])
-- [ ] T0xx [open task] ([deep-link])
+- [x] T0xx [done task]
+- [ ] T0xx [open task]
 - ~~T0xx [dropped task]~~ (dropped: [reason from tasks.md])
 ```
+
+Build both link lines as described in **Building Artifact Links**. The Tasks line points at the story's phase heading in tasks.md, and has the pinned link only: the Source line's latest link already reaches the same branch. Individual tasks have no links of their own: a line anchor on a single task does not work on formatted .md pages.
 
 **Task status**: copy each task's state from tasks.md. `[X]`/`[x]` → ticked. Marked DROPPED or NOT DONE with a reason → struck through with the reason, so nobody picks up work the team decided against. Task wording stays as in tasks.md; code names are fine here.
 
@@ -266,7 +270,14 @@ Apply the **Voice & Audience** rules to everything outside the Engineering conte
 
 ## Building Artifact Links (deep-link to source)
 
-Ticket descriptions reference repo artifacts (spec.md, plan.md, tasks.md, charter.md). Emit these as **clickable deep-links to the source host on the correct branch** — Jira and GitHub render bare paths as plain text you cannot click.
+Ticket descriptions reference repo artifacts (spec.md, plan.md, tasks.md, charter.md). Emit these as **clickable deep-links** to the source host. Jira and GitHub show bare paths as plain text you cannot click.
+
+Every artifact reference is a **pair of links**:
+
+- **Pinned link**: opens the file exactly as it was when the ticket was written (a fixed commit), scrolled to the right section. One click, and it never breaks while the commit exists.
+- **Latest link**: opens the branch, so the reader can see the current version.
+
+They are needed together because Bitbucket Cloud cannot open a file by branch name when the branch name contains `/` (for example `feature/...` or `spec/WOW-5088-1`): every such link returns 404. A commit link always works.
 
 **1. Resolve the repo web base** from the origin remote of the repo that holds the spec — `SPECS_REPO_ROOT` from the prerequisites script (the shared spec repo when specs live outside the current repo, otherwise REPO_ROOT):
 
@@ -276,9 +287,9 @@ git -C "<SPECS_REPO_ROOT>" remote get-url origin
 
 Parse it, auto-detecting the host (strip a trailing `.git` and any `user@` credentials):
 
-- **Bitbucket Cloud** (host `bitbucket.org`): SSH `git@bitbucket.org:WS/REPO.git` or HTTPS `https://USER@bitbucket.org/WS/REPO.git` → base `https://bitbucket.org/WS/REPO`. File URL: `BASE/src/<branch>/<path>`, line anchor `#lines-<N>`.
-- **Bitbucket Server / Data Center** (any other host; URL contains `/scm/` or port `:7999`): `https://HOST/scm/PROJ/REPO.git` or `ssh://git@HOST:7999/PROJ/REPO.git` → base `https://HOST/projects/PROJ/repos/REPO`. File URL: `BASE/browse/<path>?at=refs/heads/<branch>`, line anchor `#<N>`.
-- **GitHub** (host `github.com`): base `https://github.com/OWNER/REPO`. File URL: `BASE/blob/<branch>/<path>`, line anchor `#L<N>`.
+- **Bitbucket Cloud** (host `bitbucket.org`): SSH `git@bitbucket.org:WS/REPO.git` or HTTPS `https://USER@bitbucket.org/WS/REPO.git` → base `https://bitbucket.org/WS/REPO`.
+- **Bitbucket Server / Data Center** (any other host; URL contains `/scm/` or port `:7999`): `https://HOST/scm/PROJ/REPO.git` or `ssh://git@HOST:7999/PROJ/REPO.git` → base `https://HOST/projects/PROJ/repos/REPO`.
+- **GitHub** (host `github.com`): base `https://github.com/OWNER/REPO`.
 - **Unrecognized host**: skip deep-linking — fall back to the bare repo-relative path and say so in the output.
 
 **2. Choose the branch** the artifacts live on:
@@ -286,21 +297,60 @@ Parse it, auto-detecting the host (strip a trailing `.git` and any `user@` crede
 - If the artifacts are under `specs/project-<name>/` → use the project branch `project-<name>`.
 - Otherwise → use the current feature branch of that repo (`git -C "<SPECS_REPO_ROOT>" rev-parse --abbrev-ref HEAD`).
 
-**3. Build the repo-relative path** by stripping SPECS_REPO_ROOT from the absolute artifact path (e.g. `specs/project-acme/spec.md`); URL-encode spaces as `%20`.
+**3. Find the pushed commit.** The pinned link must use a commit the remote has, not a local one:
 
-**4. Section anchor (optional)**: for a Story that points at one user-story section, find that heading's 1-based line number in spec.md and append the host-specific line anchor from step 1.
+```bash
+git -C "<SPECS_REPO_ROOT>" fetch origin "<branch>"
+git -C "<SPECS_REPO_ROOT>" rev-parse "origin/<branch>"
+git -C "<SPECS_REPO_ROOT>" rev-parse "<branch>"
+```
 
-**5. Spec version (pin)**: read the artifact's current version — the `**Version**:` header, or the latest row of its `## Changelog` table — and include it in the reference text as a stable version pin, e.g. `spec.md v2.6 → User Story 2`. The deep-link targets the **live project branch** (so a reader always sees the current spec), while the version records which revision the ticket's test steps were written against. When the spec's changelog later advances past the pinned version, that mismatch is the signal to re-check the ticket's How to test steps against the newer AC. A line anchor (step 4) drifts as the spec is edited; the version does not, so always pair the two.
+If the two hashes differ, the local branch and the remote branch are out of step (usually: the latest spec changes are not pushed). Warn the user and push first (or ask them to), then repeat this step. Use the full 40-character hash from `origin/<branch>`.
 
-Worked examples (project `acme`, branch `project-acme`, spec v2.6, US2 heading on line 88):
+**4. Build the repo-relative path** by stripping SPECS_REPO_ROOT from the absolute artifact path (e.g. `specs/project-acme/spec.md`); URL-encode spaces as `%20`.
 
-- Cloud: `[spec.md v2.6 → User Story 2](https://bitbucket.org/unifyr/platform/src/project-acme/specs/project-acme/spec.md#lines-88)`
-- Server: `[spec.md v2.6 → User Story 2](https://bitbucket.example.com/projects/UNI/repos/platform/browse/specs/project-acme/spec.md?at=refs/heads/project-acme#88)`
+**5. Section anchor (optional)**: to point at one section (a user story in spec.md, a phase in tasks.md), anchor on that section's **heading**. Do not use line anchors: Bitbucket Cloud and GitHub show .md files as formatted pages, where line anchors do nothing and the page opens at the top. Build the heading anchor from the heading text: make it lowercase, remove every character that is not a letter, digit, space or hyphen, turn spaces into hyphens, merge repeated hyphens into one, and trim hyphens from both ends. Then add the host prefix from step 6. Example: `### User Story 2 - A connection can only ever reach its own partner's data (Priority: P1)` → `user-story-2-a-connection-can-only-ever-reach-its-own-partners-data-priority-p1`.
+
+**6. Build the two links** for the host:
+
+| Host | Pinned link | Latest link |
+|------|-------------|-------------|
+| Bitbucket Cloud | `BASE/src/<commit>/<path>?at=<branch>#markdown-header-<anchor>` | `BASE/branch/<branch>`, followed by the text: (click **View source**, then `<folder path>`) |
+| Bitbucket Server / Data Center | `BASE/browse/<path>?at=<commit>` | `BASE/browse/<path>?at=refs/heads/<branch>` |
+| GitHub | `BASE/blob/<commit>/<path>#<anchor>` | `BASE/blob/<branch>/<path>#<anchor>` |
+
+- In the Bitbucket Cloud `?at=` value, write each `/` in the branch name as `%2F` (`?at=spec%2FWOW-5088-1`). This only labels the branch in Bitbucket's branch picker; the commit decides what is shown. In the `/branch/` link, keep the `/` as it is.
+- Bitbucket Server: leave out the section anchor; the file opens at the top.
+
+**7. Spec version (pin)**: read the artifact's current version — the `**Version**:` header, or the latest row of its `## Changelog` table — and put it in the pinned link's text, e.g. `spec.md v2.6 → User Story 2`. It records which revision the ticket's test steps were written against. When the spec's changelog later moves past the pinned version, re-check the ticket's How to test steps (`--sync` does this). Files with no version (tasks.md, plan.md) use the file name only.
+
+**Format** — the pinned link first, then the latest link, separated by ` · `:
+
+```markdown
+[spec.md v2.6 → User Story 2](PINNED) · [latest on branch](LATEST) (click **View source**, then `specs/project-acme`)
+```
+
+The "(click **View source** …)" text is for Bitbucket Cloud only. On other hosts the latest link opens the file directly.
+
+Worked examples (branch `feature/acme`, pushed commit `4f2a…` (write the full hash), spec v2.6, folder `specs/project-acme`):
+
+```markdown
+<!-- Bitbucket Cloud -->
+[spec.md v2.6 → User Story 2](https://bitbucket.org/unifyr/platform/src/4f2a…/specs/project-acme/spec.md?at=feature%2Facme#markdown-header-user-story-2-team-members-can-share-a-board-priority-p1) · [latest on branch](https://bitbucket.org/unifyr/platform/branch/feature/acme) (click **View source**, then `specs/project-acme`)
+
+<!-- Bitbucket Server / Data Center -->
+[spec.md v2.6 → User Story 2](https://bitbucket.example.com/projects/UNI/repos/platform/browse/specs/project-acme/spec.md?at=4f2a…) · [latest on branch](https://bitbucket.example.com/projects/UNI/repos/platform/browse/specs/project-acme/spec.md?at=refs/heads/feature/acme)
+
+<!-- GitHub -->
+[spec.md v2.6 → User Story 2](https://github.com/unifyr/platform/blob/4f2a…/specs/project-acme/spec.md#user-story-2-team-members-can-share-a-board-priority-p1) · [latest on branch](https://github.com/unifyr/platform/blob/feature/acme/specs/project-acme/spec.md#user-story-2-team-members-can-share-a-board-priority-p1)
+```
 
 > [!NOTE]
-> A link only resolves once the branch and files are pushed to the remote. Ensure the project branch (with its spec.md/plan.md/tasks.md) is pushed before creating tickets; if it isn't, warn the user and push first, or fall back to bare paths.
+> The pinned link is a snapshot. It stays correct as a record of what the ticket was written against, and `--sync` moves it to the newest pushed commit. Between syncs, the version in the link text shows readers which revision they are looking at, and the latest link shows the current one.
 >
-> The deep-link tracks the **live project branch**, which is correct while the feature is still in progress and the spec is still being clarified — the ticket always resolves to the current AC. The **version pin (step 5)** is what makes that safe: it records the revision the ticket was written against, so drift is detectable. Once the feature merges and the spec stops moving, the link MAY be repointed to the merge-commit permalink for a frozen historical record; until then, prefer the branch link, never a mutable default branch (`master`/`main`) URL, which silently drifts with no version to detect it.
+> Never link to the default branch (`master`/`main`): it changes with no version to show it.
+>
+> Spec-kit maintains links only in ticket **descriptions** (and the Engineering Notes field). Links pasted into **comments** are never updated, so put spec links in the description, not in a comment.
 
 ---
 
@@ -321,17 +371,17 @@ Epic (Feature)
 
 1. **Create Epic** (if not exists):
    - Title: Feature name from tasks.md
-   - Description: Start with the **Experience Vision** paragraph from spec.md (the full text, not a link), followed by **deep-links** to spec.md and plan.md (see the **Building Artifact Links** section). This puts the feature's goal directly on the epic, so readers do not have to open other documents.
+   - Description: Start with the **Experience Vision** paragraph from spec.md (the full text, not a link), followed by link pairs (pinned and latest) for spec.md and plan.md, one line each (see the **Building Artifact Links** section). This puts the feature's goal directly on the epic, so readers do not have to open other documents.
    - Note: If Epic already exists, use existing key
 
 2. **For each User Story phase**:
    - If its `[JIRA-STORY-KEY]` placeholder in tasks.md already holds a real key, the ticket exists. Do not create a duplicate: skip the story, list it in the run output, and suggest `--sync`.
    - Create the ticket, using the issue type chosen in **Check the Jira project first**, linked to the Epic
-   - Title, description and fields: follow the **Story Ticket Format** section. The `Source:` line in the Engineering section is a **deep-link** to the story's section in spec.md (see the **Building Artifact Links** section — include the section's line anchor **and the spec version pin, step 5**), so the ticket is always traceable back to its source and revision.
+   - Title, description and fields: follow the **Story Ticket Format** section. The `Source:` line in the Engineering section is a link pair to the story's section in spec.md (see the **Building Artifact Links** section — include the section's heading anchor **and the spec version pin, step 7**), so the ticket is always traceable back to its source and revision.
    - Story Points: write the Fibonacci score from the Complexity Scoring step into the estimate field found in **Check the Jira project first**
 
 3. **Task breakdown (no Jira sub-tasks — we never go below Story)**: list the story's tasks (T0xx from tasks.md) as a **checklist in the Engineering section** (the Engineering Notes field, or the description if there is no such field), so the breakdown stays visible and trackable on the ticket itself:
-   - Render each as a checklist item with a **deep-link** to the relevant artifact/section (see the **Building Artifact Links** section), showing its status from tasks.md (see **Task status** under **Story Ticket Format**).
+   - Render each as a checklist item showing its status from tasks.md (see **Task status** under **Story Ticket Format**). The `Tasks:` line above the checklist links to the story's phase in tasks.md.
    - Task descriptions stay as written in tasks.md. Code names are fine here, because this section is for engineers.
    - Do NOT create Sub-task issues.
 
@@ -351,9 +401,17 @@ Engineering content. Everything written for QA belongs to the team once the tick
    - Key found → update it (next steps).
 
 2. **Refresh the Engineering content** (in the Engineering Notes field, or under `### Engineering`):
-   the task checklist with current statuses, the spec link, and the version pin. If you cannot find
-   the Engineering content on the ticket (the heading was renamed or removed), do not guess: list the
-   ticket as "not synced: no Engineering section" and move on.
+   the task checklist with current statuses, the `Source:` and `Tasks:` link lines, and the version
+   pin. Rebuild the pinned links on **every** sync with the newest pushed commit (see **Building
+   Artifact Links**, step 3), even when the spec version has not changed: commits that only tick tasks
+   or fix wording still move the branch on. If you cannot find the Engineering content on the ticket
+   (the heading was renamed or removed), do not guess: list the ticket as "not synced: no Engineering
+   section" and move on.
+
+   **Refresh the Epic's links too.** Find the Epic from the `[JIRA-EPIC-KEY]` in tasks.md. Replace
+   only the spec.md and plan.md link lines in its description with freshly built link pairs. Leave
+   the Experience Vision text and everything else as it is. If you cannot find those link lines,
+   list the Epic as "not synced: no link lines" and move on.
 
 3. **Flag test steps that may be out of date.** If the spec version has moved past the ticket's pin:
    1. Find the pinned spec.md revision in git history (the commit where `**Version**:` or the
@@ -368,11 +426,14 @@ Engineering content. Everything written for QA belongs to the team once the tick
       pinned revision cannot be found, say so and show the current scenarios instead.
 
 4. **Never change** the title, the issue type, status, assignee, sprint, comments, the feature flag
-   field, or Story Points (re-score only if the user explicitly asks for a rescope).
+   field, or Story Points (re-score only if the user explicitly asks for a rescope). Comments are
+   never edited, so spec links someone pasted into a comment are not refreshed; if you see one, tell
+   the user.
 
-5. **Report a sync summary**: for each story, whether it was **created**, **updated** (Engineering
-   refreshed, pin moved forward), **already current** (pin matches the spec), **needs QA review**
-   (spec changed; list the steps to check), or **not synced** (with the reason).
+5. **Report a sync summary**: for the Epic and each story, whether it was **created**, **updated**
+   (links moved to the newest commit, pin moved forward, checklist refreshed), **already current**
+   (links already on the newest commit and pin matches the spec), **needs QA review** (spec changed;
+   list the steps to check), or **not synced** (with the reason).
 
 ### Required Information
 
