@@ -120,7 +120,7 @@ Focus on high-signal findings. Limit to 50 findings total; aggregate remainder i
 - Tasks with no mapped requirement/story
 - Non-functional requirements not reflected in tasks (e.g., performance, security)
 - **POC reconciliation** (only if plan.md's Existing Implementation Reconciliation section lists an existing implementation): a "Not in spec" or "Contradicts spec" row with no decision; a "Remove" row with no matching task in tasks.md; an "Add to spec" row where spec.md was not amended or has no Product sign-off; a "Keep" row that does not trace to a spec requirement. Treat a missing decision or missing Remove task as HIGH.
-- **Existing behaviour check**: plan.md has no Existing Behaviour Check section (HIGH: the spec's rules were never compared with today's code); a "Contradicts spec" row with no decision or still "Ask the team"; a "Change the code" row with no matching task in tasks.md; a "Fix the spec" row where spec.md was not amended. Treat a missing decision or missing task as HIGH. Also flag a rule about statuses, permissions or money in spec.md that does not appear in the section's "Rules checked" list (MEDIUM).
+- **Existing behaviour check**: plan.md has no Existing Behaviour Check section (HIGH: the spec's rules were never compared with today's code; for a plan made before this check existed, recommend re-running `/speckit.plan`); a "Contradicts spec" row with no decision or still "Ask the team"; a "Change the code" row with no matching task in tasks.md; a "Fix the spec" row where spec.md was not amended. Treat a missing decision or missing task as HIGH. Also flag a rule about statuses, permissions or money in spec.md that does not appear in the section's "Rules checked" list (MEDIUM).
 
 #### F. Inconsistency
 

@@ -258,7 +258,7 @@ Tasks: [tasks.md → Phase N: User Story N](pinned link)
 - ~~T0xx [dropped task]~~ (dropped: [reason from tasks.md])
 ```
 
-Build both link lines as described in **Building Artifact Links**. The Tasks line points at the story's phase heading in tasks.md. Individual tasks have no links of their own: a line anchor on a single task does not work on formatted .md pages.
+Build both link lines as described in **Building Artifact Links**. The Tasks line points at the story's phase heading in tasks.md, and has the pinned link only: the Source line's latest link already reaches the same branch. Individual tasks have no links of their own: a line anchor on a single task does not work on formatted .md pages.
 
 **Task status**: copy each task's state from tasks.md. `[X]`/`[x]` → ticked. Marked DROPPED or NOT DONE with a reason → struck through with the reason, so nobody picks up work the team decided against. Task wording stays as in tasks.md; code names are fine here.
 
@@ -302,10 +302,10 @@ Parse it, auto-detecting the host (strip a trailing `.git` and any `user@` crede
 ```bash
 git -C "<SPECS_REPO_ROOT>" fetch origin "<branch>"
 git -C "<SPECS_REPO_ROOT>" rev-parse "origin/<branch>"
-git -C "<SPECS_REPO_ROOT>" rev-parse HEAD
+git -C "<SPECS_REPO_ROOT>" rev-parse "<branch>"
 ```
 
-If the two hashes differ, the latest spec changes are not pushed. Warn the user and push first (or ask them to), then repeat this step. Use the full 40-character hash from `origin/<branch>`.
+If the two hashes differ, the local branch and the remote branch are out of step (usually: the latest spec changes are not pushed). Warn the user and push first (or ask them to), then repeat this step. Use the full 40-character hash from `origin/<branch>`.
 
 **4. Build the repo-relative path** by stripping SPECS_REPO_ROOT from the absolute artifact path (e.g. `specs/project-acme/spec.md`); URL-encode spaces as `%20`.
 

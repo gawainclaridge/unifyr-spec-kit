@@ -137,7 +137,7 @@ This is **Stage 4 (Planning)** of the Unifyr process:
   - **Fix the spec**: the current behaviour is right. Product must amend spec.md and sign off first (same rule as step 4).
   - **Ask the team**: it is a product decision the engineer should not make alone. Stop planning this item and recommend `/speckit.clarify` so Product, Engineering and QA decide it together.
 
-  Give a recommended option with a one-line reason. Default to **Change the code** when the spec's rule protects money, permissions or data visibility. If existing customers or data depend on the current behaviour, say so: that is an Adoption & Rollout question too. Wait for the answer before the next item. Do not finalize the plan with unresolved items.
+  Give a recommended option with a one-line reason. Default to **Change the code** when the spec's rule protects money, permissions or data visibility. If existing customers or data depend on the current behaviour, say so: that is an Adoption & Rollout question too. Wait for the answer before the next item. Every **Contradicts spec** row needs one of the three decisions before the plan is finished. "Ask the team" is a valid decision for now, but `/speckit.tasks` will stop until the team has answered it and the row is re-decided here.
 - **Keep it bounded**: check the rules the spec makes, not the whole product. List the rules you checked, so a reviewer can see what was and was not covered.
 - **Record**: write the table and decisions into the plan's Existing Behaviour Check section. Rows decided **Change the code** become tasks in `/speckit.tasks`.
 
