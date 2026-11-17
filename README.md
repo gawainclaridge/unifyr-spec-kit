@@ -566,7 +566,7 @@ You should run the structured clarification workflow **before** creating a techn
 
 Preferred order:
 
-1. Use `/speckit.clarify` (structured) – sequential, coverage-based questioning that records answers in a Clarifications section. Each run asks at most 5 questions and ends by listing important topics it did not reach. Run it again until that list is empty: it then records `Still to clarify: none` in the spec. `/speckit.plan` reads that line and warns (but does not stop) if topics are still open, if clarify was never run, or if it cannot tell.
+1. Use `/speckit.clarify` (structured) – sequential, coverage-based questioning that records answers in a Clarifications section. Each run asks at most 5 questions and ends by listing important topics it did not reach. Run it again until that list is empty: it then records `Still to clarify: none` in the spec. You can keep running it after that: a repeat run never answers "nothing to ask", it looks again (follow-ups to earlier answers, low-impact leftovers, vague answers) and asks at least one question. Add a topic, e.g. `/speckit.clarify payments`, to aim it. `/speckit.plan` reads that line and warns (but does not stop) if topics are still open, if clarify was never run, or if it cannot tell.
 2. Optionally follow up with ad-hoc free-form refinement if something still feels vague.
 
 If you intentionally want to skip clarification (e.g., spike or exploratory prototype), explicitly state that so the agent doesn't block on missing clarifications.
