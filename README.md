@@ -146,7 +146,7 @@ Use **`/speckit.clarify`** to identify and resolve ambiguities in your specifica
 /speckit.clarify Focus on security and performance requirements.
 ```
 
-Each run asks at most 5 questions, so expect to run it more than once. Keep running it until it reports no topics **Not reached**. `/speckit.plan` warns if the last run left topics open.
+Each run asks at most 5 questions, so expect to run it more than once. Keep running it until it reports no topics **Not reached**. `/speckit.plan` warns if the last run left topics open. Running it again after that is fine: a repeat run looks again and always asks at least one question. Say "done" to stop.
 
 ### 4. Create the Engineering Charter (Stage 3: Charter)
 
