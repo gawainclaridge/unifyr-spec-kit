@@ -148,6 +148,17 @@ Execution steps:
    - Clarification would not materially change implementation or validation strategy
    - Information is better deferred to planning phase (note internally)
 
+3a. **Re-run mode (the team ran clarify again on purpose).** If the spec already has a `## Clarifications` section, or `{ARGS}` names a topic, this is a deliberate repeat run. The team is asking for another look, so "nothing worth asking" is **not** an allowed result on the first pass:
+    - A `Still to clarify: none` line, or "I found nothing last time", is never a reason to skip. It records what the last run decided, not what the team wants now.
+    - Look again with fresh eyes, in this order, and queue candidates from all of them:
+      1. The topic in `{ARGS}`, if given. Questions on it come first, and they bypass the "would not materially change" filter in step 3.
+      2. New gaps created by earlier answers: a clarified answer that raises a follow-up, contradicts another requirement, or leaves a requirement it touches vague.
+      3. **Outstanding** (low-impact) items from the last run. Treat low impact as worth asking this time.
+      4. Answers recorded as assumptions, "recommended" picks, or one-word replies that a different team member might read differently.
+      5. Requirements QA could not turn into a check they can run in the product.
+    - Ask at least one question, up to the usual 5. The team can end the session at any time by saying "done".
+    - Only if all five lists are genuinely empty, say so by naming what you re-checked, and invite the team to steer: "Name a topic to dig into: `/speckit.clarify <topic>`." Do **not** say that running clarify again will not find anything new, and do not push them on to `/speckit.plan`. They asked for more.
+
 4. Generate (internally) a prioritized queue of candidate clarification questions (maximum 5). Do NOT output them all at once. Apply these constraints:
     - Maximum of 5 questions per run (see step 5). Anything important left over is reported as **Not reached** and picked up by the next run.
     - Each question must be answerable with EITHER:
@@ -275,7 +286,7 @@ Execution steps:
        - User signals completion ("done", "good", "no more"), OR
        - You reach 5 asked questions.
     - Never reveal future queued questions in advance.
-    - If no valid questions exist at start, immediately report no critical ambiguities. Still write the `Still to clarify: none` line (step 8a), so `/speckit.plan` can see that clarify ran and found nothing.
+    - If no valid questions exist at start **and this is a first run** (no `## Clarifications` section, no topic in `{ARGS}`), immediately report no critical ambiguities. On a repeat run, follow step 3a instead. Still write the `Still to clarify: none` line (step 8a), so `/speckit.plan` can see that clarify ran and found nothing.
 
 6. Integration after EACH accepted answer (incremental update approach):
     - Maintain in-memory representation of the spec (loaded once at start) plus the raw file contents.
@@ -337,12 +348,12 @@ Execution steps:
 
 Behavior rules:
 
-- If no meaningful ambiguities found (or all potential questions would be low-impact), respond: "No critical ambiguities detected worth formal clarification." and suggest proceeding.
+- On a first run, if no meaningful ambiguities are found (or all potential questions would be low-impact), respond: "No critical ambiguities detected worth formal clarification." and suggest proceeding. This rule does **not** apply to a repeat run: step 3a applies and at least one question is asked.
 - If spec file missing, instruct user to run `/speckit.specify` first (do not create a new spec here).
 - Never exceed 5 total asked questions (clarification retries for a single question do not count as new questions).
 - Avoid speculative tech stack questions unless the absence blocks functional clarity.
 - Respect user early termination signals ("stop", "done", "proceed").
-- If no questions asked due to full coverage, output a compact coverage summary (all categories Clear) then suggest advancing.
+- If no questions asked due to full coverage on a first run, output a compact coverage summary (all categories Clear) then suggest advancing.
 - If quota reached with unresolved high-impact categories remaining, explicitly flag them under Deferred with rationale.
 
 Context for prioritization: {ARGS}
